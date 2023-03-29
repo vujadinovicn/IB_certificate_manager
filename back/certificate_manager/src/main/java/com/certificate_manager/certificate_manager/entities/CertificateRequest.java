@@ -5,8 +5,19 @@ import java.time.LocalDateTime;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="requests")
 public class CertificateRequest {
 
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private LocalDateTime date;
@@ -19,6 +30,7 @@ public class CertificateRequest {
 
 	private CertificateType type;
 
+	@ManyToOne
 	private User requester;
 
 	public CertificateRequest() {
