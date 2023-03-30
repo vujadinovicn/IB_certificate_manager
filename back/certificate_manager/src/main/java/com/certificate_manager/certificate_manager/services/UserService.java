@@ -22,7 +22,7 @@ public class UserService implements IUserService, UserDetailsService {
 		if (!ret.isEmpty()) {
 			return org.springframework.security.core.userdetails.User.withUsername(email).password(ret.get().getPassword()).roles(ret.get().getRole().toString()).build();
 		}
-		throw new UsernameNotFoundException("User not found with this username: " + email);
+		throw new UsernameNotFoundException("User not found with this email: " + email);
 	}
 	
 }
