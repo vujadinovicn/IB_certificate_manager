@@ -1,5 +1,6 @@
 package com.certificate_manager.certificate_manager.entities;
 
+import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 
 import jakarta.persistence.Entity;
@@ -58,6 +59,14 @@ public class User {
 		this.password = password;
 		this.verified = verified;
 		this.role = role;
+	}
+	
+	public User(UserDTO userDTO) {
+		super();
+		this.name = userDTO.getName();
+		this.lastname = userDTO.getLastname();
+		this.email = userDTO.getEmail();
+		this.phoneNumber = userDTO.getPhoneNumber();
 	}
 
 	public int getId() {
