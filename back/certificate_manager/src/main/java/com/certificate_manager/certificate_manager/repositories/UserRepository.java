@@ -8,5 +8,6 @@ import com.certificate_manager.certificate_manager.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	
-	public Optional<User>findByEmail(String email);
+	public Optional<User> findByEmail(String email);
+	
 }
