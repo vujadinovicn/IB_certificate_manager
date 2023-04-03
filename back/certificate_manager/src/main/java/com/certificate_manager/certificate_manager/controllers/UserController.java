@@ -36,7 +36,7 @@ public class UserController {
 	private AuthenticationManager authenticationManager;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
 		this.userService.register(userDTO);
 		return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
 	}
