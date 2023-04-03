@@ -26,7 +26,7 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	
 	@Override
 	public void saveCertificateAsPEMFile(Object x509Certificate, String serialNumber) throws IOException {
-		  File pemFile = File.createTempFile(CERTS_DIR + serialNumber + ".pem", null);
+		  File pemFile = File.createTempFile(CERTS_DIR + serialNumber + ".crt", null);
 		  try (FileWriter pemfileWriter = new FileWriter(pemFile)) {
 		    try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemfileWriter)) {
 		      jcaPEMWriter.writeObject(x509Certificate);
@@ -36,7 +36,7 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	
 	@Override
 	public void savePrivateKeyAsPEMFile(Object privateKey, String serialNumber) throws IOException {
-		  File pemFile = File.createTempFile(KEY_DIR + serialNumber + ".pem", null);
+		  File pemFile = File.createTempFile(KEY_DIR + serialNumber + ".key", null);
 		  try (FileWriter pemfileWriter = new FileWriter(pemFile)) {
 		    try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemfileWriter)) {
 		      jcaPEMWriter.writeObject(privateKey);
@@ -47,7 +47,7 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	
 	@Override
 	public PrivateKey readPrivateKey(String serialNumber) throws Exception {
-		try (FileReader keyReader = new FileReader(KEY_DIR + serialNumber + ".pem")) {
+		try (FileReader keyReader = new FileReader(KEY_DIR + serialNumber + ".key")) {
 
 	        PEMParser pemParser = new PEMParser(keyReader);
 	        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
@@ -60,7 +60,7 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	@Override
 	public X509Certificate readX509Certificate(String serialNumber) throws Exception {
 	    Security.addProvider(new BouncyCastleProvider());
-	    try (FileReader certReader = new FileReader(CERTS_DIR + serialNumber + ".pem")) {
+	    try (FileReader certReader = new FileReader(CERTS_DIR + serialNumber + ".crt")) {
 		    PEMParser pemParser = new PEMParser(certReader);
 	
 		    JcaX509CertificateConverter x509Converter = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider());
