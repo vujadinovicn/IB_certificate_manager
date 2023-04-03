@@ -1,15 +1,28 @@
 package com.certificate_manager.certificate_manager.dtos;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+
 public class UserDTO {
 	
+	@NotEmpty(message="is required")
+	@Pattern(regexp = "^([a-zA-Zčćđžš ]*)$", message="format is not valid")
 	private String name;
 
+	@NotEmpty(message="is required")
+	@Pattern(regexp = "^([a-zA-Zčćđžš ]*)$", message="format is not valid")
 	private String lastname;
 	
+	@NotEmpty(message="is required")
+	@Email(message="format is not valid")
 	private String email;
 	
+	@NotEmpty(message="is required")
+	@Pattern(regexp = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*", message="format is not valid")
 	private String phoneNumber;
 	
+	@NotEmpty(message="is required")
 	private String password;
 	
 	public UserDTO() {
