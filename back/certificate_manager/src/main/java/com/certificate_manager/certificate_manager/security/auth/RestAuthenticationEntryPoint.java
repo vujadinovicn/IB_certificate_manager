@@ -1,16 +1,23 @@
 package com.certificate_manager.certificate_manager.security.auth;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -34,6 +41,26 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         // 404
         setResponseError(response, HttpServletResponse.SC_NOT_FOUND, String.format("Not found: %s", notFoundException.getMessage()));
     }
+    
+    @ExceptionHandler(ConstraintViolationException.class)
+	protected ResponseEntity<Object> handleConstraintValidationException(ConstraintViolationException e) {
+		return new ResponseEntity<>("Constraint violation!", HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler (value = {MethodArgumentNotValidException.class})
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+		List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
+        StringBuilder sb = new StringBuilder("Request finished with validation errors: \n");
+
+        for (ObjectError error : errorList ) {
+        	sb.append("Field ");
+            FieldError fe = (FieldError) error;
+            sb.append(fe.getField() + " ");
+            sb.append(error.getDefaultMessage()+ "!\n\n");
+        }
+
+        return new ResponseEntity<>(sb.toString(), HttpStatus.BAD_REQUEST);
+	}
     
     private void setResponseError(HttpServletResponse response, int errorCode, String errorMessage) throws IOException{
         response.setStatus(errorCode);
