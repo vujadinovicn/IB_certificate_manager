@@ -18,6 +18,8 @@ import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -35,7 +37,7 @@ public class UserController {
 	
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> login(@RequestBody CredentialsDTO credentials) {
+	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials) {
 		Authentication authentication;
 		try {
 			authentication = authenticationManager.authenticate(
