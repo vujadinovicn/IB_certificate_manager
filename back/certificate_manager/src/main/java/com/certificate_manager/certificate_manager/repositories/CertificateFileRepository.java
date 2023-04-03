@@ -57,15 +57,18 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	    }
 	}
 	
-	private X509Certificate readX509Certificate(String serialNumber) throws Exception {
+	@Override
+	public X509Certificate readX509Certificate(String serialNumber) throws Exception {
 	    Security.addProvider(new BouncyCastleProvider());
-	    PEMParser pemParser = new PEMParser(new FileReader(CERTS_DIR + serialNumber + ".pem"));
-
-	    JcaX509CertificateConverter x509Converter = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider());
-
-	    X509Certificate certificate =x509Converter.getCertificate((X509CertificateHolder) pemParser.readObject());
-	    
-	    return certificate;
+	    try (FileReader certReader = new FileReader(CERTS_DIR + serialNumber + ".pem")) {
+		    PEMParser pemParser = new PEMParser(certReader);
+	
+		    JcaX509CertificateConverter x509Converter = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider());
+	
+		    X509Certificate certificate = x509Converter.getCertificate((X509CertificateHolder) pemParser.readObject());
+		    
+		    return certificate;
+	    }
 	}
 
 	
