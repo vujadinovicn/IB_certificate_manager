@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
+import com.certificate_manager.certificate_manager.dtos.UserDTO;
+import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
@@ -24,17 +26,20 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/user")
 public class UserController {
 	
-	
 	@Autowired
-	IUserService userService;
-
+	private IUserService userService;
+	
 	@Autowired
 	private TokenUtils tokenUtils;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
-
 	
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
+		this.userService.register(userDTO);
+		return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
+	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials) {

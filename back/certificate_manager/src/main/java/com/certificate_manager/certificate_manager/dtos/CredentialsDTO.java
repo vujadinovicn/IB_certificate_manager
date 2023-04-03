@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 public class CredentialsDTO {
 	
 	@NotEmpty(message="is required")
-	@Email
+	@Email(message="format is not valid")
 	String email;
 	
 	@NotEmpty(message="is required")

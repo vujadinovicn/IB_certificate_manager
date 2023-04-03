@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.certificate_manager.certificate_manager.security.auth.RestAuthenticationEntryPoint;
 import com.certificate_manager.certificate_manager.security.auth.TokenAuthenticationFilter;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
-import com.certificate_manager.certificate_manager.services.UserService;
+import com.certificate_manager.certificate_manager.services.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +30,7 @@ public class WebSecurityConfig {
 
 	@Bean
     public UserDetailsService userDetailsService() {
-        return new UserService();
+        return new UserServiceImpl();
     }
 	
     @Bean
@@ -87,6 +87,6 @@ public class WebSecurityConfig {
     @Bean           
     public WebSecurityCustomizer webSecurityCustomizer() {     
     	// Dozvoljena POST metoda na ruti /auth/login, za svaki drugi tip HTTP metode greska je 401 Unauthorized
-    	return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/user/login");	
+    	return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/user/login").requestMatchers(HttpMethod.POST, "/api/user");	
     }
 }

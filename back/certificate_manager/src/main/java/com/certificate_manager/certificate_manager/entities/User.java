@@ -1,5 +1,6 @@
 package com.certificate_manager.certificate_manager.entities;
 
+import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 
 import jakarta.persistence.Entity;
@@ -7,6 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name="users")
@@ -16,18 +21,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@NotEmpty
+	@Pattern(regexp = "^([a-zA-Zčćđžš ]*)$")
 	private String name;
 
+	@NotEmpty
+	@Pattern(regexp = "^([a-zA-Zčćđžš ]*)$")
 	private String lastname;
 
+	@NotEmpty
+	@Email
 	private String email;
 
+	@NotEmpty
+	@Pattern(regexp = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*")
 	private String phoneNumber;
 
+	@NotEmpty
 	private String password;
 
 	private Boolean verified;
 
+	@NotNull
 	private UserRole role;
 
 	public User() {
@@ -58,6 +73,14 @@ public class User {
 		this.password = password;
 		this.verified = verified;
 		this.role = role;
+	}
+	
+	public User(UserDTO userDTO) {
+		super();
+		this.name = userDTO.getName();
+		this.lastname = userDTO.getLastname();
+		this.email = userDTO.getEmail();
+		this.phoneNumber = userDTO.getPhoneNumber();
 	}
 
 	public int getId() {
