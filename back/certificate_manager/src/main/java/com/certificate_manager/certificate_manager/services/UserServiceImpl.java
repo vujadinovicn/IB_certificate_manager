@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
@@ -22,8 +23,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Autowired
 	private UserRepository allUsers;
 	
-//	@Autowired
-//	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public User getUserByEmail(String email) {
@@ -48,7 +49,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		
 		User user = new User(userDTO);
 		user.setPassword(userDTO.getPassword());
-		//user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		user.setRole(UserRole.USER);
 		allUsers.save(user);
 		allUsers.flush();
