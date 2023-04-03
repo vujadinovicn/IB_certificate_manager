@@ -37,12 +37,8 @@ public class UserController {
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
-		try {
-			this.userService.register(userDTO);
-			return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
-		} catch (UserAlreadyExistsException e) {
-			return new ResponseEntity<String>("User with this email already exists!", HttpStatus.NOT_FOUND);
-		}	
+		this.userService.register(userDTO);
+		return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

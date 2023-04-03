@@ -87,6 +87,6 @@ public class WebSecurityConfig {
     @Bean           
     public WebSecurityCustomizer webSecurityCustomizer() {     
     	// Dozvoljena POST metoda na ruti /auth/login, za svaki drugi tip HTTP metode greska je 401 Unauthorized
-    	return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/user/login");	
+    	return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/user/login").requestMatchers(HttpMethod.POST, "/api/user");	
     }
 }

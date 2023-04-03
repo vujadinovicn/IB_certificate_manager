@@ -15,6 +15,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -46,6 +48,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	protected ResponseEntity<Object> handleConstraintValidationException(ConstraintViolationException e) {
 		return new ResponseEntity<>("Constraint violation!", HttpStatus.BAD_REQUEST);
 	}
+    
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException e){
+    	return new ResponseEntity<>("User with this email already exists!", HttpStatus.BAD_REQUEST);
+    }
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
