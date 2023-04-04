@@ -39,6 +39,7 @@ public class CertificateController {
 		return new ResponseEntity<List<CertificateDTO>>(certificateService.getAll(), HttpStatus.OK);
 	}
 	
+//	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(value = "/root")
 	public ResponseEntity<?> generateRoot() {
 		certificateGenerator.generateSelfSignedCertificate();

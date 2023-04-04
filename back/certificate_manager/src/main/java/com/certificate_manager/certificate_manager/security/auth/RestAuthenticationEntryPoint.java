@@ -40,16 +40,21 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         setResponseError(response, HttpServletResponse.SC_FORBIDDEN, String.format("Access Denies: %s", accessDeniedException.getMessage()));
     }
     
-    @ExceptionHandler (value = {NotFoundException.class, CertificateNotFoundException.class})
+    @ExceptionHandler (value = {NotFoundException.class})
     public void commence(HttpServletRequest request, HttpServletResponse response, NotFoundException notFoundException) throws IOException {
         // 404
         setResponseError(response, HttpServletResponse.SC_NOT_FOUND, String.format("Not found: %s", notFoundException.getMessage()));
     }
     
     @ExceptionHandler(ConstraintViolationException.class)
-	protected ResponseEntity<Object> handleConstraintValidationException(ConstraintViolationException e) {
-		return new ResponseEntity<>("Constraint violation!", HttpStatus.BAD_REQUEST);
+	protected ResponseEntity<String> handleConstraintValidationException(ConstraintViolationException e) {
+		return new ResponseEntity<String>("Constraint violation!", HttpStatus.BAD_REQUEST);
 	}
+    
+    @ExceptionHandler(CertificateNotFoundException.class)
+  	protected ResponseEntity<String> handleCertificateNotFoundException(CertificateNotFoundException e) {
+  		return new ResponseEntity<String>("Certificate not found!", HttpStatus.BAD_REQUEST);
+  	}
     
     @ExceptionHandler(UserAlreadyExistsException.class)
     protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException e){

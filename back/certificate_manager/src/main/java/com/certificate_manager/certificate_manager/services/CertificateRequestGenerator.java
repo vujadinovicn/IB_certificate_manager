@@ -61,6 +61,10 @@ public class CertificateRequestGenerator implements ICertificateRequestGenerator
 		CertificateRequest request = new CertificateRequest(dto, userService.getCurrentUser());
 		this.allRequests.save(request);
 		this.allRequests.flush();
+		
+		if (user.getRole() == UserRole.ADMIN) {
+			certificateGenerator.generateCertificate(request);
+		}
 	}
 	
 }
