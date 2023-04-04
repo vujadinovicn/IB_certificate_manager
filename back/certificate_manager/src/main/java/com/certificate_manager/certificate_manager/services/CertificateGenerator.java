@@ -39,7 +39,7 @@ import com.certificate_manager.certificate_manager.services.interfaces.ICertific
 import com.certificate_manager.certificate_manager.utils.DateUtils;
 
 @Service
-public class CertificateGenerator implements ICertificateGenerator {
+public class CertificateGenerator implements ICertificateGenerator{
 
 	@Autowired
 	private CertificateFileRepository fileRepository;
@@ -110,7 +110,9 @@ public class CertificateGenerator implements ICertificateGenerator {
 			LocalDateTime validTo = validFrom.plusYears(1);
 
 			String serialNumber = UUID.randomUUID().toString();
+			serialNumber = "1";
 			
+			//BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
 			User user = allUsers.findById(1l).orElse(null);
 
 			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(buildX500Name(user),

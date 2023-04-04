@@ -1,5 +1,8 @@
 package com.certificate_manager.certificate_manager.controllers;
 
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
+import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
-import com.sendgrid.Response;
 
 import jakarta.validation.Valid;
 
@@ -65,6 +68,7 @@ public class UserController {
 	
 	@PostMapping(value = "/root")
 	public ResponseEntity<?> generateRoot() {
+		//Security.addProvider(new BouncyCastleProvider());
 		certificateGenerator.generateSelfSignedCertificate();
 		return new ResponseEntity<String>("IDEMO LIBERO", HttpStatus.OK);
 	}
