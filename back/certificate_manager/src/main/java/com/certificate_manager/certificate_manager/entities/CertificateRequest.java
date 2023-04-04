@@ -2,6 +2,7 @@ package com.certificate_manager.certificate_manager.entities;
 
 import java.time.LocalDateTime;
 
+import com.certificate_manager.certificate_manager.dtos.CertificateRequestDTO;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
 
@@ -46,6 +47,15 @@ public class CertificateRequest {
 		this.issuerSerialNumber = issuerSerialNumber;
 		this.type = type;
 		this.requester = requester;
+	}
+	
+	public CertificateRequest(CertificateRequestDTO dto, User user) {
+		this.date = LocalDateTime.now();
+		this.status = RequestStatus.PENDING;
+		this.validTo = dto.getValidTo();
+		this.issuerSerialNumber = dto.getIssuerSerialNumber();
+		this.type = dto.getType();
+		this.requester = user;
 	}
 
 	public int getId() {
