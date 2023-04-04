@@ -1,10 +1,11 @@
 package com.certificate_manager.certificate_manager.entities;
 
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 
 import com.certificate_manager.certificate_manager.enums.CertificateType;
+import com.certificate_manager.certificate_manager.utils.DateUtils;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,13 +21,13 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private long serialNumber;
+	private String serialNumber;
 
 	private LocalDateTime validFrom;
 
 	private LocalDateTime validTo;
 
-	private long issuerSerialNumber;
+	private String issuerSerialNumber;
 
 	private boolean valid;
 
@@ -39,10 +40,9 @@ public class Certificate {
 
 	}
 
-	public Certificate(int id, long serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
-			long issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
+	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
+			String issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
 		super();
-		this.id = id;
 		this.serialNumber = serialNumber;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
@@ -52,6 +52,16 @@ public class Certificate {
 		this.issuedTo = issuedTo;
 	}
 
+	public Certificate(CertificateRequest request, X509Certificate cert509) {
+		this.serialNumber = cert509.getSerialNumber().toString();
+		this.issuedTo = request.getRequester();
+		this.validFrom = DateUtils.toLocalDate(cert509.getNotBefore());
+		this.validTo = DateUtils.toLocalDate(cert509.getNotAfter());
+		this.issuerSerialNumber = request.getIssuerSerialNumber();
+		this.valid = true;
+		this.type = request.getType();
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -60,11 +70,11 @@ public class Certificate {
 		this.id = id;
 	}
 
-	public long getSerialNumber() {
+	public String getSerialNumber() {
 		return serialNumber;
 	}
 
-	public void setSerialNumber(long serialNumber) {
+	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
 
@@ -84,11 +94,11 @@ public class Certificate {
 		this.validTo = validTo;
 	}
 
-	public long getIssuerSerialNumber() {
+	public String getIssuerSerialNumber() {
 		return issuerSerialNumber;
 	}
 
-	public void setIssuerSerialNumber(long issuerSerialNumber) {
+	public void setIssuerSerialNumber(String issuerSerialNumber) {
 		this.issuerSerialNumber = issuerSerialNumber;
 	}
 
