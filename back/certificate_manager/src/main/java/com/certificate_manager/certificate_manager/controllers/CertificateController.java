@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +42,20 @@ public class CertificateController {
 		return new ResponseEntity<String>("Sucessefully created root certificate.", HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "/request")
+	public ResponseEntity<?> generateCertificateRequest(@RequestBody CertificateRequestDTO dto) throws AccessDeniedException {
+		requestGenerator.generateCertificateRequest(dto);
+		return new ResponseEntity<String>("Successfully created certificate request", HttpStatus.OK);
+	}
 	
+	@GetMapping(value = "/validate/{serialNumber}")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> validate(@PathVariable String serialNumber){
+		String validationMessage = "This certificate is valid!";
+		if (!certificateService.validate(serialNumber)) {
+			validationMessage = "This certificate is not valid!";
+		};
+		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+		
+	}
 }
