@@ -10,6 +10,7 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.X509Certificate;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -54,9 +55,10 @@ public class CertificateGenerator implements ICertificateGenerator{
 
 	}
 
-	// TODO: dodati validacije za podatke
 	public X509Certificate generateCertificate(CertificateRequest request) {
+		
 		try {
+			Security.addProvider(new BouncyCastleProvider());  
 			JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
 			builder = builder.setProvider("BC");
 
@@ -67,10 +69,13 @@ public class CertificateGenerator implements ICertificateGenerator{
 			// TODO: OVDE TREBA NEKI PAMETNIJI NACIN KAO STO JE REKAO - NEKI API ZA TACNO
 			// VREME, ILI JE OVO OK?
 			LocalDateTime validFrom = LocalDateTime.now().toLocalDate().atStartOfDay();
+			if (request.getValidTo().isAfter(validFrom)) {
+				throw new DateTimeException(null);
+			}
 
 			KeyPair keys = generateKeyPair();
 
-			String serialNumber = UUID.randomUUID().toString();
+			String serialNumber = UUID.randomUUID().toString().replace("-", "");
 
 			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(getIssuerData(request),
 					new BigInteger(serialNumber), DateUtils.toDate(validFrom), DateUtils.toDate(request.getValidTo()),
@@ -110,9 +115,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 			LocalDateTime validTo = validFrom.plusYears(1);
 
 			String serialNumber = UUID.randomUUID().toString().replace("-", "");
-//			serialNumber = "1";
-			
-			//BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
+
 			User user = allUsers.findById(1l).orElse(null);
 
 			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(buildX500Name(user),
@@ -129,14 +132,10 @@ public class CertificateGenerator implements ICertificateGenerator{
 			
 			Certificate certDB = new Certificate(serialNumber, validFrom, validTo, serialNumber, true, CertificateType.ROOT, user);
 			
-			// save Disk .crt instance
 			fileRepository.saveCertificateAsPEMFile(cert509);
 			fileRepository.savePrivateKeyAsPEMFile(keys.getPrivate(), cert509.getSerialNumber().toString());
 			allCertificates.save(certDB);
 			allCertificates.flush();
-			System.out.println(certDB);
-			
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
