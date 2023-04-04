@@ -21,13 +21,13 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private long serialNumber;
+	private String serialNumber;
 
 	private LocalDateTime validFrom;
 
 	private LocalDateTime validTo;
 
-	private long issuerSerialNumber;
+	private String issuerSerialNumber;
 
 	private boolean valid;
 
@@ -40,8 +40,8 @@ public class Certificate {
 
 	}
 
-	public Certificate(long serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
-			long issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
+	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
+			String issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
 		super();
 		this.serialNumber = serialNumber;
 		this.validFrom = validFrom;
@@ -53,7 +53,7 @@ public class Certificate {
 	}
 
 	public Certificate(CertificateRequest request, X509Certificate cert509) {
-		this.serialNumber = cert509.getSerialNumber().longValue();
+		this.serialNumber = cert509.getSerialNumber().toString();
 		this.issuedTo = request.getRequester();
 		this.validFrom = DateUtils.toLocalDate(cert509.getNotBefore());
 		this.validTo = DateUtils.toLocalDate(cert509.getNotAfter());
@@ -70,11 +70,11 @@ public class Certificate {
 		this.id = id;
 	}
 
-	public long getSerialNumber() {
+	public String getSerialNumber() {
 		return serialNumber;
 	}
 
-	public void setSerialNumber(long serialNumber) {
+	public void setSerialNumber(String serialNumber) {
 		this.serialNumber = serialNumber;
 	}
 
@@ -94,11 +94,11 @@ public class Certificate {
 		this.validTo = validTo;
 	}
 
-	public long getIssuerSerialNumber() {
+	public String getIssuerSerialNumber() {
 		return issuerSerialNumber;
 	}
 
-	public void setIssuerSerialNumber(long issuerSerialNumber) {
+	public void setIssuerSerialNumber(String issuerSerialNumber) {
 		this.issuerSerialNumber = issuerSerialNumber;
 	}
 

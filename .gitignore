@@ -86,3 +86,5 @@ Thumbs.db
 
 ### Sensitive Data ###
 src/main/resources/application.properties
+*.cert
+*.key

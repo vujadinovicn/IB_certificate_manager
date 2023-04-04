@@ -26,7 +26,7 @@ public class CertificateRequest {
 
 	private LocalDateTime validTo;
 
-	private long issuerSerialNumber;
+	private String issuerSerialNumber;
 
 	private CertificateType type;
 
@@ -38,7 +38,7 @@ public class CertificateRequest {
 	}
 
 	public CertificateRequest(LocalDateTime date, RequestStatus status, LocalDateTime validTo,
-			long issuerSerialNumber, CertificateType type, User requester) {
+			String issuerSerialNumber, CertificateType type, User requester) {
 		super();
 		this.date = date;
 		this.status = status;
@@ -80,11 +80,11 @@ public class CertificateRequest {
 		this.validTo = validTo;
 	}
 
-	public long getIssuerSerialNumber() {
+	public String getIssuerSerialNumber() {
 		return issuerSerialNumber;
 	}
 
-	public void setIssuerSerialNumber(long issuerSerialNumber) {
+	public void setIssuerSerialNumber(String issuerSerialNumber) {
 		this.issuerSerialNumber = issuerSerialNumber;
 	}
 
