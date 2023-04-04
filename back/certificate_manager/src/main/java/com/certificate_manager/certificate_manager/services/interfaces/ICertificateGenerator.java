@@ -7,4 +7,6 @@ import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 public interface ICertificateGenerator {
 	
 	public X509Certificate generateCertificate(CertificateRequest request);
+
+	public void generateSelfSignedCertificate();
 }

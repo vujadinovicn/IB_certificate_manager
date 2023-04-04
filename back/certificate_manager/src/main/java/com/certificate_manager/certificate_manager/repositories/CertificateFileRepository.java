@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -16,9 +15,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.springframework.stereotype.Repository;
 
 import com.certificate_manager.certificate_manager.repositories.interfaces.ICertificateFileRepository;
 
+@Repository
 public class CertificateFileRepository implements ICertificateFileRepository {
 	
 	private static String CERTS_DIR = "data/certs/";

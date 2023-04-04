@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,20 +20,25 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
+import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.utils.DateUtils;
 
+@Service
 public class CertificateGenerator implements ICertificateGenerator {
 
 	@Autowired
@@ -40,6 +46,9 @@ public class CertificateGenerator implements ICertificateGenerator {
 
 	@Autowired
 	private CertificateRepository allCertificates;
+	
+	@Autowired
+	private UserRepository allUsers;
 
 	public CertificateGenerator() {
 
@@ -86,6 +95,50 @@ public class CertificateGenerator implements ICertificateGenerator {
 		}
 		return null;
 	}
+	
+	@Override
+	public void generateSelfSignedCertificate() {
+		try {
+			Security.addProvider(new BouncyCastleProvider());  
+			JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
+			builder = builder.setProvider("BC");
+			
+			KeyPair keys = generateKeyPair();
+			ContentSigner contentSigner = builder.build(keys.getPrivate());
+
+			LocalDateTime validFrom = LocalDateTime.now().toLocalDate().atStartOfDay();
+			LocalDateTime validTo = validFrom.plusYears(1);
+
+			String serialNumber = UUID.randomUUID().toString();
+			
+			User user = allUsers.findById(1l).orElse(null);
+
+			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(buildX500Name(user),
+					new BigInteger(serialNumber), DateUtils.toDate(validFrom), DateUtils.toDate(validTo),
+					buildX500Name(user), keys.getPublic());
+
+			X509CertificateHolder certHolder = certGen.build(contentSigner);
+
+			JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
+			certConverter = certConverter.setProvider("BC");
+
+			X509Certificate cert509 = certConverter.getCertificate(certHolder);
+			System.out.println(cert509);
+			
+			Certificate certDB = new Certificate(Long.parseLong(serialNumber), validFrom, validTo, Long.parseLong(serialNumber), true, CertificateType.ROOT, user);
+			
+			// save Disk .crt instance
+			fileRepository.saveCertificateAsPEMFile(cert509);
+			fileRepository.savePrivateKeyAsPEMFile(keys.getPrivate(), cert509.getSerialNumber().toString());
+			allCertificates.save(certDB);
+			allCertificates.flush();
+			System.out.println(certDB);
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	// TODO: izmestiti da bude vise clean
 	private Certificate saveCertificate(CertificateRequest request, X509Certificate cert509, KeyPair keys) {
@@ -94,10 +147,13 @@ public class CertificateGenerator implements ICertificateGenerator {
 			Certificate certDB = new Certificate(request, cert509);
 	
 			// save Disk .crt instance
-			fileRepository.saveCertificateAsPEMFile(certDB);
+			fileRepository.saveCertificateAsPEMFile(cert509);
 	
 			// save Disk .key instance
 			fileRepository.savePrivateKeyAsPEMFile(keys.getPrivate(), cert509.getSerialNumber().toString());
+			
+			allCertificates.save(certDB);
+			allCertificates.flush();
 			
 			return certDB;
 		} catch (IOException e) {
