@@ -78,7 +78,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 			String serialNumber = UUID.randomUUID().toString().replace("-", "");
 
 			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(getIssuerData(request),
-					new BigInteger(serialNumber), DateUtils.toDate(validFrom), DateUtils.toDate(request.getValidTo()),
+					new BigInteger(serialNumber, 16), DateUtils.toDate(validFrom), DateUtils.toDate(request.getValidTo()),
 					getSubjectData(request), keys.getPublic());
 
 			X509CertificateHolder certHolder = certGen.build(contentSigner);
@@ -130,7 +130,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 			X509Certificate cert509 = certConverter.getCertificate(certHolder);
 			System.out.println(cert509);
 			
-			Certificate certDB = new Certificate(serialNumber, validFrom, validTo, serialNumber, true, CertificateType.ROOT, user);
+			Certificate certDB = new Certificate(cert509.getSerialNumber().toString(), validFrom, validTo, cert509.getSerialNumber().toString(), true, CertificateType.ROOT, user);
 			
 			fileRepository.saveCertificateAsPEMFile(cert509);
 			fileRepository.savePrivateKeyAsPEMFile(keys.getPrivate(), cert509.getSerialNumber().toString());
