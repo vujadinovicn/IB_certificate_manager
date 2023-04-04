@@ -32,7 +32,6 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	public void saveCertificateAsPEMFile(Object x509Certificate) throws IOException {
 		  File directory = new File(CERTS_DIR);
 		  String serialNumberStr = ((X509Certificate)x509Certificate).getSerialNumber().toString();
-//		  File pemFile = File.createTempFile(serialNumberStr, ".crt", directory);
 		  File pemFile = new File(directory, serialNumberStr + ".crt");
 		  try (FileWriter pemfileWriter = new FileWriter(pemFile)) {
 		    try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemfileWriter)) {
@@ -44,7 +43,6 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	@Override
 	public void savePrivateKeyAsPEMFile(Object privateKey, String serialNumber) throws IOException {
 		  File directory = new File(KEY_DIR);
-//		  File pemFile = File.createTempFile(serialNumber, ".key", directory);
 		  File pemFile = new File(directory, serialNumber + ".key");
 
 		  try (FileWriter pemfileWriter = new FileWriter(pemFile)) {
