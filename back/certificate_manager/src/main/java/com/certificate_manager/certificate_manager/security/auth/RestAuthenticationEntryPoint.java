@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
+import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,6 +61,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(UserAlreadyExistsException.class)
     protected ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException e){
     	return new ResponseEntity<>("User with this email already exists!", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(NotTheIssuerException.class)
+    protected ResponseEntity<Object> handleNotTheIssuerException(NotTheIssuerException e){
+    	return new ResponseEntity<>("Only the issuer can manage certificate requests.", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(NotPendingRequestException.class)
+    protected ResponseEntity<Object> handleNotPendingRequestException(NotPendingRequestException e){
+    	return new ResponseEntity<>("Only pending requests can be processed.", HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(CertificateNotValidException.class)

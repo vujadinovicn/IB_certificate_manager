@@ -14,16 +14,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="requests")
+@Table(name = "requests")
 public class CertificateRequest {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private LocalDateTime date;
 
 	private RequestStatus status;
+
+	private String rejectionReason;
 
 	private LocalDateTime validTo;
 
@@ -47,8 +49,9 @@ public class CertificateRequest {
 		this.issuerSerialNumber = issuerSerialNumber;
 		this.type = type;
 		this.requester = requester;
+		this.rejectionReason = null;
 	}
-	
+
 	public CertificateRequest(CertificateRequestCreateDTO dto, User user) {
 		this.date = LocalDateTime.now();
 		this.status = RequestStatus.PENDING;
@@ -56,6 +59,7 @@ public class CertificateRequest {
 		this.issuerSerialNumber = dto.getIssuerSerialNumber();
 		this.type = dto.getType();
 		this.requester = user;
+		this.rejectionReason = null;
 	}
 
 	public int getId() {
@@ -112,6 +116,14 @@ public class CertificateRequest {
 
 	public void setRequester(User requester) {
 		this.requester = requester;
+	}
+
+	public String getRejectionReason() {
+		return rejectionReason;
+	}
+
+	public void setRejectionReason(String rejectionReason) {
+		this.rejectionReason = rejectionReason;
 	}
 
 }
