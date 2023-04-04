@@ -8,5 +8,7 @@ import com.certificate_manager.certificate_manager.entities.Certificate;
 public interface ICertificateService {
 
 	public List<CertificateDTO> getAll();
+	
+	public void validate(String serialNumber);
 
 }
