@@ -51,13 +51,14 @@ public class CertificateServiceImpl implements ICertificateService {
 	}
 	
 	private boolean hasCertificateExpired(Certificate certificate) {
-		return certificate.getValidTo().isAfter(LocalDateTime.now());
+		return !certificate.getValidTo().isAfter(LocalDateTime.now());
 	}
 	
 	private void verify(Certificate certificate) throws Exception {
 		X509Certificate currentCert509 = allFileCertificates.readX509Certificate(certificate.getSerialNumber());
 		X509Certificate issuerCert509 = allFileCertificates.readX509Certificate(certificate.getIssuerSerialNumber());
 		currentCert509.verify(issuerCert509.getPublicKey());
+	}
     
 	public CertificateDTO getBySerialNumber(String serialNumber) {
 		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElse(null);
