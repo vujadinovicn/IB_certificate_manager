@@ -30,4 +30,15 @@ public class CertificateServiceImpl implements ICertificateService {
 		}
 		return ret;
 	}
+
+	@Override
+	public CertificateDTO getBySerialNumber(String serialNumber) {
+		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElse(null);
+		
+		if (cert == null) {
+			throw new CertificateNotFoundException();
+		}
+		
+		return new CertificateDTO(cert);
+	}
 }

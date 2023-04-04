@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
-import com.certificate_manager.certificate_manager.dtos.CertificateRequestDTO;
+import com.certificate_manager.certificate_manager.dtos.CertificateRequestCreateDTO;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
@@ -29,10 +29,6 @@ public class CertificateController {
 	@Autowired
 	private ICertificateGenerator certificateGenerator;
 	
-	@Autowired
-	private ICertificateRequestGenerator requestGenerator;
-	
-	
 	@GetMapping(value = "")
 	public ResponseEntity<?> getAll() {
 		return new ResponseEntity<List<CertificateDTO>>(certificateService.getAll(), HttpStatus.OK);
@@ -45,9 +41,5 @@ public class CertificateController {
 		return new ResponseEntity<String>("Sucessefully created root certificate.", HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "/request")
-	public ResponseEntity<?> generateCertificateRequest(@RequestBody CertificateRequestDTO dto) throws AccessDeniedException {
-		requestGenerator.generateCertificateRequest(dto);
-		return new ResponseEntity<String>("Successfully created certificate request", HttpStatus.OK);
-	}
+	
 }
