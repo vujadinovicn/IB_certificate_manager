@@ -44,6 +44,9 @@ public class CertificateServiceImpl implements ICertificateService {
 		if (this.hasCertificateExpired(certificate))
 			System.out.println("Sertificate has expired!");
 		this.verify(certificate);
+		if (!certificate.isValid()) {
+			System.out.println("Certificate is revocated/not valid!");
+		}
 	}
 	
 	private boolean hasCertificateExpired(Certificate certificate) {
