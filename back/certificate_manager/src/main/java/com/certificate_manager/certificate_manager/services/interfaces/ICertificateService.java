@@ -9,5 +9,6 @@ public interface ICertificateService {
 	public List<CertificateDTO> getAll();
 	
 	public boolean validate(String serialNumber);
+	public CertificateDTO getBySerialNumber(String serialNumber);
 
 }

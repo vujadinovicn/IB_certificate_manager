@@ -2,12 +2,13 @@ package com.certificate_manager.certificate_manager.dtos;
 
 import java.time.LocalDateTime;
 
+import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-public class CertificateRequestDTO {
+public class CertificateRequestCreateDTO {
 	
 	@Valid
 	@NotNull(message="is required")
@@ -21,9 +22,9 @@ public class CertificateRequestDTO {
 	@NotNull(message="is required")
 	private CertificateType type;
 	
-	public CertificateRequestDTO() {}
+	public CertificateRequestCreateDTO() {}
 
-	public CertificateRequestDTO(@Valid @NotNull(message = "is required") LocalDateTime validTo,
+	public CertificateRequestCreateDTO(@Valid @NotNull(message = "is required") LocalDateTime validTo,
 			@Valid @NotNull(message = "is required") String issuerSerialNumber,
 			@Valid @NotNull(message = "is required") CertificateType type) {
 		super();
@@ -31,6 +32,7 @@ public class CertificateRequestDTO {
 		this.issuerSerialNumber = issuerSerialNumber;
 		this.type = type;
 	}
+
 
 	public LocalDateTime getValidTo() {
 		return validTo;

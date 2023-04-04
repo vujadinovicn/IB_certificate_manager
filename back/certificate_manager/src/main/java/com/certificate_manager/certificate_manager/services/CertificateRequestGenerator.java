@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.BeanDefinitionDsl.Role;
 import org.springframework.stereotype.Service;
 
-import com.certificate_manager.certificate_manager.dtos.CertificateRequestDTO;
+import com.certificate_manager.certificate_manager.dtos.CertificateRequestCreateDTO;
 import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
@@ -36,7 +36,7 @@ public class CertificateRequestGenerator implements ICertificateRequestGenerator
 	private IUserService userService;
 	
 	@Override 
-	public void generateCertificateRequest(CertificateRequestDTO dto) throws AccessDeniedException {
+	public void generateCertificateRequest(CertificateRequestCreateDTO dto) throws AccessDeniedException {
 		User user = userService.getCurrentUser();
 		if (user.getRole() == UserRole.ADMIN && dto.getType() == CertificateType.ROOT) {
 			certificateGenerator.generateSelfSignedCertificate();
@@ -47,7 +47,7 @@ public class CertificateRequestGenerator implements ICertificateRequestGenerator
 		
 	}
 	
-	private void createRequestByDto(CertificateRequestDTO dto, User user) throws AccessDeniedException {
+	private void createRequestByDto(CertificateRequestCreateDTO dto, User user) throws AccessDeniedException {
 		if (dto.getValidTo().isBefore(LocalDateTime.now())) {
 			throw new DateTimeException("Incorrect date!");
 		}

@@ -58,5 +58,14 @@ public class CertificateServiceImpl implements ICertificateService {
 		X509Certificate currentCert509 = allFileCertificates.readX509Certificate(certificate.getSerialNumber());
 		X509Certificate issuerCert509 = allFileCertificates.readX509Certificate(certificate.getIssuerSerialNumber());
 		currentCert509.verify(issuerCert509.getPublicKey());
+    
+	public CertificateDTO getBySerialNumber(String serialNumber) {
+		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElse(null);
+		
+		if (cert == null) {
+			throw new CertificateNotFoundException();
+		}
+		
+		return new CertificateDTO(cert);
 	}
 }
