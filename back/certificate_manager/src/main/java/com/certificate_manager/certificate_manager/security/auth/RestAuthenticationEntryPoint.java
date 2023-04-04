@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         setResponseError(response, HttpServletResponse.SC_FORBIDDEN, String.format("Access Denies: %s", accessDeniedException.getMessage()));
     }
     
-    @ExceptionHandler (value = {NotFoundException.class})
+    @ExceptionHandler (value = {NotFoundException.class, CertificateNotFoundException.class})
     public void commence(HttpServletRequest request, HttpServletResponse response, NotFoundException notFoundException) throws IOException {
         // 404
         setResponseError(response, HttpServletResponse.SC_NOT_FOUND, String.format("Not found: %s", notFoundException.getMessage()));
