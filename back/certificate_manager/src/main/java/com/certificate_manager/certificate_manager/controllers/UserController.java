@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
+import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
+import com.sendgrid.Response;
 
 import jakarta.validation.Valid;
 
@@ -27,6 +29,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private ICertificateGenerator certificateGenerator;
 	
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -55,6 +60,13 @@ public class UserController {
 		String jwt = tokenUtils.generateToken(user);
 
 		return new ResponseEntity<String>(jwt, HttpStatus.OK);
+	}
+	
+	
+	@PostMapping(value = "/root")
+	public ResponseEntity<?> generateRoot() {
+		certificateGenerator.generateSelfSignedCertificate();
+		return new ResponseEntity<String>("IDEMO LIBERO", HttpStatus.OK);
 	}
 
 }
