@@ -64,13 +64,5 @@ public class UserController {
 
 		return new ResponseEntity<String>(jwt, HttpStatus.OK);
 	}
-	
-	
-	@PostMapping(value = "/root")
-	public ResponseEntity<?> generateRoot() {
-		//Security.addProvider(new BouncyCastleProvider());
-		certificateGenerator.generateSelfSignedCertificate();
-		return new ResponseEntity<String>("IDEMO LIBERO", HttpStatus.OK);
-	}
 
 }
