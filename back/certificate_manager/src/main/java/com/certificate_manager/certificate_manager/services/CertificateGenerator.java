@@ -27,6 +27,7 @@ import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
+import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
@@ -120,9 +121,14 @@ public class CertificateGenerator implements ICertificateGenerator {
 	}
 
 	private X500Name getIssuerData(CertificateRequest request) {
-		// TODO: DODATI EXCEPTION ako ne valja, mozda izmestiti 124. liniju u CertificateService pa tu handlati?
+		// TODO: mozda izmestiti u neki certificateservice 125-130. liniju
 		Certificate issuerCertificate = allCertificates.findBySerialNumber(request.getIssuerSerialNumber())
 				.orElse(null);
+		
+		if (issuerCertificate == null) {
+			throw new CertificateNotFoundException();
+		}
+		
 		User issuer = issuerCertificate.getIssuedTo();
 
 		return buildX500Name(issuer);
