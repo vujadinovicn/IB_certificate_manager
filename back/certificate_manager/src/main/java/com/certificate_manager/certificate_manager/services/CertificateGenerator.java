@@ -35,6 +35,7 @@ import com.certificate_manager.certificate_manager.enums.RequestStatus;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
+import com.certificate_manager.certificate_manager.repositories.CertificateRequestRepository;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.utils.DateUtils;
@@ -47,6 +48,9 @@ public class CertificateGenerator implements ICertificateGenerator{
 
 	@Autowired
 	private CertificateRepository allCertificates;
+	
+	@Autowired
+	private CertificateRequestRepository allRequests;
 	
 	@Autowired
 	private UserRepository allUsers;
@@ -93,6 +97,8 @@ public class CertificateGenerator implements ICertificateGenerator{
 			System.out.println(certDB);
 			
 			request.setStatus(RequestStatus.ACCEPTED);
+			allRequests.save(request);
+			allRequests.flush();
 
 			return cert509;
 		} catch (Exception e) {
