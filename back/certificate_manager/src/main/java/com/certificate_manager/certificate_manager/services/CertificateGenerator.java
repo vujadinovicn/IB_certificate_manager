@@ -69,7 +69,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 			// TODO: OVDE TREBA NEKI PAMETNIJI NACIN KAO STO JE REKAO - NEKI API ZA TACNO
 			// VREME, ILI JE OVO OK?
 			LocalDateTime validFrom = LocalDateTime.now().toLocalDate().atStartOfDay();
-			if (request.getValidTo().isAfter(validFrom)) {
+			if (request.getValidTo().isBefore(validFrom)) {
 				throw new DateTimeException(null);
 			}
 

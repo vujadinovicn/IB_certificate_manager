@@ -4,20 +4,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
 
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.stereotype.Repository;
 
 import com.certificate_manager.certificate_manager.repositories.interfaces.ICertificateFileRepository;
@@ -55,33 +53,16 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	
 	@Override
 	public PrivateKey readPrivateKey(String serialNumber) throws Exception {
-//		try (FileReader keyReader = new FileReader(KEY_DIR + serialNumber + ".key")) {
-//
-//	        PEMParser pemParser = new PEMParser(keyReader);
-//	        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-//	        System.out.println(pem);
-//	        PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(pemParser.readObject());
-//
-//	        return (PrivateKey) converter.getPrivateKey(privateKeyInfo);
-//	    }
-		
-//		byte[] key = Files.readAllBytes(Paths.get(KEY_DIR + serialNumber + ".key"));
-//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(key);
-//        return (PrivateKey)keyFactory.generatePrivate(keySpec);
-		File directory = new File(CERTS_DIR);
-		File file = new File(directory, serialNumber + ".crt");
+		try (FileReader keyReader = new FileReader(KEY_DIR + serialNumber + ".key")) {
 
-		KeyFactory factory = KeyFactory.getInstance("RSA");
+	        PEMParser pemParser = new PEMParser(keyReader);
+	        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+	        PEMKeyPair pemKeyPair = (PEMKeyPair) pemParser.readObject();
+	        PrivateKeyInfo privateKeyInfo = pemKeyPair.getPrivateKeyInfo();
 
-	    try (FileReader keyReader = new FileReader(file);
-	      PemReader pemReader = new PemReader(keyReader)) {
-
-	        PemObject pemObject = pemReader.readPemObject();
-	        byte[] content = pemObject.getContent();
-	        PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(content);
-	        return (PrivateKey) factory.generatePrivate(privKeySpec);
+	        return (PrivateKey) converter.getPrivateKey(privateKeyInfo);
 	    }
+		
 	}
 	
 	@Override
