@@ -8,6 +8,6 @@ import com.certificate_manager.certificate_manager.entities.Certificate;
 
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
 
-	public Optional<Certificate> findBySerialNumber(long serialNumber);
+	public Optional<Certificate> findBySerialNumber(String serialNumber);
 	
 }

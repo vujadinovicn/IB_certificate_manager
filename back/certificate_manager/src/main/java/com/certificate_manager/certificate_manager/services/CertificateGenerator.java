@@ -60,7 +60,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 			JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
 			builder = builder.setProvider("BC");
 
-			PrivateKey issuerPrivateKey = fileRepository.readPrivateKey(Long.toString(request.getIssuerSerialNumber()));
+			PrivateKey issuerPrivateKey = fileRepository.readPrivateKey(request.getIssuerSerialNumber());
 
 			ContentSigner contentSigner = builder.build(issuerPrivateKey);
 
@@ -109,14 +109,14 @@ public class CertificateGenerator implements ICertificateGenerator{
 			LocalDateTime validFrom = LocalDateTime.now().toLocalDate().atStartOfDay();
 			LocalDateTime validTo = validFrom.plusYears(1);
 
-			String serialNumber = UUID.randomUUID().toString();
-			serialNumber = "1";
+			String serialNumber = UUID.randomUUID().toString().replace("-", "");
+//			serialNumber = "1";
 			
 			//BigInteger b = BigInteger.valueOf(System.currentTimeMillis());
 			User user = allUsers.findById(1l).orElse(null);
 
 			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(buildX500Name(user),
-					new BigInteger(serialNumber), DateUtils.toDate(validFrom), DateUtils.toDate(validTo),
+					new BigInteger(serialNumber, 16), DateUtils.toDate(validFrom), DateUtils.toDate(validTo),
 					buildX500Name(user), keys.getPublic());
 
 			X509CertificateHolder certHolder = certGen.build(contentSigner);
@@ -127,7 +127,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 			X509Certificate cert509 = certConverter.getCertificate(certHolder);
 			System.out.println(cert509);
 			
-			Certificate certDB = new Certificate(Long.parseLong(serialNumber), validFrom, validTo, Long.parseLong(serialNumber), true, CertificateType.ROOT, user);
+			Certificate certDB = new Certificate(serialNumber, validFrom, validTo, serialNumber, true, CertificateType.ROOT, user);
 			
 			// save Disk .crt instance
 			fileRepository.saveCertificateAsPEMFile(cert509);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
@@ -19,16 +20,19 @@ import org.springframework.stereotype.Repository;
 
 import com.certificate_manager.certificate_manager.repositories.interfaces.ICertificateFileRepository;
 
+import jakarta.persistence.criteria.Path;
+
 @Repository
 public class CertificateFileRepository implements ICertificateFileRepository {
 	
-	private static String CERTS_DIR = "data/certs/";
-	private static String KEY_DIR = "data/keys/";
+	private static String CERTS_DIR = "C:\\Users\\HP\\Desktop\\SIIT_6.Semestar\\Informaciona bezbednost\\certificate_manager\\IB_certificate_manager\\back\\certificate_manager\\data\\certs\\";
+	private static String KEY_DIR = "C:\\Users\\HP\\Desktop\\SIIT_6.Semestar\\Informaciona bezbednost\\certificate_manager\\IB_certificate_manager\\back\\certificate_manager\\data\\keys\\";
 	
 	@Override
 	public void saveCertificateAsPEMFile(Object x509Certificate) throws IOException {
+		  File directory = new File(CERTS_DIR);
 		  String serialNumberStr = ((X509Certificate)x509Certificate).getSerialNumber().toString();
-		  File pemFile = File.createTempFile(CERTS_DIR + serialNumberStr + ".crt", null);
+		  File pemFile = File.createTempFile(serialNumberStr, ".crt", directory);
 		  try (FileWriter pemfileWriter = new FileWriter(pemFile)) {
 		    try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemfileWriter)) {
 		      jcaPEMWriter.writeObject(x509Certificate);
@@ -38,7 +42,8 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	
 	@Override
 	public void savePrivateKeyAsPEMFile(Object privateKey, String serialNumber) throws IOException {
-		  File pemFile = File.createTempFile(KEY_DIR + serialNumber + ".key", null);
+		  File directory = new File(KEY_DIR);
+		  File pemFile = File.createTempFile(serialNumber, ".key", directory);
 		  try (FileWriter pemfileWriter = new FileWriter(pemFile)) {
 		    try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(pemfileWriter)) {
 		      jcaPEMWriter.writeObject(privateKey);
