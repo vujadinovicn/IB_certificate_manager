@@ -45,23 +45,15 @@ public class CertificateRequestServiceImpl implements ICertificateRequestService
 			CertificateDTO issuer = certificateService.getBySerialNumber(req.getIssuerSerialNumber());
 			ret.add(new CertificateRequestReturnedDTO(req, issuer));
 		}
+		
 		return ret;
 	}
 
 	@Override
 	public void acceptRequest(long id) {
-		User issuer = userService.getCurrentUser();
 		CertificateRequest request = allRequests.findById(id).orElseThrow(() -> new CertificateNotFoundException());
 		
-		CertificateDTO issuerCertificate = this.certificateService.getBySerialNumber(request.getIssuerSerialNumber());
-		
-		if (issuerCertificate.getIssuedTo().getId() != issuer.getId()) {
-			throw new NotTheIssuerException();
-		}
-		
-		if (request.getStatus() != RequestStatus.PENDING) {
-			throw new NotPendingRequestException();
-		}
+		validateProcessingRequest(request);
 		
 		this.certificateGenerator.generateCertificate(request);
 		
@@ -72,8 +64,29 @@ public class CertificateRequestServiceImpl implements ICertificateRequestService
 
 	@Override
 	public void denyRequest(long id, String rejectionReason) {
-		// TODO Auto-generated method stub
+		CertificateRequest request = allRequests.findById(id).orElseThrow(() -> new CertificateNotFoundException());
 		
+		validateProcessingRequest(request);
+		
+		request.setStatus(RequestStatus.DENIED);
+		request.setRejectionReason(rejectionReason);
+		allRequests.save(request);
+		allRequests.flush();
+		
+	}
+	
+	private void validateProcessingRequest(CertificateRequest request) {
+		User issuer = userService.getCurrentUser();
+		
+		CertificateDTO issuerCertificate = this.certificateService.getBySerialNumber(request.getIssuerSerialNumber());
+		
+		if (issuerCertificate.getIssuedTo().getId() != issuer.getId()) {
+			throw new NotTheIssuerException();
+		}
+		
+		if (request.getStatus() != RequestStatus.PENDING) {
+			throw new NotPendingRequestException();
+		}
 	}
 
 }
