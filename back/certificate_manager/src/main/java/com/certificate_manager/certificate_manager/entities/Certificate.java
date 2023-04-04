@@ -1,8 +1,10 @@
 package com.certificate_manager.certificate_manager.entities;
 
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 
 import com.certificate_manager.certificate_manager.enums.CertificateType;
+import com.certificate_manager.certificate_manager.utils.DateUtils;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,10 +40,9 @@ public class Certificate {
 
 	}
 
-	public Certificate(int id, long serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
+	public Certificate(long serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
 			long issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
 		super();
-		this.id = id;
 		this.serialNumber = serialNumber;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
@@ -51,6 +52,16 @@ public class Certificate {
 		this.issuedTo = issuedTo;
 	}
 
+	public Certificate(CertificateRequest request, X509Certificate cert509) {
+		this.serialNumber = cert509.getSerialNumber().longValue();
+		this.issuedTo = request.getRequester();
+		this.validFrom = DateUtils.toLocalDate(cert509.getNotBefore());
+		this.validTo = DateUtils.toLocalDate(cert509.getNotAfter());
+		this.issuerSerialNumber = request.getIssuerSerialNumber();
+		this.valid = true;
+		this.type = request.getType();
+	}
+	
 	public int getId() {
 		return id;
 	}

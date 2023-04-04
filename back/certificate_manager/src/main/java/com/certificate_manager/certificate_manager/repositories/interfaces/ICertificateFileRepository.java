@@ -6,7 +6,7 @@ import java.security.cert.X509Certificate;
 
 public interface ICertificateFileRepository {
 
-	public void saveCertificateAsPEMFile(Object x509Certificate, String serialNumber) throws IOException;
+	public void saveCertificateAsPEMFile(Object x509Certificate) throws IOException;
 
 	public void savePrivateKeyAsPEMFile(Object privateKey, String serialNumber) throws IOException;
 

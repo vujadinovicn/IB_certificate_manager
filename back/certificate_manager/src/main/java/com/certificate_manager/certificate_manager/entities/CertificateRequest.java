@@ -37,10 +37,9 @@ public class CertificateRequest {
 
 	}
 
-	public CertificateRequest(int id, LocalDateTime date, RequestStatus status, LocalDateTime validTo,
+	public CertificateRequest(LocalDateTime date, RequestStatus status, LocalDateTime validTo,
 			long issuerSerialNumber, CertificateType type, User requester) {
 		super();
-		this.id = id;
 		this.date = date;
 		this.status = status;
 		this.validTo = validTo;
