@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,9 +51,14 @@ public class CertificateController {
 		return new ResponseEntity<String>("Successfully created certificate request", HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "validate/{serialNumber}")
+	@GetMapping(value = "/validate/{serialNumber}")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> validate(@PathVariable String serialNumber){
-		certificateService.validate(serialNumber);
-		return null;
+		String validationMessage = "This certificate is valid!";
+		if (!certificateService.validate(serialNumber)) {
+			validationMessage = "This certificate is not valid!";
+		};
+		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+		
 	}
 }

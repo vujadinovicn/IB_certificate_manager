@@ -25,8 +25,8 @@ import jakarta.persistence.criteria.Path;
 @Repository
 public class CertificateFileRepository implements ICertificateFileRepository {
 	
-	private static String CERTS_DIR = "C:\\Users\\HP\\Desktop\\SIIT_6.Semestar\\Informaciona bezbednost\\certificate_manager\\IB_certificate_manager\\back\\certificate_manager\\data\\certs\\";
-	private static String KEY_DIR = "C:\\Users\\HP\\Desktop\\SIIT_6.Semestar\\Informaciona bezbednost\\certificate_manager\\IB_certificate_manager\\back\\certificate_manager\\data\\keys\\";
+	private static String CERTS_DIR = "data\\certs\\";
+	private static String KEY_DIR = "data\\keys\\";
 	
 	@Override
 	public void saveCertificateAsPEMFile(Object x509Certificate) throws IOException {

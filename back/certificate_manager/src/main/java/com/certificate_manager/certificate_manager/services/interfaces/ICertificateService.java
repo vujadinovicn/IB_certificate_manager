@@ -8,6 +8,6 @@ public interface ICertificateService {
 
 	public List<CertificateDTO> getAll();
 	
-	public void validate(String serialNumber) throws Exception;
+	public boolean validate(String serialNumber);
 
 }

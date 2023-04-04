@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
+import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
@@ -38,14 +39,14 @@ public class CertificateServiceImpl implements ICertificateService {
 	}
 
 	@Override
-	public void validate(String serialNumber) throws Exception {
+	public boolean validate(String serialNumber){
 		Certificate certificate = allCertificates.findBySerialNumber(serialNumber).orElseThrow(
 				() -> new CertificateNotFoundException());
-		if (this.hasCertificateExpired(certificate))
-			System.out.println("Sertificate has expired!");
-		this.verify(certificate);
-		if (!certificate.isValid()) {
-			System.out.println("Certificate is revocated/not valid!");
+		try {
+			this.verify(certificate);
+			return (!this.hasCertificateExpired(certificate) && certificate.isValid());
+		} catch (Exception e) {
+			return false;
 		}
 	}
 	
