@@ -8,4 +8,8 @@ import com.certificate_manager.certificate_manager.dtos.CertificateRequestReturn
 public interface ICertificateRequestService {
 	
 	public List<CertificateRequestReturnedDTO> getAllForRequester();
+
+	public void acceptRequest(long id);
+
+	public void denyRequest(long id, String rejectionReason);
 }

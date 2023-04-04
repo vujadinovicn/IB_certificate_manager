@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,6 +18,8 @@ import com.certificate_manager.certificate_manager.dtos.CertificateRequestCreate
 import com.certificate_manager.certificate_manager.dtos.CertificateRequestReturnedDTO;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestService;
+
+import jakarta.websocket.server.PathParam;
 
 @Controller
 @RequestMapping("api/certificate/request")
@@ -37,4 +41,17 @@ public class CertificateRequestController {
 		requestGenerator.generateCertificateRequest(dto);
 		return new ResponseEntity<String>("Successfully created certificate request", HttpStatus.OK);
 	}
+	
+	@PutMapping(value = "/accept/{id}")
+	public ResponseEntity<String> acceptCertificateRequest(@PathVariable long id) {
+		this.requestService.acceptRequest(id);
+		return new ResponseEntity<String>("Request successfully accepted. Certificate generated.", HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/deny/{id}")
+	public ResponseEntity<String> denyCertificateRequest(@PathVariable long id, @RequestBody String rejectionReason) {
+		this.requestService.denyRequest(id, rejectionReason);
+		return new ResponseEntity<String>("Request successfully denied.", HttpStatus.OK);
+	}
+
 }
