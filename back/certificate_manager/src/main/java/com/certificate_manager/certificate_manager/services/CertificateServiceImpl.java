@@ -30,4 +30,10 @@ public class CertificateServiceImpl implements ICertificateService {
 		}
 		return ret;
 	}
+
+	@Override
+	public void validate(String serialNumber) {
+		
+		
+	}
 }

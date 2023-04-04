@@ -19,8 +19,6 @@ import com.certificate_manager.certificate_manager.services.interfaces.ICertific
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
 
-import jakarta.websocket.server.PathParam;
-
 @Controller
 @RequestMapping("api/certificate")
 public class CertificateController {
