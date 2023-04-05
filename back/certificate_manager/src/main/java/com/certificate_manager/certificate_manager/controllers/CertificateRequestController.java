@@ -19,7 +19,7 @@ import com.certificate_manager.certificate_manager.dtos.CertificateRequestReturn
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestService;
 
-import jakarta.websocket.server.PathParam;
+import jakarta.validation.constraints.NotNull;
 
 @Controller
 @RequestMapping("api/certificate/request")
@@ -49,7 +49,7 @@ public class CertificateRequestController {
 	}
 	
 	@PutMapping(value = "/deny/{id}")
-	public ResponseEntity<String> denyCertificateRequest(@PathVariable long id, @RequestBody String rejectionReason) {
+	public ResponseEntity<String> denyCertificateRequest(@PathVariable long id, @RequestBody @NotNull String rejectionReason) {
 		this.requestService.denyRequest(id, rejectionReason);
 		return new ResponseEntity<String>("Request successfully denied.", HttpStatus.OK);
 	}

@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.validation.FieldError;
@@ -48,6 +50,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         setResponseError(response, HttpServletResponse.SC_NOT_FOUND, String.format("Not found: %s", notFoundException.getMessage()));
     }
     
+    @ExceptionHandler (value = {HttpMessageNotReadableException.class})
+	protected ResponseEntity<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+		return new ResponseEntity<String>("Request body is required.", HttpStatus.BAD_REQUEST);
+	}
+    
     @ExceptionHandler(ConstraintViolationException.class)
 	protected ResponseEntity<String> handleConstraintValidationException(ConstraintViolationException e) {
 		return new ResponseEntity<String>("Constraint violation!", HttpStatus.BAD_REQUEST);
@@ -56,6 +63,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(CertificateNotFoundException.class)
   	protected ResponseEntity<String> handleCertificateNotFoundException(CertificateNotFoundException e) {
   		return new ResponseEntity<String>("Certificate not found!", HttpStatus.BAD_REQUEST);
+  	}
+    
+    @ExceptionHandler(BadCredentialsException.class)
+  	protected ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
+  		return new ResponseEntity<String>("Bad credentials!", HttpStatus.BAD_REQUEST);
   	}
     
     @ExceptionHandler(UserAlreadyExistsException.class)
