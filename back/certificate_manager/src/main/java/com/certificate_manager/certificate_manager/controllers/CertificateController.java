@@ -32,7 +32,7 @@ public class CertificateController {
 		return new ResponseEntity<List<CertificateDTO>>(certificateService.getAll(), HttpStatus.OK);
 	}
 	
-//	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(value = "/root")
 	public ResponseEntity<?> generateRoot() {
 		certificateGenerator.generateSelfSignedCertificate();
@@ -47,6 +47,5 @@ public class CertificateController {
 			validationMessage = "This certificate is not valid!";
 		};
 		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
-		
 	}
 }

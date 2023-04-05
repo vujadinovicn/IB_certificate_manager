@@ -6,7 +6,6 @@ import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
 
-
 public class CertificateRequestReturnedDTO {
 
 	private int id;
@@ -15,6 +14,8 @@ public class CertificateRequestReturnedDTO {
 
 	private RequestStatus status;
 
+	private String rejectionReason;
+
 	private LocalDateTime validTo;
 
 	private CertificateDTO issuer;
@@ -22,7 +23,7 @@ public class CertificateRequestReturnedDTO {
 	private CertificateType type;
 
 	public CertificateRequestReturnedDTO() {
-		
+
 	}
 
 	public CertificateRequestReturnedDTO(int id, LocalDateTime date, RequestStatus status, LocalDateTime validTo,
@@ -34,8 +35,9 @@ public class CertificateRequestReturnedDTO {
 		this.validTo = validTo;
 		this.issuer = issuer;
 		this.type = type;
+		this.rejectionReason = null;
 	}
-	
+
 	public CertificateRequestReturnedDTO(CertificateRequest request, CertificateDTO issuer) {
 		this.id = request.getId();
 		this.date = request.getDate();
@@ -43,6 +45,7 @@ public class CertificateRequestReturnedDTO {
 		this.validTo = request.getValidTo();
 		this.issuer = issuer;
 		this.type = request.getType();
+		this.rejectionReason = request.getRejectionReason();
 	}
 
 	public int getId() {
@@ -92,6 +95,13 @@ public class CertificateRequestReturnedDTO {
 	public void setType(CertificateType type) {
 		this.type = type;
 	}
-	
-	
+
+	public String getRejectionReason() {
+		return rejectionReason;
+	}
+
+	public void setRejectionReason(String rejectionReason) {
+		this.rejectionReason = rejectionReason;
+	}
+
 }
