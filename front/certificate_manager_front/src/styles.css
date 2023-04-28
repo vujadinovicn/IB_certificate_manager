@@ -2,3 +2,64 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.border {
+    border: 1px solid #E6E6E6;
+    border-radius: 10px;
+}
+
+.light-blue {
+    color: #8ecae6 !important;
+ }
+
+ .blue {
+    color: #219ebc !important;
+ }
+
+ .white {
+    color: white !important;
+ }
+
+ .orange {
+    color: #fb8500 !important;
+}
+
+.black {
+    color: #383838 !important;
+}
+
+.back-orange {
+    background-color: #fb8500 !important;
+}
+
+.yellow {
+    color: #ffb703 !important;
+}
+
+.back-yellow {
+    background-color: #ffb703 !important;
+}
+
+.back-light-blue {
+    background-color: #8ecae6 !important;
+}
+
+.back-blue {
+    background-color: #219ebc !important;
+}
+
+.dark-blue {
+    color: #023047 !important;
+}
+
+.back-dark-blue {
+    background-color: #023047 !important;
+}
+
+.gray {
+    color: #B9BBBD !important;
+}
+
+.back-gray {
+    background-color: #F5F5F5 !important;
+}
