@@ -90,3 +90,4 @@ src/main/resources/application.properties
 *.key
 *application.properties
 *.properties
+back/certificate_manager/src/main/resources/application.properties
