@@ -10,6 +10,7 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 
 @Service
 public class MailServiceImpl implements IMailService {
@@ -25,12 +26,20 @@ public class MailServiceImpl implements IMailService {
 		Content c = new Content("text/plain", "message");
 		Mail mail = new Mail(from, subject, to, c);
 		
+		Personalization personalization = new Personalization();
+	    personalization.addTo(to);
+	    personalization.addDynamicTemplateData("firstName", "Srki");
+	    personalization.addDynamicTemplateData("code", "1234");
+	    mail.addPersonalization(personalization);
+		mail.setTemplateId(" d-904ab2168e1f48e6bbb2e68993467608");
+		
 		Request req = new Request();
 		try {
 			req.setMethod(Method.POST);
 			req.setEndpoint("mail/send");
 			req.setBody(mail.build());
 			Response res = this.sendGrid.api(req);
+			System.out.println(res.getStatusCode());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
