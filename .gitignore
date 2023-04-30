@@ -88,3 +88,4 @@ Thumbs.db
 src/main/resources/application.properties
 *.crt
 *.key
+*application.properties
