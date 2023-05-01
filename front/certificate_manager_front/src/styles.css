@@ -4,6 +4,23 @@ html, body { height: 100%; }
 body { margin: 0; font-family: 'Poppins', sans-serif; }
 
 
+.background-container{
+    width: 100%;
+    transform: scale(1.475);
+    opacity: 0.2;
+    z-index: -1;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-image: url("./assets/background.jpeg");
+    display: block;
+    height: 100vh; 
+    position: fixed;
+    -webkit-backdrop-filter: brightness(110%) contrast(110%);
+  backdrop-filter: brightness(110%) contrast(110%);
+} 
+
+
 .mat-form-field {
     width: 80%;
     height: 45px;
