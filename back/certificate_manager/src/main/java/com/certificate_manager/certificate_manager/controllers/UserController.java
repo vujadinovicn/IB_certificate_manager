@@ -12,10 +12,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
@@ -23,6 +26,7 @@ import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
+import com.hopin.HopIn.validations.ExceptionDTO;
 
 import jakarta.validation.Valid;
 
@@ -46,6 +50,12 @@ public class UserController {
 	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
 		this.userService.register(userDTO);
 		return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") String verificationCode) {
+		this.userService.verifyRegistration(verificationCode);
+		return new ResponseEntity<String>("You have successfully activated your account!", HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
