@@ -12,4 +12,6 @@ public interface IUserService {
 	public boolean doesUserExist(String email);
 
 	public User getCurrentUser();
+
+	public void verifyRegistration(String verificationCode);
 }
