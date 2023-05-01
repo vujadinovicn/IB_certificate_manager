@@ -3,6 +3,8 @@ package com.certificate_manager.certificate_manager.mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -19,8 +21,8 @@ public class MailServiceImpl implements IMailService {
 	SendGrid sendGrid;
 	
 	@Override
-	public void sendTest() {
-		Email from = new Email("stjepanovic.nis@gmail.com", "Certificate Manager");
+	public void sendTest(String token) {
+		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
 		String subject = "Hello";
 		Email to = new Email("srdjan.stjepanovic01@gmail.com");
 		Content c = new Content("text/plain", "message");
@@ -29,9 +31,36 @@ public class MailServiceImpl implements IMailService {
 		Personalization personalization = new Personalization();
 	    personalization.addTo(to);
 	    personalization.addDynamicTemplateData("firstName", "Srki");
-	    personalization.addDynamicTemplateData("code", "1234");
+	    personalization.addDynamicTemplateData("code", token);
 	    mail.addPersonalization(personalization);
-		mail.setTemplateId(" d-904ab2168e1f48e6bbb2e68993467608");
+		mail.setTemplateId("d-e29ed48afc794a1bbdea8aac6b177d42");
+		
+		Request req = new Request();
+		try {
+			req.setMethod(Method.POST);
+			req.setEndpoint("mail/send");
+			req.setBody(mail.build());
+			Response res = this.sendGrid.api(req);
+			System.out.println(res.getStatusCode());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void sendVerificationMail(User user, String token) {
+		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
+		String subject = "Hello";
+		Email to = new Email(user.getEmail());
+		Content c = new Content("text/plain", "message");
+		Mail mail = new Mail(from, subject, to, c);
+		
+		Personalization personalization = new Personalization();
+	    personalization.addTo(to);
+	    personalization.addDynamicTemplateData("firstName", user.getName());
+	    personalization.addDynamicTemplateData("code", token);
+	    mail.addPersonalization(personalization);
+		mail.setTemplateId("d-e29ed48afc794a1bbdea8aac6b177d42");
 		
 		Request req = new Request();
 		try {
