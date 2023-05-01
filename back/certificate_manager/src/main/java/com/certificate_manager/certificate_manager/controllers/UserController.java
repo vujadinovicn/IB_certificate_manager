@@ -1,8 +1,5 @@
 package com.certificate_manager.certificate_manager.controllers;
 
-import java.security.Security;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,20 +12,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
+import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
-import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
-import com.hopin.HopIn.validations.ExceptionDTO;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/api/user")
@@ -73,6 +71,20 @@ public class UserController {
 		String jwt = tokenUtils.generateToken(user);
 
 		return new ResponseEntity<String>(jwt, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping(value = "{email}/resetPasswordEmail")
+	public ResponseEntity<?> resetPassword(@PathVariable String email) {
+		this.userService.sendResetPasswordMail(email);
+		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+	}
+
+	
+	@PutMapping(value = "{id}/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> resetPassword(@PathVariable @Min(value = 0, message = "Field id must be greater than 0.") int id, @Valid @RequestBody ResetPasswordDTO dto) {
+		this.userService.resetPassword(id, dto);
+		return new ResponseEntity<String>("Password successfully changed!", HttpStatus.NO_CONTENT);
 	}
 
 }
