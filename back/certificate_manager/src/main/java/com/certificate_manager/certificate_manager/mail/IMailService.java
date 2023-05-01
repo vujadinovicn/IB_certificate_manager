@@ -9,4 +9,6 @@ public interface IMailService {
 
 	public void sendVerificationMail(User user, String token);
 
+	public void sendForgotPasswordMail(User user, String token);
+
 }
