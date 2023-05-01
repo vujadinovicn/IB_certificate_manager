@@ -50,7 +50,7 @@ public class MailServiceImpl implements IMailService {
 	@Override
 	public void sendVerificationMail(User user, String token) {
 		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
-		String subject = "Hello";
+		String subject = "SignUp Verification";
 		Email to = new Email(user.getEmail());
 		Content c = new Content("text/plain", "message");
 		Mail mail = new Mail(from, subject, to, c);
@@ -62,6 +62,35 @@ public class MailServiceImpl implements IMailService {
 	    mail.addPersonalization(personalization);
 		mail.setTemplateId("d-e29ed48afc794a1bbdea8aac6b177d42");
 		
+		Request req = new Request();
+		try {
+			req.setMethod(Method.POST);
+			req.setEndpoint("mail/send");
+			req.setBody(mail.build());
+			Response res = this.sendGrid.api(req);
+			System.out.println(res.getStatusCode());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void sendForgotPasswordMail(User user, String token) {
+		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
+		String subject = "SignUp Verification";
+		Email to = new Email(user.getEmail());
+		
+		Personalization personalization = new Personalization();
+	    personalization.addTo(to);
+	    personalization.addDynamicTemplateData("firstName", user.getName());
+	    personalization.addDynamicTemplateData("code", token);
+		
+	    Mail mail = new Mail();
+	    mail.setFrom(from);
+	    mail.setSubject(subject);
+	    mail.addPersonalization(personalization);
+		mail.setTemplateId("d-e29ed48afc794a1bbdea8aac6b177d42");
+	    
 		Request req = new Request();
 		try {
 			req.setMethod(Method.POST);
