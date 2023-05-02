@@ -11,8 +11,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthService {
 
   private headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    skip: 'true',
+    'Content-Type': 'application/json'
   });
 
   private user$ = new BehaviorSubject<User|null>(null);
@@ -24,7 +23,7 @@ export class AuthService {
   }
 
   setUser(): void {
-    this.user$.next(this.readUserFromStorage());
+    this.user$.next(this.getUserFromStorage());
   }
 
   login(auth: any): Observable<TokenDTO> {
@@ -95,7 +94,7 @@ export class AuthService {
     return null;
   }
 
-  readUserFromStorage() : User|null {
+  getUserFromStorage() : User|null {
     if (this.isLoggedIn()) {
       const accessToken: any = localStorage.getItem('user');
       const helper = new JwtHelperService();
