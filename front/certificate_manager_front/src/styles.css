@@ -1,64 +1,64 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: 'Poppins', sans-serif; }
-
-
-.background-container{
-    width: 100%;
-    transform: scale(1.475);
-    opacity: 0.2;
-    z-index: -1;
-    position: relative;
+body { 
+    margin: 0; font-family: 'Poppins', sans-serif;
+    background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url("./assets/background.jpeg");
     background-size: cover;
     background-position: center;
-    background-image: url("./assets/background.jpeg");
-    display: block;
-    height: 100vh; 
-    position: fixed;
-    -webkit-backdrop-filter: brightness(110%) contrast(110%);
-  backdrop-filter: brightness(110%) contrast(110%);
-} 
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+}
 
-
-.mat-form-field {
+.mat-mdc-form-field {
     width: 80%;
-    height: 45px;
+    height: 55px;
     display: block;
     margin: auto;
     margin-top: 22px;
     padding: 0;
-    font-size: 12px;
+    font-size: 16px;
 }
+    
+.mat-form-field-label {
+    width: 150px; /* set to the desired width */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-
-
-.mat-form-field-wrapper {
+.modified-label {
+    margin-top: 10px;
+}
+.mat-mdc-form-field-flex {
     height: 50px !important;
+    /* padding-bottom: 1.34375em; */
 }
 
-.mat-form-field-subscript-wrapper {
+.mat-mdc-form-field-underline {
     margin-top: 2px !important;
 }
 
-
-.mat-error {
+.mat-mdc-form-field-error {
     margin-top: -1.2px;
     margin-left: -1px;
-    font-size: 11px;
+    font-size: 12px;
+}
+
+.mat-mdc-form-field:not(.mat-form-field-no-animations) .mdc-floating-label{
+    margin-top: -2px;
 }
 
 .mat-icon {
     font-family: 'Material Icons'; 
 }
 
-.mat-snack-bar-container {
+/* .mat-snack-bar-container {
     color: white;
 }
 
 .mat-simple-snackbar-action button {
     color: white;
-}
+} */
 
 .mat-form-field-prefix {
     top: 1px !important;
@@ -133,3 +133,5 @@ body { margin: 0; font-family: 'Poppins', sans-serif; }
 .back-white {
     background-color: white;
 }
+html, body { height: 100%; }
+body { margin: 0; }

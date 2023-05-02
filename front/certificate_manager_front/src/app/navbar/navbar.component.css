@@ -25,6 +25,9 @@ nav {
     box-shadow: 0 4px 2px -2px #B9BBBD;
         /* background-color: #1E4A5A; */
     border-bottom: 1px solid #eceef3;
+    position: absolute;
+    top: 0;
+    left: 0
 }
  
 .navbar.container {
@@ -58,7 +61,7 @@ nav {
     padding-top: 0.8%;
     padding-bottom: 0.8%;
     padding-left: 1.2rem;
-    /* text-shadow: 1px 1px 1px #fb8500; */
+    /* text-shadow: 1px 1px 1px #ffb703; */
 }
 
 /* NAVBAR-MENU ALL ITEMS */
@@ -96,7 +99,7 @@ nav {
 }
 
 .navbar-nav a:not([id="sign-up-option"]) {
-    color: #fb8500;
+    color: #ffb703;
 }
 
 .navbar-menu a:hover {
@@ -115,7 +118,7 @@ nav {
 .navbar-toggler > div {
     width: 33px;
     height: 3px;
-    background-color: #fb8500;
+    background-color: #ffb703;
     margin: 6px 0;
 }
 
@@ -146,7 +149,7 @@ nav {
 
     #sign-up-option {
         
-        color: #fb8500 !important;
+        color: #ffb703 !important;
         background-color: white !important;
     }
 
