@@ -18,14 +18,18 @@ export class UserService {
   }
 
   verify(code: String): Observable<any> {
-    return this.http.get<any>(environment.apiHost + '/user/' + code);
+    return this.http.get<any>(environment.apiHost + '/user/activate/' + code);
   }
 }
 
 export interface UserDTO {
   name: string;
-  surname: string;
-  telephoneNumber: string;
+  lastname: string;
+  phoneNumber: string;
   email: string;
   password: string;
+}
+
+export interface ResponseMessageDTO {
+  message: string
 }

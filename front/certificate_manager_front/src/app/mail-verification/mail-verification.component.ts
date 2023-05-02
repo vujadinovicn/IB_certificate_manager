@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { UserService } from '../services/user.service';
+import { ResponseMessageDTO, UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { resetForm } from '../register/register.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -26,8 +26,8 @@ export class MailVerificationComponent {
   verify(formDirective: FormGroupDirective) {
     if (this.codeForm.valid && this.codeForm.value.code) {
       this.userService.verify(this.codeForm.value.code).subscribe({
-        next: (res: String) => {
-          console.log(res);
+        next: (res: ResponseMessageDTO) => {
+          console.log(res.message);
           resetForm(this.codeForm, formDirective);
           this.router.navigate(['login']);
         },
@@ -36,6 +36,8 @@ export class MailVerificationComponent {
           resetForm(this.codeForm, formDirective);
         }
       });
+    } else {
+      console.log('greska')
     }
   }
 

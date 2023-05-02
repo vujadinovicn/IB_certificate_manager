@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { UserDTO, UserService } from '../services/user.service';
+import { ResponseMessageDTO, UserDTO, UserService } from '../services/user.service';
 import { User } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
@@ -34,17 +34,17 @@ export class RegisterComponent {
     if (this.regForm.valid) {
       let user: UserDTO = {
         name: this.regForm.value.name!,
-        surname: this.regForm.value.surname!,
+        lastname: this.regForm.value.surname!,
         email: this.regForm.value.email!,
         password: this.regForm.value.password!,
-        telephoneNumber: this.regForm.value.phonenum!,
+        phoneNumber: this.regForm.value.phonenum!,
       }
 
       this.userService.registerUser(user).subscribe({
-        next: (res: User) => {
-          console.log('Success');
+        next: (res: ResponseMessageDTO) => {
+          console.log(res.message);
           resetForm(this.regForm, formDirective);
-          this.router.navigate(['validation/mail']);
+          this.router.navigate(['verification/mail']);
         },
         error: (err: HttpErrorResponse) => {
           console.log(err);

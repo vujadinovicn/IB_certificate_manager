@@ -8,15 +8,16 @@ justify-content: center; height: 100%;">
         <div id="img-div">
             <img class="login-img" src="../../assets/forgot-password.svg" alt="">
         </div>
-        <form [formGroup]="codeForm">
+        <form #formDirective="ngForm" [formGroup]="codeForm" (ngSubmit)="verify(formDirective)">
             <mat-form-field>
                 <mat-label>Code</mat-label>
-                <input matInput type="text" name="surname" formControlName="surname" />
+                <input matInput type="text" name="code" formControlName="code" />
                 <mat-error *ngIf="codeForm.get('code')?.errors?.['required']">entering code is required</mat-error>
                 <!-- <mat-error *ngIf="regForm.get('surname')?.errors?.['surnameRegexError'] && !registerForm.get('surname')?.errors?.['required']">invalid surname format</mat-error> -->
               </mat-form-field>
+              <button type="submit" class="conf-button back-yellow" mat-raised-button>Verify</button>
+
         </form>
-        <button type="submit" class="conf-button back-yellow" mat-raised-button>Verify</button>
 
     </div>
 
