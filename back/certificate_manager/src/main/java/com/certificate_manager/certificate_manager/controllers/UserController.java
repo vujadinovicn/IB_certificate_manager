@@ -10,9 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
+import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
 import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
-import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
+import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
@@ -48,16 +49,16 @@ public class UserController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
 		this.userService.register(userDTO);
-		return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully registred."), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") String verificationCode) {
 		this.userService.verifyRegistration(verificationCode);
-		return new ResponseEntity<String>("You have successfully activated your account!", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully activated your account!"), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -76,9 +77,11 @@ public class UserController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		UserDetails user = (UserDetails) authentication.getPrincipal();
-		int userId = this.userService.getUserByEmail(credentials.getEmail()).getId();
-		System.out.println(userId);
-		String jwt = tokenUtils.generateToken(user, userId);
+		User fullUser = this.userService.getUserByEmail(credentials.getEmail());
+		if (!fullUser.getVerified()) {
+			return new ResponseEntity<String>("This account hasn't been activated yet.", HttpStatus.BAD_REQUEST);
+		}
+		String jwt = tokenUtils.generateToken(user, fullUser.getId());
 
 		return new ResponseEntity<TokenDTO>(new TokenDTO(jwt, jwt), HttpStatus.OK);
 		
