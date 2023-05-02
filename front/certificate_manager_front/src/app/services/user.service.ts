@@ -16,6 +16,10 @@ export class UserService {
     };
     return this.http.post<any>(environment.apiHost + "/user", user, options);
   }
+
+  verify(code: String): Observable<any> {
+    return this.http.get<any>(environment.apiHost + '/user/' + code);
+  }
 }
 
 export interface UserDTO {
