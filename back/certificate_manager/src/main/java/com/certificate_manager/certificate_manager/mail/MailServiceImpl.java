@@ -49,6 +49,8 @@ public class MailServiceImpl implements IMailService {
 	
 	@Override
 	public void sendVerificationMail(User user, String token) {
+		System.out.println(user.getName());
+		System.out.println(token);
 		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
 		String subject = "SignUp Verification";
 		Email to = new Email(user.getEmail());

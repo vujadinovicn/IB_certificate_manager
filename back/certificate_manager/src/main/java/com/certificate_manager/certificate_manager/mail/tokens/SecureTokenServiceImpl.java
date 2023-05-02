@@ -1,5 +1,7 @@
 package com.certificate_manager.certificate_manager.mail.tokens;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -10,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.SecureTokenType;
-
-import net.bytebuddy.utility.RandomString;
 
 @Service
 public class SecureTokenServiceImpl implements ISecureTokenService {
@@ -28,7 +28,8 @@ public class SecureTokenServiceImpl implements ISecureTokenService {
 	@Override
 	public SecureToken createToken(User user, SecureTokenType type) {
 		SecureToken token = new SecureToken();
-		token.setToken(RandomString.make(64));
+		SecureRandom random = new SecureRandom();
+		token.setToken(new BigInteger(30, random).toString(32).toUpperCase());
 		token.setUsed(false);
 		token.setUser(user);
 		token.setExpirationDate(Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
