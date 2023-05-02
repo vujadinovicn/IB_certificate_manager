@@ -1,0 +1,58 @@
+<app-navbar></app-navbar>
+<div style="display: flex;
+align-items: center;
+justify-content: center; height: 100%;">
+    <div class="border back-white" id="reg-container">
+        <div id="left-container">
+            <img class="login-img" src="../../assets/signUp-img.svg" alt="">
+        </div>
+        <div id="form-container">
+            <h1>Join <b>Certivus</b>!</h1>
+            <form [formGroup]="regForm">
+                <mat-form-field [hideRequiredMarker]="true" id="name">
+                    <mat-label>Name</mat-label>
+                    <input matInput type="text" name="name" formControlName="name" />
+                    <mat-error *ngIf="regForm.get('name')?.errors?.['required']">entering name is required</mat-error>
+                    <!-- <mat-error *ngIf="regForm.get('name')?.errors?.['nameRegexError'] && !registerForm.get('name')?.errors?.['required']">invalid name format</mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Surname</mat-label>
+                    <input matInput type="text" name="surname" formControlName="surname" />
+                    <mat-error *ngIf="regForm.get('surname')?.errors?.['required']">entering surname is required</mat-error>
+                    <!-- <mat-error *ngIf="regForm.get('surname')?.errors?.['surnameRegexError'] && !registerForm.get('surname')?.errors?.['required']">invalid surname format</mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" name="email" formControlName="email" />
+                    <mat-error *ngIf="regForm.get('email')?.errors?.['required']">entering email is required</mat-error>
+                    <mat-error *ngIf="regForm.get('email')?.errors?.['email']">invalid email format</mat-error>
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" name="password" formControlName="password" />
+                    <mat-error *ngIf="regForm.get('password')?.errors?.['required']">entering password is required</mat-error>
+                    <!-- <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !registerForm.get('password')?.errors?.['required']">incorrect input/min 6 char</mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Confirm password</mat-label>
+                    <input matInput type="password" name="conf-password" formControlName="confpass"/>
+                    <mat-error *ngIf="regForm.get('confpass')?.errors?.['required']">confirming password is required</mat-error>
+                    <!-- <mat-error *ngIf="regForm.errors?.['passwordMismatchError']">passwords don't match</mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>City</mat-label>
+                    <input matInput type="text" name="address" formControlName="address" />
+                    <mat-error *ngIf="regForm.get('address')?.errors?.['required']">entering city is required</mat-error>
+                    <!-- <mat-error *ngIf="regForm.get('address')?.errors?.['addressRegexError'] && !registerForm.get('address')?.errors?.['required']">invalid address format</mat-error> -->
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>Phone number</mat-label>
+                    <input matInput type="tel" name="phonenum" formControlName="phonenum" />
+                    <mat-error *ngIf="regForm.get('phonenum')?.errors?.['required']">entering phone number is required</mat-error>
+                    <!-- <mat-error *ngIf="regForm.get('phonenum')?.errors?.['phonenumRegexError'] && !registerForm.get('phonenum')?.errors?.['required']">invalid phone number format</mat-error> -->
+                  </mat-form-field>
+                  <button type="submit" class="conf-button back-yellow" mat-raised-button>Register</button>
+            </form>
+        </div>
+    </div>
+</div>
