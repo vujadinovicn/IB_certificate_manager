@@ -36,8 +36,7 @@ export class LoginComponent implements OnInit{
           localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
-          console.log("USPEH")
-          console.log(this.authService.getUserFromStorage());
+          console.log(this.authService.getUser());
         },
         error: (error) => {
           console.log(error);

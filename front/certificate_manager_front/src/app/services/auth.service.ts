@@ -18,8 +18,12 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  getUser(): Observable<any> {
+  getUserObservable(): Observable<any> {
     return this.user$;
+  }
+
+  getUser(): User|null {
+    return this.user$.value;
   }
 
   setUser(): void {
