@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../services/user.service';
+import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { UserDTO, UserService } from '../services/user.service';
+import { User } from '../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router, RouterModule } from '@angular/router';
 
 
 @Component({
@@ -21,10 +24,40 @@ export class RegisterComponent {
     phonenum: new FormControl('', [Validators.required,]),
   });
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit(): void {
     // markFormControlsTouched(this.registerForm);
   }
 
+  register(formDirective: FormGroupDirective) {
+    if (this.regForm.valid) {
+      let user: UserDTO = {
+        name: this.regForm.value.name!,
+        surname: this.regForm.value.surname!,
+        email: this.regForm.value.email!,
+        password: this.regForm.value.password!,
+        telephoneNumber: this.regForm.value.phonenum!,
+      }
+
+      this.userService.registerUser(user).subscribe({
+        next: (res: User) => {
+          console.log('Success');
+          resetForm(this.regForm, formDirective);
+          this.router.navigate(['validation/mail']);
+        },
+        error: (err: HttpErrorResponse) => {
+          console.log(err);
+        }
+      });
+    }
+  }
+}
+
+export function resetForm(form: FormGroup, fromDirective: FormGroupDirective) {
+  fromDirective.resetForm();
+  form.reset();
+  form.markAsPristine();
+  form.markAsUntouched();
+  form.updateValueAndValidity();     
 }

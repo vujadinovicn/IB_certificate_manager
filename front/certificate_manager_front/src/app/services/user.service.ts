@@ -21,7 +21,6 @@ export class UserService {
 export interface UserDTO {
   name: string;
   surname: string;
-  profilePicture: string | null;
   telephoneNumber: string;
   email: string;
   password: string;
