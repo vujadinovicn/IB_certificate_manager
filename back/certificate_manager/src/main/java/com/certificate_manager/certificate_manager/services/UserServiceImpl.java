@@ -104,7 +104,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	
 	@Override
-	public void resetPassword(int id, ResetPasswordDTO dto) {
+	public void resetPassword(ResetPasswordDTO dto) {
 		SecureToken token = this.tokenService.findByToken(dto.getCode());
 		if (token == null || !this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.FORGOT_PASSWORD) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code is expired or not correct!");
@@ -122,12 +122,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Override
 	public void sendResetPasswordMail(String email) {
-		System.out.println(email);
 		User user = this.allUsers.findByEmail(email).orElse(null);
 		if (user == null){
 			throw new UserNotFoundException();
 		}
-		System.out.println("bilo st");
 		
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
 
