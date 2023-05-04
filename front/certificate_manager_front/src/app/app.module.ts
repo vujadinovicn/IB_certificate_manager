@@ -10,12 +10,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
+import { NgxOtpInputModule } from 'ngx-otp-input';
+import { SmsCodeComponent } from './sms-code/sms-code.component';
+// import { OtpInputModule } from 'ngx-otp-input';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    LoginComponent
+    LoginComponent,
+    SmsCodeComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +28,8 @@ import { LoginComponent } from './login/login.component';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxOtpInputModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }}
