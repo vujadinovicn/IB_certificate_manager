@@ -1,0 +1,24 @@
+<app-navbar></app-navbar>
+<div style="display: flex;
+align-items: center;
+justify-content: center; height: 100%;">
+    <div class="border back-white" id="ver-container">
+        <h1>Verification</h1>
+        <p>Enter the code from the email we just sent you</p>
+        <div id="img-div">
+            <img class="login-img" src="../../assets/forgot-password.svg" alt="">
+        </div>
+        <form #formDirective="ngForm" [formGroup]="codeForm" (ngSubmit)="verify(formDirective)">
+            <mat-form-field>
+                <mat-label>Code</mat-label>
+                <input matInput type="text" name="code" formControlName="code" />
+                <mat-error *ngIf="codeForm.get('code')?.errors?.['required']">entering code is required</mat-error>
+                <!-- <mat-error *ngIf="regForm.get('surname')?.errors?.['surnameRegexError'] && !registerForm.get('surname')?.errors?.['required']">invalid surname format</mat-error> -->
+              </mat-form-field>
+              <button type="submit" class="conf-button back-yellow" mat-raised-button>Verify</button>
+
+        </form>
+
+    </div>
+
+</div>

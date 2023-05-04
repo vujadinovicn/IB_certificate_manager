@@ -13,13 +13,17 @@ import { LoginComponent } from './login/login.component';
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { SmsCodeComponent } from './sms-code/sms-code.component';
 // import { OtpInputModule } from 'ngx-otp-input';
+import { RegisterComponent } from './register/register.component';
+import { MailVerificationComponent } from './mail-verification/mail-verification.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    LoginComponent,
-    SmsCodeComponent
+    LoginComponent, 
+    SmsCodeComponent,
+    RegisterComponent,
+    MailVerificationComponent
   ],
   imports: [
     BrowserModule,

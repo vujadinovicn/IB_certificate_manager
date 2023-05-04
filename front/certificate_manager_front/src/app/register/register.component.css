@@ -1,19 +1,24 @@
-#login-container{
+#reg-container{
     display: grid;
     grid-template-columns: 50% 50%;
-    height: 550px;
+    height: fit-content;
     width: 70%;
     text-align: center;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 70px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
     /* min-width: 400px; */
 }
 
+
 h1 {
     font-weight: 700 !important;
     margin-bottom: 0px !important;
+}
+
+b {
+    color: #FB8500;
 }
 
 .modified-label {
@@ -41,19 +46,22 @@ h1 {
     text-align: center;
 }
 
-#forgotten-password-ref{
-    color: #455A64;
-    text-decoration: none;
+button {
+    display: block;
+    margin: 30px auto 12px auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    border-radius: 12px;
+    color: white !important;
+    font-size: 1em;
     font-weight: 600;
 }
 
-#forgotten-password-ref:hover{
-    opacity: 0.95;
-}
 
 @media only screen and (max-width: 900px) {
-    #login-container {
+    #reg-container {
         grid-template-columns: 100%;
+        margin-top: 20px;
     }
 
     #left-container {
@@ -62,8 +70,7 @@ h1 {
 }
 
 @media only screen and (max-width: 500px) {
-    #login-container {
+    #reg-container {
         width: 80%;
     }
 }
-  
