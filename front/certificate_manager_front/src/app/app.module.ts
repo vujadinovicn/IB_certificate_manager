@@ -12,6 +12,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { MailVerificationComponent } from './mail-verification/mail-verification.component';
+import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { MailVerificationComponent } from './mail-verification/mail-verification
     NavbarComponent,
     LoginComponent,
     RegisterComponent,
-    MailVerificationComponent
+    MailVerificationComponent,
+    VerificationChoiceComponent
   ],
   imports: [
     BrowserModule,
