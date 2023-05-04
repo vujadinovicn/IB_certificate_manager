@@ -104,11 +104,11 @@ nav {
 
 .navbar-menu a:hover {
     color: #337D98;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .navbar-toggler {
-    cursor: pointer;
+    cursor: pointer !important;
     border: none;
     display: none;
     outline: none;

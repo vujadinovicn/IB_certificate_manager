@@ -34,9 +34,14 @@ p {
 
 .section {
     color: #A6A6A6;
-    cursor: pointer;
+    cursor: pointer !important;
     margin-bottom: 35px;
 }
+
+.section-item p{
+    cursor: pointer !important;
+}
+
 
 .section-title {
     font-weight: 600;

@@ -142,7 +142,11 @@ body {
     border-radius: 10px;
     border: 2px solid gray;
     color: gray;
-    cursor: pointer;
+    cursor: pointer !important;
     font-size: 1em;
     padding: 5px 35px;
+}
+
+p {
+    cursor: context-menu;
 }

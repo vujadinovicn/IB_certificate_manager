@@ -33,7 +33,7 @@ h1 {
 }
 
 #eye-icon {
-    cursor: pointer;
+    cursor: pointer !important;
     color: gray;
 }
 
