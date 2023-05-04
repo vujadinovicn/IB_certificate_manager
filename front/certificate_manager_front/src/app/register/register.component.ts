@@ -44,7 +44,7 @@ export class RegisterComponent {
         next: (res: ResponseMessageDTO) => {
           console.log(res.message);
           resetForm(this.regForm, formDirective);
-          this.router.navigate(['verification/mail']);
+          this.router.navigate(['verification']);
         },
         error: (err: HttpErrorResponse) => {
           console.log(err);
