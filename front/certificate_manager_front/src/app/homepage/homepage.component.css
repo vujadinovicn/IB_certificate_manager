@@ -5,8 +5,8 @@
     color: #A6A6A6;
     padding: 15px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    width: 350px;
-    height: 190px;
+    width: 320px;
+    height: 180px;
     cursor: pointer !important;
     position: relative;
 }
@@ -16,7 +16,7 @@
 }
 
 .certificate-icon {
-    margin-top: 10px;
+    margin-top: 2px;
 }
 
 .certificate-info-container p {
@@ -54,3 +54,28 @@ p, h1, h2 {
     right: 10px;
     font-size: 0.8em;
 } 
+
+.certificate-info-container {
+    font-size: 0.9em;
+}
+
+.cards-container {
+    padding: 20px 40px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    width: fit-content;
+}
+
+.hp-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+@media screen and (max-width: 900px) {  
+    .cards-container {
+        margin-top: 80px;
+    }
+}
