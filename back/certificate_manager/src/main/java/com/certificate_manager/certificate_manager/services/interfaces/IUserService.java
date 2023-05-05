@@ -16,7 +16,8 @@ public interface IUserService {
 
 	public void verifyRegistration(String verificationCode);
 
-	public void resetPassword(int id, ResetPasswordDTO dto);
+	public void resetPassword(ResetPasswordDTO dto);
 
 	public void sendResetPasswordMail(String email);
+
 }

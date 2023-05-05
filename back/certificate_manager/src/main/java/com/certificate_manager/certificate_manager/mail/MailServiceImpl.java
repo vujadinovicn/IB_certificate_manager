@@ -79,19 +79,18 @@ public class MailServiceImpl implements IMailService {
 	
 	public void sendForgotPasswordMail(User user, String token) {
 		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
-		String subject = "SignUp Verification";
+		String subject = "Password reset";
 		Email to = new Email(user.getEmail());
 		
 		Personalization personalization = new Personalization();
 	    personalization.addTo(to);
-	    personalization.addDynamicTemplateData("firstName", user.getName());
-	    personalization.addDynamicTemplateData("code", token);
+	    personalization.addDynamicTemplateData("link", "http://localhost:4200/reset-password?code=" + token);
 		
 	    Mail mail = new Mail();
 	    mail.setFrom(from);
 	    mail.setSubject(subject);
 	    mail.addPersonalization(personalization);
-		mail.setTemplateId("d-e29ed48afc794a1bbdea8aac6b177d42");
+		mail.setTemplateId("d-ba583170bac644a5b0d2795dfe4bc34b ");
 	    
 		Request req = new Request();
 		try {

@@ -96,8 +96,8 @@ public class UserController {
 
 	
 	@PutMapping(value = "{id}/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> resetPassword(@PathVariable @Min(value = 0, message = "Field id must be greater than 0.") int id, @Valid @RequestBody ResetPasswordDTO dto) {
-		this.userService.resetPassword(id, dto);
+	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
+		this.userService.resetPassword(dto);
 		return new ResponseEntity<String>("Password successfully changed!", HttpStatus.NO_CONTENT);
 	}
 
