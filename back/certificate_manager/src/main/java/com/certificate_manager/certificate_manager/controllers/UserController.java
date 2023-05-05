@@ -55,6 +55,12 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully registred."), HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "send/verification/email/{email}")
+	public ResponseEntity<?> sendVerificationMail(@PathVariable String email) {
+		this.userService.sendEmailVerification(email);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
+	}
+	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") String verificationCode) {
 		this.userService.verifyRegistration(verificationCode);

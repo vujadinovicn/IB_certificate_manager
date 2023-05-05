@@ -73,10 +73,17 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		allUsers.save(user);
 		allUsers.flush();
 		
+//		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
+//		
+//		this.mailService.sendVerificationMail(user, token.getToken());
+		
+	}
+	
+	@Override
+	public void sendEmailVerification(String email) {
+		User user = getUserByEmail(email);
 		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
-		
-		this.mailService.sendVerificationMail(user, token.getToken());
-		
+		this.mailService.sendVerificationMail(user, email);
 	}
 	
 	

@@ -20,4 +20,6 @@ public interface IUserService {
 
 	public void sendResetPasswordMail(String email);
 
+	public void sendEmailVerification(String email);
+
 }

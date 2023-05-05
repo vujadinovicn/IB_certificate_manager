@@ -84,7 +84,7 @@ public class MailServiceImpl implements IMailService {
 		
 		Personalization personalization = new Personalization();
 	    personalization.addTo(to);
-	    personalization.addDynamicTemplateData("link", "http://localhost:4200/reset-password?code=" + token);
+	    personalization.addDynamicTemplateData("code", token);
 		
 	    Mail mail = new Mail();
 	    mail.setFrom(from);
