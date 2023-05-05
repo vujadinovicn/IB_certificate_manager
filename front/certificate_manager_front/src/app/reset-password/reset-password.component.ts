@@ -16,6 +16,8 @@ export class ResetPasswordComponent {
   
   code: string = '';
   otpValue: string = '';
+  isFirstVisible: boolean = false;
+  isSecondVisible: boolean = false;
 
   resetPasswordForm = new FormGroup({
     password: new FormControl('', [Validators.required]),

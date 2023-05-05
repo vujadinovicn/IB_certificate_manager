@@ -15,6 +15,9 @@ export class RegisterComponent {
 
   // confirmValidParentMatcher = new ConfirmValidParentMatcher();
 
+  isFirstVisible: boolean = false;
+  isSecondVisible: boolean = false;
+  
   regForm = new FormGroup({
     name: new FormControl('', [Validators.required,]),
     surname: new FormControl('', [Validators.required,]),
