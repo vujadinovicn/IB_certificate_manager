@@ -11,10 +11,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { NgxOtpInputModule } from 'ngx-otp-input';
-import { SmsCodeComponent } from './sms-code/sms-code.component';
+import { VerificationCodeComponent } from './verification-code/verification-code.component';
 // import { OtpInputModule } from 'ngx-otp-input';
 import { RegisterComponent } from './register/register.component';
-import { MailVerificationComponent } from './mail-verification/mail-verification.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
 import { NgxOtpInputModule } from 'ngx-otp-input';
@@ -24,9 +24,9 @@ import { NgxOtpInputModule } from 'ngx-otp-input';
     AppComponent,
     NavbarComponent,
     LoginComponent, 
-    SmsCodeComponent,
+    VerificationCodeComponent,
     RegisterComponent,
-    MailVerificationComponent,
+    ForgotPasswordComponent,
     ResetPasswordComponent,
     VerificationChoiceComponent,
   ],

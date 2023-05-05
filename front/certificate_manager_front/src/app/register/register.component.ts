@@ -4,7 +4,7 @@ import { ResponseMessageDTO, UserDTO, UserService } from '../services/user.servi
 import { User } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { SmsCodeComponent } from '../sms-code/sms-code.component';
+import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 import { SmsCodeService } from '../services/sms-code.service';
 
 

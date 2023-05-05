@@ -6,11 +6,11 @@ import { resetForm } from '../register/register.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-mail-verification',
-  templateUrl: './mail-verification.component.html',
-  styleUrls: ['./mail-verification.component.css']
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.component.html',
+  styleUrls: ['./forgot-password.component.css']
 })
-export class MailVerificationComponent {
+export class ForgotPasswordComponent {
 
 
   codeForm = new FormGroup({

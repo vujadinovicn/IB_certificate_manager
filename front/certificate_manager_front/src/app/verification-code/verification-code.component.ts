@@ -6,11 +6,11 @@ import { SmsCodeService } from '../services/sms-code.service';
 import { UserDTO } from '../services/user.service';
 
 @Component({
-  selector: 'app-sms-code',
-  templateUrl: './sms-code.component.html',
-  styleUrls: ['./sms-code.component.css']
+  selector: 'app-verification-code',
+  templateUrl: './verification-code.component.html',
+  styleUrls: ['./verification-code.component.css']
 })
-export class SmsCodeComponent implements OnInit{
+export class VerificationCodeComponent implements OnInit{
 
   user: UserDTO = {} as UserDTO;
 
