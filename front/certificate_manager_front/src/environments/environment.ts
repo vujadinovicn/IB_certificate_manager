@@ -6,6 +6,8 @@ export const environment = {
     production: false,
     apiHost: 'http://localhost:4388/api'
   };
+
+console.log(environment.apiHost);
   
   /*
    * For easier debugging in development mode, you can import the following file

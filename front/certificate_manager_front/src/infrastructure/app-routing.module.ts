@@ -5,6 +5,7 @@ import { MailVerificationComponent } from 'src/app/mail-verification/mail-verifi
 import { RegisterComponent } from 'src/app/register/register.component';
 import { ResetPasswordComponent } from 'src/app/reset-password/reset-password.component';
 import { VerificationChoiceComponent } from 'src/app/verification-choice/verification-choice.component';
+import { SmsCodeComponent } from 'src/app/sms-code/sms-code.component';
 
 const routes: Routes = [
   {path: "login", component: LoginComponent},
@@ -12,7 +13,8 @@ const routes: Routes = [
   {path: "register", component: RegisterComponent},
   {path: "verification/mail", component: MailVerificationComponent},
   {path: "reset-password", component: ResetPasswordComponent},
-  {path: "verification", component: VerificationChoiceComponent}
+  {path: "verification", component: VerificationChoiceComponent},
+  {path: "verification/sms", component: SmsCodeComponent}
 ];
 
 @NgModule({

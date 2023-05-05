@@ -29,6 +29,10 @@ nav {
     top: 0;
     left: 0
 }
+
+.pos-rel {
+    position: relative !important;
+}
  
 .navbar.container {
     @media (min-width: 576px) {

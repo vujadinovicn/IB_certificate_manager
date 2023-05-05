@@ -11,6 +11,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   registerUser(user: UserDTO): Observable<any> {
+    console.log(environment.apiHost);
     const options: any = {
       responseType: 'json',
     };
@@ -20,7 +21,7 @@ export class UserService {
   verify(code: String): Observable<any> {
     return this.http.get<any>(environment.apiHost + '/user/activate/' + code);
   }
-}
+}  
 
 export interface UserDTO {
   name: string;

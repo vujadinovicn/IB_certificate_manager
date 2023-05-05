@@ -41,17 +41,6 @@ h1 {
     text-align: center;
 }
 
-button {
-    display: block;
-    margin: 30px auto 12px auto;
-    padding-left: 40px;
-    padding-right: 40px;
-    border-radius: 12px;
-    color: white !important;
-    font-size: 1em;
-    font-weight: 600;
-}
-
 #forgotten-password-ref{
     color: #455A64;
     text-decoration: none;

@@ -10,6 +10,8 @@ public interface IUserService {
 	
 	public User getUserByEmail(String email);
 	
+	public boolean isUserRegisteredAndNotVerified(String email);
+	
 	public boolean doesUserExist(String email);
 
 	public User getCurrentUser();
@@ -22,4 +24,6 @@ public interface IUserService {
 
 	public void sendEmailVerification(String email);
 
+	
+	public void activateUser(User user);
 }

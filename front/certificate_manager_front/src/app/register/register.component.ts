@@ -4,6 +4,8 @@ import { ResponseMessageDTO, UserDTO, UserService } from '../services/user.servi
 import { User } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { SmsCodeComponent } from '../sms-code/sms-code.component';
+import { SmsCodeService } from '../services/sms-code.service';
 
 
 @Component({
@@ -27,7 +29,7 @@ export class RegisterComponent {
     phonenum: new FormControl('', [Validators.required,]),
   });
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private smsCodeService: SmsCodeService, private router: Router) { }
 
   ngOnInit(): void {
     // markFormControlsTouched(this.registerForm);

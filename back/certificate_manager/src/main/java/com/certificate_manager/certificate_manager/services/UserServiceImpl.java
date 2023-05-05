@@ -86,8 +86,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		this.mailService.sendVerificationMail(user, email);
 	}
 	
-	
-	private void activateUser(User user) {
+	@Override
+	public void activateUser(User user) {
 		user.setVerified(true);
 		this.allUsers.save(user);
 		this.allUsers.flush();
@@ -105,7 +105,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
 
-		activateUser(token.getUser());
+		this.activateUser(token.getUser());
 		this.tokenService.markAsUsed(token);
 	}
 	
@@ -155,5 +155,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	public User getCurrentUser() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return allUsers.findByEmail(auth.getName()).orElse(null);
+	}
+
+	@Override
+	public boolean isUserRegisteredAndNotVerified(String email) {
+		User user = allUsers.findByEmail(email).orElse(null);
+		if (user == null)
+			return false;
+		return !user.getVerified();
 	}
 }

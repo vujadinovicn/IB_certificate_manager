@@ -20,9 +20,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
+import com.certificate_manager.certificate_manager.exceptions.SMSCodeExpiredException;
+import com.certificate_manager.certificate_manager.exceptions.SMSCodeIncorrectException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -95,6 +99,27 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     protected ResponseEntity<Object> handleCertificateNotValidException(CertificateNotValidException e){
     	return new ResponseEntity<>("Certificate is not valid!", HttpStatus.EXPECTATION_FAILED);
     }
+    
+    @ExceptionHandler (value = {UserNotRegisteredOrAlreadyVerifiedException.class})
+	protected ResponseEntity<String> handleUserNotRegisteredOrAlreadyVerifiedException(UserNotRegisteredOrAlreadyVerifiedException e) {
+		return new ResponseEntity<String>("User not registered or already verified!", HttpStatus.BAD_REQUEST);
+	}
+    
+    @ExceptionHandler (value = {NoRequestForSMSVerification.class})
+ 	protected ResponseEntity<String> handleNoRequestForSMSVerification(NoRequestForSMSVerification e) {
+ 		return new ResponseEntity<String>("There has been no SMS code previously sent!", HttpStatus.NOT_FOUND);
+ 	}
+    
+    @ExceptionHandler (value = {SMSCodeExpiredException.class})
+ 	protected ResponseEntity<String> handleSMSCodeExpiredException(SMSCodeExpiredException e) {
+ 		return new ResponseEntity<String>("SMS code has expired!", HttpStatus.BAD_REQUEST);
+ 	}
+    
+    @ExceptionHandler (value = {SMSCodeIncorrectException.class})
+ 	protected ResponseEntity<String> handleSMSCodeIncorrectException(SMSCodeIncorrectException e) {
+ 		return new ResponseEntity<String>("SMS code entered is incorrect!", HttpStatus.BAD_REQUEST);
+ 	}
+    
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
