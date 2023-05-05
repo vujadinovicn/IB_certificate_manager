@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
@@ -95,6 +96,12 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	protected ResponseEntity<String> handleUserNotRegisteredOrAlreadyVerifiedException(UserNotRegisteredOrAlreadyVerifiedException e) {
 		return new ResponseEntity<String>("User not registered or already verified!", HttpStatus.BAD_REQUEST);
 	}
+    
+    @ExceptionHandler (value = {NoRequestForSMSVerification.class})
+ 	protected ResponseEntity<String> handleNoRequestForSMSVerification(NoRequestForSMSVerification e) {
+ 		return new ResponseEntity<String>("There has been no SMS code previously sent!", HttpStatus.BAD_REQUEST);
+ 	}
+    
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {

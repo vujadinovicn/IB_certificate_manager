@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
+import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
 import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 import com.twilio.Twilio;
@@ -48,6 +49,15 @@ public class SMSServiceImpl implements ISMSService{
 
         allOneTimePasswords.put(userDTO.getEmail(), new OneTimePassword(verificationCode, LocalDateTime.now()));
     }
+	
+	@Override
+    public void sendNewSMS(UserDTO userDTO) {
+    	OneTimePassword oneTimePassword = allOneTimePasswords.remove(userDTO.getEmail());
+    	if (oneTimePassword == null) {
+    		throw new NoRequestForSMSVerification();
+    	}
+    	sendSMS(userDTO);
+    }
     
 	
 	
@@ -61,14 +71,6 @@ public class SMSServiceImpl implements ISMSService{
         int max = 999999;
         return min + rand.nextInt((max - min) + 1);
     }
-
-
-
-	@Override
-	public void sendNewSMS(UserDTO userDTO) {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 
