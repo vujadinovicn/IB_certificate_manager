@@ -7,16 +7,23 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
+import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.enums.SecureTokenType;
 import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
 import com.certificate_manager.certificate_manager.exceptions.SMSCodeExpiredException;
 import com.certificate_manager.certificate_manager.exceptions.SMSCodeIncorrectException;
-import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
+import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
+import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
+
+import okhttp3.internal.ws.RealWebSocket.Message;
 
 @Service
 public class SMSServiceImpl implements ISMSService{
@@ -31,58 +38,39 @@ public class SMSServiceImpl implements ISMSService{
 	
 	@Value("${spring.twilio-auth-token}")
 	private String twilioAuthToken;
-    
-	private Map<String, OneTimePassword> allOneTimePasswords = new HashMap<String, OneTimePassword>();
-	
+    	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private ISecureTokenService tokenService;
 
 	@Override
-    public void sendSMS(UserDTO userDTO) {
-		if (!userService.isUserRegisteredAndNotVerified(userDTO.getEmail()))
-			throw new UserNotRegisteredOrAlreadyVerifiedException();
+    public void sendVerificationSMS(String email) {
+		User user = userService.getUserByEmail(email);
+		if (user.getVerified()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This account has been already verified.");
+		}
+		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
 		
         Twilio.init(twilioAccountSid, twilioAuthToken);
-        int verificationCode = generateCode();
-        String text = String.format(message, verificationCode);
+        String text = String.format(message, token.getToken());
 
-        Message.creator(new com.twilio.type.PhoneNumber(userDTO.getPhoneNumber()),
+        Message.creator(new com.twilio.type.PhoneNumber(user.getPhoneNumber()),
                 new com.twilio.type.PhoneNumber(twilioPhoneNumber), text).create();
 
-        allOneTimePasswords.put(userDTO.getEmail(), new OneTimePassword(verificationCode, LocalDateTime.now()));
     }
 	
 	@Override
-    public void sendNewSMS(UserDTO userDTO) {
-    	OneTimePassword oneTimePassword = allOneTimePasswords.remove(userDTO.getEmail());
-    	if (oneTimePassword == null) {
-    		throw new NoRequestForSMSVerification();
-    	}
-    	sendSMS(userDTO);
-    }
-    
-	@Override
-    public void activateBySMS(SMSActivationDTO smsActivationDTO) {
-    	OneTimePassword oneTimePassword = allOneTimePasswords.get(smsActivationDTO.getEmail());
-    	if (oneTimePassword == null)
-    		throw new NoRequestForSMSVerification();
-    	else if (hasCodeExpired(oneTimePassword))
-    		throw new SMSCodeExpiredException();
-    	else if (Integer.parseInt(smsActivationDTO.getCode()) != oneTimePassword.getCode()) 
-    		throw new SMSCodeIncorrectException();
-    	else
-    		this.userService.activateUser(this.userService.getUserByEmail(smsActivationDTO.getEmail()));
-    }
+	public void sendResetSMS(String email) {
+		User user = userService.getUserByEmail(email);
+		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
+		
+		 Twilio.init(twilioAccountSid, twilioAuthToken);
+	        String text = String.format(message, token.getToken());
+
+	        Message.creator(new com.twilio.type.PhoneNumber(user.getPhoneNumber()),
+	                new com.twilio.type.PhoneNumber(twilioPhoneNumber), text).create();
+	}
 	
-	
-	private boolean hasCodeExpired(OneTimePassword oneTimePassword) {
-    	return LocalDateTime.now().isAfter(oneTimePassword.getTimeOfCreation().plusMinutes(2));
-    }
-    
-    private int generateCode() {
-    	Random rand = new Random();
-        int min = 100000;
-        int max = 999999;
-        return min + rand.nextInt((max - min) + 1);
-    }
 }

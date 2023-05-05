@@ -82,8 +82,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Override
 	public void sendEmailVerification(String email) {
 		User user = getUserByEmail(email);
+		if (user.getVerified()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This account has been already verified.");
+		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
-		this.mailService.sendVerificationMail(user, email);
+		this.mailService.sendVerificationMail(user, token.getToken());
 	}
 	
 	@Override

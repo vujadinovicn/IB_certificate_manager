@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
@@ -28,6 +29,7 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
+import com.certificate_manager.certificate_manager.sms.ISMSService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -45,6 +47,8 @@ public class UserController {
 	
 	@Autowired  
 	private TokenUtils tokenUtils;
+	
+	@Autowired ISMSService smsService;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -60,6 +64,13 @@ public class UserController {
 		this.userService.sendEmailVerification(email);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "send/verification/sms")
+    public ResponseEntity<?> sendVerificationSMS(@PathVariable String email) {
+		smsService.sendVerificationSMS(email);
+    	return new ResponseEntity<String>("Code sent successfully!", HttpStatus.OK);
+    }
+	
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") String verificationCode) {
@@ -94,9 +105,15 @@ public class UserController {
 	}
 	
 	
-	@GetMapping(value = "{email}/resetPasswordEmail")
-	public ResponseEntity<?> resetPassword(@PathVariable String email) {
+	@GetMapping(value = "{email}/reset/password/email")
+	public ResponseEntity<?> sendResetPasswordMail(@PathVariable String email) {
 		this.userService.sendResetPasswordMail(email);
+		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+	}
+	
+	@GetMapping(value = "{email}/reset/password/sms")
+	public ResponseEntity<?> sendResetPasswordSms(@PathVariable String email) {
+		this.smsService.sendResetSMS(email);
 		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
 	}
 

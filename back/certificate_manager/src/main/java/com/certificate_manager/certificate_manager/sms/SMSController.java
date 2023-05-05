@@ -24,7 +24,6 @@ public class SMSController {
 	private ISMSService smsService;
 	
 	@PostMapping("")
-//	@PreAuthorize("isAnonymous()")
     public ResponseEntity<?> sendSMS(@Valid @RequestBody UserDTO userDTO) {
 		System.err.println("EEEEEEEEEEEEEEEE");
 		smsService.sendSMS(userDTO);
@@ -37,10 +36,10 @@ public class SMSController {
     	return new ResponseEntity<String>("New code sent successfully!", HttpStatus.OK);
     }
     
-    @PutMapping("/activate")
-    public ResponseEntity<?> activateBySMS(@RequestBody SMSActivationDTO smsActivationDTO) throws Exception {
-    	smsService.activateBySMS(smsActivationDTO);
-    	return new ResponseEntity<String>("Your account has been successfully activated!", HttpStatus.OK);
-    }
+//    @PutMapping("/activate")
+//    public ResponseEntity<?> activateBySMS(@RequestBody SMSActivationDTO smsActivationDTO) throws Exception {
+//    	smsService.activateBySMS(smsActivationDTO);
+//    	return new ResponseEntity<String>("Your account has been successfully activated!", HttpStatus.OK);
+//    }
 
 }
