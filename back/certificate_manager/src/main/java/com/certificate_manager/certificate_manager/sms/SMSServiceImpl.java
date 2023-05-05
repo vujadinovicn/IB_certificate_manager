@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
+import com.certificate_manager.certificate_manager.exceptions.SMSCodeExpiredException;
+import com.certificate_manager.certificate_manager.exceptions.SMSCodeIncorrectException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 import com.twilio.Twilio;
@@ -59,6 +61,18 @@ public class SMSServiceImpl implements ISMSService{
     	sendSMS(userDTO);
     }
     
+	@Override
+    public void activateBySMS(SMSActivationDTO smsActivationDTO) {
+    	OneTimePassword oneTimePassword = allOneTimePasswords.get(smsActivationDTO.getEmail());
+    	if (oneTimePassword == null)
+    		throw new NoRequestForSMSVerification();
+    	else if (hasCodeExpired(oneTimePassword))
+    		throw new SMSCodeExpiredException();
+    	else if (Integer.parseInt(smsActivationDTO.getCode()) != oneTimePassword.getCode()) 
+    		throw new SMSCodeIncorrectException();
+    	else
+    		this.userService.activateUser(this.userService.getUserByEmail(smsActivationDTO.getEmail()));
+    }
 	
 	
 	private boolean hasCodeExpired(OneTimePassword oneTimePassword) {
@@ -71,13 +85,4 @@ public class SMSServiceImpl implements ISMSService{
         int max = 999999;
         return min + rand.nextInt((max - min) + 1);
     }
-
-
-
-	@Override
-	public void activateBySMS(SMSActivationDTO smsActivationDTO) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

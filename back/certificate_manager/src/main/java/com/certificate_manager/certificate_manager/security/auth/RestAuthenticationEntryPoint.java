@@ -22,6 +22,8 @@ import com.certificate_manager.certificate_manager.exceptions.CertificateNotVali
 import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
+import com.certificate_manager.certificate_manager.exceptions.SMSCodeExpiredException;
+import com.certificate_manager.certificate_manager.exceptions.SMSCodeIncorrectException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
 
@@ -99,7 +101,17 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     
     @ExceptionHandler (value = {NoRequestForSMSVerification.class})
  	protected ResponseEntity<String> handleNoRequestForSMSVerification(NoRequestForSMSVerification e) {
- 		return new ResponseEntity<String>("There has been no SMS code previously sent!", HttpStatus.BAD_REQUEST);
+ 		return new ResponseEntity<String>("There has been no SMS code previously sent!", HttpStatus.NOT_FOUND);
+ 	}
+    
+    @ExceptionHandler (value = {SMSCodeExpiredException.class})
+ 	protected ResponseEntity<String> handleSMSCodeExpiredException(SMSCodeExpiredException e) {
+ 		return new ResponseEntity<String>("SMS code has expired!", HttpStatus.BAD_REQUEST);
+ 	}
+    
+    @ExceptionHandler (value = {SMSCodeIncorrectException.class})
+ 	protected ResponseEntity<String> handleSMSCodeIncorrectException(SMSCodeIncorrectException e) {
+ 		return new ResponseEntity<String>("SMS code entered is incorrect!", HttpStatus.BAD_REQUEST);
  	}
     
 	

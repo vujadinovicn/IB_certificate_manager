@@ -79,8 +79,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		
 	}
 	
-	
-	private void activateUser(User user) {
+	@Override
+	public void activateUser(User user) {
 		user.setVerified(true);
 		this.allUsers.save(user);
 		this.allUsers.flush();
@@ -98,7 +98,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
 
-		activateUser(token.getUser());
+		this.activateUser(token.getUser());
 		this.tokenService.markAsUsed(token);
 	}
 	

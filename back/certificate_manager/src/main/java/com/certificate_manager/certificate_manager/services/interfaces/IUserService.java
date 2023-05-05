@@ -21,4 +21,6 @@ public interface IUserService {
 	public void resetPassword(int id, ResetPasswordDTO dto);
 
 	public void sendResetPasswordMail(String email);
+	
+	public void activateUser(User user);
 }

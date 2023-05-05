@@ -1,28 +1,28 @@
 package com.certificate_manager.certificate_manager.sms;
 
 public class SMSActivationDTO {
-	private String username;
+	private String email;
 	private String code;
 	
 	public SMSActivationDTO() {
 		
 	}
 	
-	public SMSActivationDTO(String username, String code) {
-		this.username = username;
+	public SMSActivationDTO(String email, String code) {
+		this.email = email;
 		this.code = code;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
 
 	public String getCode() {
 		return code;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public void setCode(String code) {
