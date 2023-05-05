@@ -12,11 +12,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { MailVerificationComponent } from './mail-verification/mail-verification.component';
-<<<<<<< HEAD
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-=======
 import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
->>>>>>> 1e12de2b8c1048e78582b214d30fccdbdb102ee8
+import { NgxOtpInputModule } from 'ngx-otp-input';
 
 @NgModule({
   declarations: [
@@ -25,11 +23,8 @@ import { VerificationChoiceComponent } from './verification-choice/verification-
     LoginComponent,
     RegisterComponent,
     MailVerificationComponent,
-<<<<<<< HEAD
-    ResetPasswordComponent
-=======
-    VerificationChoiceComponent
->>>>>>> 1e12de2b8c1048e78582b214d30fccdbdb102ee8
+    ResetPasswordComponent,
+    VerificationChoiceComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,7 +33,8 @@ import { VerificationChoiceComponent } from './verification-choice/verification-
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxOtpInputModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }}

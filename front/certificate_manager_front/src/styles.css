@@ -79,6 +79,18 @@ body {
     font-weight: 600;
 }
 
+::ng-deep .ngx-otp-input{
+    border: 1.5px solid #fb8500 !important;
+    color: #000000;
+    font-weight: 600;
+    margin: 10px auto;
+}
+
+.ngx-otp-input-container{
+    text-align: center;
+    justify-content: center !important;
+}
+
 
 .border {
     border: 1px solid #E6E6E6;
