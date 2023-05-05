@@ -71,6 +71,7 @@ public class WebSecurityConfig {
 
     	http.authorizeRequests()
 			.requestMatchers("/api/user/login").permitAll()
+			.and().authorizeRequests().requestMatchers("/api/sms").anonymous()
 			.and().authorizeRequests().requestMatchers("/api/user/**").permitAll()
 			.anyRequest().authenticated().and()
 			.cors().and()

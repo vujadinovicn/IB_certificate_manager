@@ -151,4 +151,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return allUsers.findByEmail(auth.getName()).orElse(null);
 	}
+
+	@Override
+	public boolean isUserRegisteredAndNotVerified(String email) {
+		User user = allUsers.findByEmail(email).orElse(null);
+		if (user == null)
+			return false;
+		return !user.getVerified();
+	}
 }

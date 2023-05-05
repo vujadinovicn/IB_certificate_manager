@@ -22,6 +22,7 @@ import com.certificate_manager.certificate_manager.exceptions.CertificateNotVali
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -89,6 +90,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     protected ResponseEntity<Object> handleCertificateNotValidException(CertificateNotValidException e){
     	return new ResponseEntity<>("Certificate is not valid!", HttpStatus.EXPECTATION_FAILED);
     }
+    
+    @ExceptionHandler (value = {UserNotRegisteredOrAlreadyVerifiedException.class})
+	protected ResponseEntity<String> handleUserNotRegisteredOrAlreadyVerifiedException(UserNotRegisteredOrAlreadyVerifiedException e) {
+		return new ResponseEntity<String>("User not registered or already verified!", HttpStatus.BAD_REQUEST);
+	}
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {

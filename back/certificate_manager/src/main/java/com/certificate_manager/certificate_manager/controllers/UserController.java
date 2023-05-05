@@ -34,7 +34,7 @@ import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:59424")
 public class UserController {
 	
 	@Autowired
