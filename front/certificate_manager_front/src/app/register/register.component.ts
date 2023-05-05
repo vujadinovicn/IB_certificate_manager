@@ -5,7 +5,7 @@ import { User } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
-import { SmsCodeService } from '../services/sms-code.service';
+import { VerificationService } from '../services/verification.service';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class RegisterComponent {
     phonenum: new FormControl('', [Validators.required,]),
   });
 
-  constructor(private userService: UserService, private smsCodeService: SmsCodeService, private router: Router) { }
+  constructor(private userService: UserService, private verificationService: VerificationService, private router: Router) { }
 
   ngOnInit(): void {
     // markFormControlsTouched(this.registerForm);
@@ -49,6 +49,7 @@ export class RegisterComponent {
         next: (res: ResponseMessageDTO) => {
           console.log(res.message);
           resetForm(this.regForm, formDirective);
+          this.verificationService.sendUserDTO(user);
           this.router.navigate(['verification']);
         },
         error: (err: HttpErrorResponse) => {

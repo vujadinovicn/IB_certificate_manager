@@ -12,7 +12,7 @@ export interface SMSActivation {
 @Injectable({
   providedIn: 'root'
 })
-export class SmsCodeService {
+export class VerificationService {
 
   private subject = new BehaviorSubject<any>({});
 

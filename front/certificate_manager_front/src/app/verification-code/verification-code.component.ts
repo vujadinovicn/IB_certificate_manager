@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { SmsCodeService } from '../services/sms-code.service';
+import { VerificationService } from '../services/verification.service';
 import { UserDTO } from '../services/user.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class VerificationCodeComponent implements OnInit{
   
   otpValue: any;
 
-  constructor(private smsCodeService: SmsCodeService, private router: Router){
+  constructor(private smsCodeService: VerificationService, private router: Router){
 
   }
   ngOnInit(): void {

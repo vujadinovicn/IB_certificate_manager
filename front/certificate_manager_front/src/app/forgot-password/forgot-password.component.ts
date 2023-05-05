@@ -1,44 +1,30 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { ResponseMessageDTO, UserService } from '../services/user.service';
-import { Router } from '@angular/router';
-import { resetForm } from '../register/register.component';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css']
 })
-export class ForgotPasswordComponent {
+export class ForgotPasswordComponent implements OnInit{
 
+  @ViewChild('child') childComponent: NavbarComponent | undefined;
 
-  codeForm = new FormGroup({
-    code: new FormControl('', [Validators.required,]),
-  });
+  ngAfterViewInit() {
+    this.childComponent?.nav?.nativeElement.classList.add('pos-rel');
+  }
+  
+  forgotPasswordForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email])
+  })
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor() { }
 
   ngOnInit(): void {
-    // markFormControlsTouched(this.registerForm);
   }
 
-  verify(formDirective: FormGroupDirective) {
-    if (this.codeForm.valid && this.codeForm.value.code) {
-      this.userService.verify(this.codeForm.value.code).subscribe({
-        next: (res: ResponseMessageDTO) => {
-          console.log(res.message);
-          resetForm(this.codeForm, formDirective);
-          this.router.navigate(['login']);
-        },
-        error: (err: HttpErrorResponse) => {
-          console.log(err);
-          resetForm(this.codeForm, formDirective);
-        }
-      });
-    } else {
-      console.log('greska')
-    }
+  requestReset() {
+    
   }
-
 }

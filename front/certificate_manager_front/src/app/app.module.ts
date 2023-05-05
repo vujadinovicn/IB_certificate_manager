@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
-import { NgxOtpInputModule } from 'ngx-otp-input';
+// import { NgxOtpInputModule } from 'ngx-otp-input';
 import { VerificationCodeComponent } from './verification-code/verification-code.component';
 // import { OtpInputModule } from 'ngx-otp-input';
 import { RegisterComponent } from './register/register.component';

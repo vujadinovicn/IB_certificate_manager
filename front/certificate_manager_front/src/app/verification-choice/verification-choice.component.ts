@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService, User } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserDTO } from '../services/user.service';
+import { VerificationService } from '../services/verification.service';
 
 @Component({
   selector: 'app-verification-choice',
@@ -10,12 +12,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class VerificationChoiceComponent implements OnInit{
 
-  constructor(private router: Router, public snackBar: MatSnackBar){
+  userDTO: UserDTO = {} as UserDTO;
+
+  constructor(private router: Router, public snackBar: MatSnackBar, private verificationService: VerificationService){
     
   }
   
   ngOnInit(): void {
-
+    this.verificationService.recieveUserDTO().subscribe((res: any) => {
+      this.userDTO = res;
+    })
   }
 
   clickedSms: boolean = false;
