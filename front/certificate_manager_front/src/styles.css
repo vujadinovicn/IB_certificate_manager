@@ -3,6 +3,8 @@
 html, body { height: 100%; }
 body { 
     margin: 0; font-family: 'Poppins', sans-serif;
+    position: relative;
+    padding: 0;
     background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url("./assets/background.jpeg");
     background-size: cover;
     background-position: center;
@@ -133,5 +135,18 @@ body {
 .back-white {
     background-color: white;
 }
-html, body { height: 100%; }
-body { margin: 0; }
+
+/* BUTTONS */
+.outline-btn {
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid gray;
+    color: gray;
+    cursor: pointer !important;
+    font-size: 1em;
+    padding: 5px 35px;
+}
+
+p {
+    cursor: context-menu;
+}

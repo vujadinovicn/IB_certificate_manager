@@ -1,7 +1,10 @@
 package com.certificate_manager.certificate_manager.services.interfaces;
 
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
+import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
+
+import jakarta.validation.constraints.Min;
 
 public interface IUserService {
 	
@@ -12,4 +15,6 @@ public interface IUserService {
 	public boolean doesUserExist(String email);
 
 	public User getCurrentUser();
+
+	public UserRetDTO findById(int id);
 }

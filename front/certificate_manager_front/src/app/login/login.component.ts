@@ -2,6 +2,7 @@ import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent implements OnInit{
     password: new FormControl('', [Validators.required])
   });
 
-  constructor(private authService: AuthService, public snackBar: MatSnackBar){
+  constructor(private authService: AuthService, public snackBar: MatSnackBar, private router: Router){
     
   }
   
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit{
           localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
+          this.router.navigate(['home']);
           console.log(this.authService.getUser());
         },
         error: (error) => {

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.certificate_manager.certificate_manager.entities.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -42,12 +44,14 @@ public class TokenUtils {
 	 * @param username Korisničko ime korisnika kojem se token izdaje
 	 * @return JWT token
 	 */
-	public String generateToken(UserDetails user, int id) {
+	public String generateToken(UserDetails user, User userFromDb) {
 		return Jwts.builder()
 				.setIssuer(APP_NAME)
 				.setSubject(user.getUsername())
 				.claim("role", user.getAuthorities())
-				.claim("id", id)
+				.claim("id", userFromDb.getId())
+				.claim("name", userFromDb.getName())
+				.claim("lastname", userFromDb.getLastname())
 				.setAudience(generateAudience())
 				.setIssuedAt(new Date())
 				.setExpiration(generateExpirationDate())

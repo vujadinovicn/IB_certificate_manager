@@ -1,5 +1,128 @@
-a {
+#side-navbar-container {
+    width: 300px;
+    height: calc(100% - 30px);
+    background-color: white;
+    border-right: 1px solid #dadada;
+    padding: 15px;
+    position: relative;
+    max-height: 100%;
+}
+
+#wave {
+    height: 1.3em !important;
+    display: inline-block;
+    margin-bottom: -5px;
+}
+
+#greeting {
+    font-size: 1.2em;
+    display: inline-block;
+    margin-bottom: 20px;
+    color: rgb(53, 53, 53) !important;
+}
+
+#greeting p {
+    display: inline-block;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+.section {
+    color: #A6A6A6;
+    margin-bottom: 35px;
+}
+
+.section-item p{
+    cursor: pointer !important;
+}
+
+
+.section-title {
+    font-weight: 600;
+}
+
+.section-item {
+    margin-top: 10px;
+}
+
+.section-item:hover {
+    color: #fb8500;
+}
+
+.section-item:hover path {
+    fill: #fb8500 !important;
+}
+
+.section-title {
+    font-size: 1.1em ;
+    margin-left: 0px !important;
+    font-weight: bold;
+}
+
+.section img, i, svg {
+    display: inline-block;
+    height: 1.6em;
+    margin-bottom: -0.5em;
+}
+
+.section p {
+    display: inline-block;
+    font-size: 1em;
+    margin-left: 7px;
+}
+
+#logout-btn {
+    color: #FFB703;
+    border: 2px solid #FFB703 !important;
+    margin: 0 auto;
+}
+
+#logout-container {
+    position: absolute;
+    bottom: 15px;
+    width: calc(100% - 30px);
+    text-align: center;
+}
+
+#navbar-smaller {
+    display: none;
+}
+
+.navbar-header {
+    padding-top: 0.8%;
+    padding-bottom: 0.8%;
+}
+
+.container .navbar-header a {
     text-decoration: none;
+    height: fit-content;
+    font-weight: 600;
+    font-size: 1.45rem;
+    color: white;
+    padding-top: 0.8%;
+    padding-bottom: 0.8%;
+    padding-left: 1.2rem;
+    /* text-shadow: 1px 1px 1px #ffb703; */
+}
+
+.navbar-toggler {
+    cursor: pointer !important;
+    border: none;
+    display: none;
+    outline: none;
+    padding-right: 1.2rem;
+}
+
+.navbar-toggler > div {
+    width: 33px;
+    height: 3px;
+    background-color: #ffb703;
+    margin: 6px 0;
 }
 
 nav {
@@ -122,25 +245,25 @@ nav {
     margin: 6px 0;
 }
 
-#sign-up-option{
-    padding-left: 12px;
-    padding-right: 12px;
-    color: white;
+#close-btn i {
+    transform: rotate(45deg);
+    position: absolute;
+    right: 15px;
+    top: 6px;
+    font-size: 1.1em;
+    display: none;
+    cursor: pointer;
 }
-/* SCREEN DIFFERENCE */
-
-/* sign-up-option button */
-
-@media screen and (min-width: 900px) {
-    #sign-up-option {
-        border-radius: 10px;
-    }
-    
-}
-
-
 
 @media screen and (max-width: 900px) {
+
+    #navbar-smaller {
+        display: block;
+    }
+
+    #side-navbar-container {
+        display: none;
+    }
 
     .navbar-toggler {
         display: block;
@@ -179,8 +302,3 @@ nav {
         background-color:white !important;
     }
 }
-
-
-  
-
-
