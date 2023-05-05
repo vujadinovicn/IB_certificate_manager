@@ -1,0 +1,56 @@
+.certificate-card {
+    background-color: white;
+    border: 1px solid #c0c0c0;
+    border-radius: 20px;
+    color: #A6A6A6;
+    padding: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 350px;
+    height: 190px;
+    cursor: pointer !important;
+    position: relative;
+}
+
+.certificate-card p {
+    cursor: pointer !important;
+}
+
+.certificate-icon {
+    margin-top: 10px;
+}
+
+.certificate-info-container p {
+    margin-top: 5px;
+}
+
+p, h1, h2 {
+    margin: 0;
+}
+
+.certificate-options {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.4em;
+}
+
+.certificate-option-request {
+    margin-right: 10px;
+}
+
+.certificate-option-download {
+    height: 1.3em;
+    margin-bottom: -0.3em;
+}
+
+.certificate-type {
+    background-color: gray;
+    padding: 5px 15px;
+    border-radius: 20px;
+    color: white;
+    display: inline-block;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.8em;
+} 
