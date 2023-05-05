@@ -39,13 +39,26 @@ export class VerificationChoiceComponent implements OnInit{
 
   open() {
     if (this.clickedEmail) {
-      this.router.navigate(['verification/mail'])
-      // pozovi endpoint send/verification/email/{email}
+      this.verificationService.sendVerificationMail(this.userDTO.email).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.router.navigate(['verification-code', {type: "sms"}]);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
     } 
     else if (this.clickedSms) {
-      console.log('biceee')
-        // pozovi endpoint send/verification/sms/{email}
-
+      this.verificationService.sendVerificationSMS(this.userDTO.email).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.router.navigate(['verification-code', {type: "sms"}]);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
     } else {
       this.snackBar.open("Please select one of the options.", "", {
         duration: 2000,

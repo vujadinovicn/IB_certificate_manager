@@ -26,12 +26,28 @@ export class VerificationService {
 
   constructor(private http: HttpClient) { }
 
-  activateBySms(smsActivation: SMSActivation): Observable<any> {
+  sendVerificationMail(email: string): Observable<any>{
     const options: any = {
       responseType: 'json',
       rejectUnauthorized: false,
     };
-    return this.http.put<any>(environment.apiHost + "/sms/activate", smsActivation, options);
+    return this.http.post<any>(environment.apiHost + "/user/send/verification/email/" + email, options);
+  }
+
+  sendVerificationSMS(email: string): Observable<any>{
+    const options: any = {
+      responseType: 'json',
+      rejectUnauthorized: false,
+    };
+    return this.http.post<any>(environment.apiHost + "/user/send/verification/sms/" + email, options);
+  }
+
+  verifyRegistration(verificationCode: number): Observable<any> {
+    const options: any = {
+      responseType: 'json',
+      rejectUnauthorized: false,
+    };
+    return this.http.get<any>(environment.apiHost + "/user/activate/"+verificationCode, options);
   }
 
   sendNewSms(userDTO: UserDTO): Observable<any> {
