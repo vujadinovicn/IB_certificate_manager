@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
+import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
@@ -74,4 +75,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		return allUsers.findByEmail(auth.getName()).orElse(null);
 	}
+
+	@Override
+	public UserRetDTO findById(int id) {
+		return new UserRetDTO(allUsers.findById((long) id).orElseThrow(() -> new UserNotFoundException()));
+	}
+
 }

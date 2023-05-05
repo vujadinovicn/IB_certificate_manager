@@ -1,4 +1,19 @@
+<nav class="navbar back-white" id="navbar-smaller">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="#" class="orange">Certivus</a>
+            <button class="navbar-toggler" data-toggle="side-navbar-container">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+            </button>
+        </div>  
+    </div>
+</nav>
 <div id="side-navbar-container">
+    <div id="close-btn" (click)="close()">
+        <i class="fa fa-plus"></i>
+    </div>
     <div id="greeting">
         <p class="">Welcome back, {{name}}</p> <img id="wave" src="../../assets/waving-hand.png">
     </div>

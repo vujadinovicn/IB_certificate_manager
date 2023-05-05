@@ -1,3 +1,5 @@
+import { RouterModule } from '@angular/router';
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -31,9 +33,6 @@ export class NavbarComponent implements OnInit{
     })
   }
 
-  logout(){
-
-  }
 
   openHome(role: string){
     

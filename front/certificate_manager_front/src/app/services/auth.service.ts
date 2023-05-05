@@ -19,6 +19,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   getUserObservable(): Observable<any> {
+    this.setUser();
     return this.user$;
   }
 
@@ -106,10 +107,14 @@ export class AuthService {
       const role = decodedToken.role[0].authority;
       const email = decodedToken.sub;
       const id = decodedToken.id;
+      const name = decodedToken.name;
+      const lastname = decodedToken.lastname;
       return {
         id: id,
         role: role,
-        email: email
+        email: email,
+        name: name,
+        lastname: lastname
       }
     }
     return null;
@@ -128,9 +133,11 @@ export class AuthService {
 }
 
 export interface User {
-  id: string,
+  id: number,
   email: string,
-  role: string
+  role: string,
+  name: string,
+  lastname: string
 }
 
 export interface TokenDTO {
