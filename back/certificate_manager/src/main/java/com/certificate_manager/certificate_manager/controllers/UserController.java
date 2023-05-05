@@ -65,10 +65,10 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "send/verification/sms")
+	@PostMapping(value = "send/verification/sms/{email}")
     public ResponseEntity<?> sendVerificationSMS(@PathVariable String email) {
 		smsService.sendVerificationSMS(email);
-    	return new ResponseEntity<String>("Code sent successfully!", HttpStatus.OK);
+    	return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Code sent successfully!"), HttpStatus.OK);
     }
 	
 	

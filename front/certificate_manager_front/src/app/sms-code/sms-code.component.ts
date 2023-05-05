@@ -68,4 +68,7 @@ export class SmsCodeComponent implements OnInit{
     })
   }
 
+
+  // verifikovati putem endpointa activate/{activationId}
+
 }
