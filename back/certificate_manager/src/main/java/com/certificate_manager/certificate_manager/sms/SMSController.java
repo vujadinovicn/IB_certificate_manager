@@ -16,7 +16,7 @@ import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:61160")
 @RequestMapping("/api/sms")
 public class SMSController {
 	
@@ -26,10 +26,11 @@ public class SMSController {
 	@PostMapping("")
 //	@PreAuthorize("isAnonymous()")
     public ResponseEntity<?> sendSMS(@Valid @RequestBody UserDTO userDTO) {
+		System.err.println("EEEEEEEEEEEEEEEE");
 		smsService.sendSMS(userDTO);
     	return new ResponseEntity<String>("Code sent successfully!", HttpStatus.OK);
     }
-    
+      
     @PutMapping("")
     public ResponseEntity<?> sendNewSMS(@RequestBody UserDTO userDTO) throws Exception {
     	smsService.sendNewSMS(userDTO);
