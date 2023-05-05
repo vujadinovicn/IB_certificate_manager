@@ -68,6 +68,17 @@ body {
     background-color: white !important;
 }
 
+.conf-button {
+    display: block !important;
+    margin: 30px auto 12px auto;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-size: 1em;
+    font-weight: 600;
+}
+
 
 .border {
     border: 1px solid #E6E6E6;

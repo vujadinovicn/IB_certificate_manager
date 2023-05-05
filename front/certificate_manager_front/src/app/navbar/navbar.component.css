@@ -64,6 +64,10 @@ nav {
     /* text-shadow: 1px 1px 1px #ffb703; */
 }
 
+.pos-rel {
+    position: relative !important;
+}
+
 /* NAVBAR-MENU ALL ITEMS */
 .navbar-menu {
     display: flex;
