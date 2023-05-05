@@ -4,6 +4,8 @@ import { ResponseMessageDTO, UserDTO, UserService } from '../services/user.servi
 import { User } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { SmsCodeComponent } from '../sms-code/sms-code.component';
+import { SmsCodeService } from '../services/sms-code.service';
 
 
 @Component({
@@ -24,7 +26,7 @@ export class RegisterComponent {
     phonenum: new FormControl('', [Validators.required,]),
   });
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private smsCodeService: SmsCodeService, private router: Router) { }
 
   ngOnInit(): void {
     // markFormControlsTouched(this.registerForm);
@@ -44,7 +46,13 @@ export class RegisterComponent {
         next: (res: ResponseMessageDTO) => {
           console.log(res.message);
           resetForm(this.regForm, formDirective);
-          this.router.navigate(['verification/mail']);
+          this.smsCodeService.sendUserDTO(user);
+          this.smsCodeService.sendSms(user).subscribe((res: any) => {
+              console.log(res);
+            });
+          //this.router.navigate(['verification/mail']);
+          
+          this.router.navigate(['verification/sms']);
         },
         error: (err: HttpErrorResponse) => {
           console.log(err);

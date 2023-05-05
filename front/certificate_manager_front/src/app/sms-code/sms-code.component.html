@@ -13,8 +13,8 @@
           (fill)="onOtpComplete($event)"
         ></ngx-otp-input>
       </div>
-      <button type="submit" class="conf-button back-yellow" (click)="submit()" mat-raised-button>Submit</button>
-      <a id="new-code-ref">Haven't recieved any code? <span class="yellow">Send again</span></a>
+      <button type="submit" class="conf-button back-yellow" (click)="sendSMS()" mat-raised-button>Submit</button>
+      <a id="new-code-ref" (click)="sendNewSMS()">Haven't recieved any code? <span class="yellow">Send again</span></a>
     </form>  
 </div>
   

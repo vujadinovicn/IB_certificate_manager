@@ -11,6 +11,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   registerUser(user: UserDTO): Observable<any> {
+    console.log(environment.apiHost);
     const options: any = {
       responseType: 'json',
     };

@@ -1,14 +1,18 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { SmsCodeService } from '../services/sms-code.service';
+import { UserDTO } from '../services/user.service';
 
 @Component({
   selector: 'app-sms-code',
   templateUrl: './sms-code.component.html',
   styleUrls: ['./sms-code.component.css']
 })
-export class SmsCodeComponent {
+export class SmsCodeComponent implements OnInit{
+
+  user: UserDTO = {} as UserDTO;
 
   @ViewChild('child') childComponent: NavbarComponent | undefined;
 
@@ -18,40 +22,50 @@ export class SmsCodeComponent {
   
   otpValue: any;
 
-  constructor(private smsCodeService: SmsCodeService){
+  constructor(private smsCodeService: SmsCodeService, private router: Router){
 
+  }
+  ngOnInit(): void {
+    this.smsCodeService.recieveUserDTO().subscribe((res: any) =>{
+      this.user = res;
+    });
   }
 
   public otpConfig: NgxOtpInputConfig = {
     otpLength: 6,
-    numericInputMode: true,
-    classList: {
-      input: 'my-super-class',
-      inputFilled: 'my-super-filled-class',
-      inputDisabled: 'my-super-disable-class',
-      inputSuccess: 'my-super-success-class',
-      inputError: 'my-super-error-class',
-    },
+    numericInputMode: true
   };
 
   onOtpComplete(event: any) {
-    console.log('OTP code entered:', event.code);
     this.otpValue = event;
-    // do something with the OTP code
   }
 
-  submit(){
-    let o = {
-      username: "neca", 
-      code: "333333"
-    }
+  sendSMS(){ 
     this.smsCodeService.activateBySms(
-      o
-    ).subscribe((res: any) => {
-      console.log(res);
-      console.log(res.status);
-    }
-    )
+      {
+        email: this.user.email,
+        code: this.otpValue
+      }
+    ).subscribe({
+      next: (res: any) => {
+        console.log(res.message);
+        this.router.navigate(['login']);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    })
+  }
+
+  sendNewSMS(){
+    this.smsCodeService.sendNewSms(this.user).subscribe({
+      next: (res: any) => {
+        console.log(res.message);  
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    })
   }
 
 }
