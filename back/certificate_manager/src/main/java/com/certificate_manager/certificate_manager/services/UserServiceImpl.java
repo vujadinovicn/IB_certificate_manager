@@ -44,7 +44,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Autowired
 	private BCryptPasswordEncoder encoder;
-	
+	  
 	@Override
 	public User getUserByEmail(String email) {
 		return allUsers.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
@@ -65,7 +65,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	public void register(UserDTO userDTO) {
 		if (this.doesUserExist(userDTO.getEmail()))
 			throw new UserAlreadyExistsException();
-		
+		System.out.println(passwordEncoder);
 		User user = new User(userDTO);
 		user.setPassword(userDTO.getPassword());
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -122,12 +122,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		
 		User user = token.getUser();
 		
-		user.setPassword(encoder.encode(dto.getNewPassword()));
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 		allUsers.save(user);
 		allUsers.flush();
 
 		tokenService.markAsUsed(token);
-	
+		System.err.println(dto.getNewPassword());  
 	}
 	
 	@Override
@@ -136,7 +136,6 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		if (user == null){
 			throw new UserNotFoundException();
 		}
-		
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
 
 		mailService.sendForgotPasswordMail(user, token.getToken());

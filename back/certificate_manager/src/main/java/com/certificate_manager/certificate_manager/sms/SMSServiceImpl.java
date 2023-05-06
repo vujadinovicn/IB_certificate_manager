@@ -1,34 +1,25 @@
 package com.certificate_manager.certificate_manager.sms;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.SecureTokenType;
-import com.certificate_manager.certificate_manager.exceptions.NoRequestForSMSVerification;
-import com.certificate_manager.certificate_manager.exceptions.SMSCodeExpiredException;
-import com.certificate_manager.certificate_manager.exceptions.SMSCodeIncorrectException;
-import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
 import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 
-import okhttp3.internal.ws.RealWebSocket.Message;
+//import okhttp3.internal.ws.RealWebSocket.Message;
 
 @Service
 public class SMSServiceImpl implements ISMSService{
 
-	static final String message = "Your verification code for Certivus is %d. It's valid for two minutes.";
+	static final String message = "Your verification code for Certivus is %s. It's valid for two minutes.";
 	
 	@Value("${spring.twilio-account-sid}")
 	private String twilioAccountSid;
@@ -66,7 +57,7 @@ public class SMSServiceImpl implements ISMSService{
 		User user = userService.getUserByEmail(email);
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
 		
-		 Twilio.init(twilioAccountSid, twilioAuthToken);
+		 Twilio.init(twilioAccountSid, twilioAuthToken); 
 	        String text = String.format(message, token.getToken());
 
 	        Message.creator(new com.twilio.type.PhoneNumber(user.getPhoneNumber()),

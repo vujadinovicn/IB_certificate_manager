@@ -26,6 +26,7 @@ import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerExcept
 import com.certificate_manager.certificate_manager.exceptions.SMSCodeExpiredException;
 import com.certificate_manager.certificate_manager.exceptions.SMSCodeIncorrectException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotRegisteredOrAlreadyVerifiedException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,6 +104,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler (value = {UserNotRegisteredOrAlreadyVerifiedException.class})
 	protected ResponseEntity<String> handleUserNotRegisteredOrAlreadyVerifiedException(UserNotRegisteredOrAlreadyVerifiedException e) {
 		return new ResponseEntity<String>("User not registered or already verified!", HttpStatus.BAD_REQUEST);
+	}
+    
+    @ExceptionHandler (value = {UserNotFoundException.class})
+	protected ResponseEntity<String> handleUserNotFoundException(UserNotFoundException e) {
+		return new ResponseEntity<String>("User not found!", HttpStatus.NOT_FOUND);
 	}
     
     @ExceptionHandler (value = {NoRequestForSMSVerification.class})

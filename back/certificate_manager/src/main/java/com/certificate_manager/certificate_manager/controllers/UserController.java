@@ -36,7 +36,7 @@ import jakarta.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:61160")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 	
 	@Autowired
@@ -48,7 +48,8 @@ public class UserController {
 	@Autowired  
 	private TokenUtils tokenUtils;
 	
-	@Autowired ISMSService smsService;
+	@Autowired 
+	private ISMSService smsService;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -61,7 +62,7 @@ public class UserController {
 	
 	@PostMapping(value = "send/verification/email/{email}")
 	public ResponseEntity<?> sendVerificationMail(@PathVariable String email) {
-		this.userService.sendEmailVerification(email);
+		this.userService.sendEmailVerification(email); 
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
@@ -69,8 +70,10 @@ public class UserController {
     public ResponseEntity<?> sendVerificationSMS(@PathVariable String email) {
 		smsService.sendVerificationSMS(email);
     	return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Code sent successfully!"), HttpStatus.OK);
-    }
+    }  
 	
+	
+	 
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") String verificationCode) {
@@ -105,20 +108,22 @@ public class UserController {
 	}
 	
 	
-	@GetMapping(value = "{email}/reset/password/email")
+	@GetMapping(value = "reset/password/email/{email}")
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable String email) {
+		System.err.println("usao");
 		this.userService.sendResetPasswordMail(email);
 		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
 	}
 	
-	@GetMapping(value = "{email}/reset/password/sms")
+	@GetMapping(value = "reset/password/sms/{email}")
 	public ResponseEntity<?> sendResetPasswordSms(@PathVariable String email) {
 		this.smsService.sendResetSMS(email);
 		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
 	}
 
+//	http://localhost:4388/api/user/vujadinovic01@gmail.com/reset/password/sms
 	
-	@PutMapping(value = "{id}/resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
 		this.userService.resetPassword(dto);
 		return new ResponseEntity<String>("Password successfully changed!", HttpStatus.NO_CONTENT);
