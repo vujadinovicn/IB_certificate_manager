@@ -11,6 +11,7 @@ import com.certificate_manager.certificate_manager.dtos.CertificateRequestReturn
 import com.certificate_manager.certificate_manager.entities.CertificateRequest;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
+import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
@@ -38,7 +39,12 @@ public class CertificateRequestServiceImpl implements ICertificateRequestService
 	public List<CertificateRequestReturnedDTO> getAllForRequester() {
 		User requester = userService.getCurrentUser();
 		
-		List<CertificateRequest> requests = allRequests.findAllForRequester(requester.getId());
+		
+		List<CertificateRequest> requests = new ArrayList<CertificateRequest>();
+		if (requester.getRole() == UserRole.USER)
+			requests = allRequests.findAllForRequester(requester.getId());
+		else 
+			requests = allRequests.findAll();
 		
 		List<CertificateRequestReturnedDTO> ret = new ArrayList<CertificateRequestReturnedDTO>();
 		for (CertificateRequest req : requests) {
