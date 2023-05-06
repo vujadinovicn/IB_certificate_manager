@@ -8,7 +8,8 @@ public interface ICertificateService {
 
 	public List<CertificateDTO> getAll();
 	
-	public boolean validate(String serialNumber);
+	public boolean validateBySerialNumber(String serialNumber);
+	public boolean validateByUpload(String encodedFile);
 	public CertificateDTO getBySerialNumber(String serialNumber);
 
 }

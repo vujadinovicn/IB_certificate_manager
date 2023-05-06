@@ -1,8 +1,13 @@
 package com.certificate_manager.certificate_manager.services;
 
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
-import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
@@ -39,7 +43,7 @@ public class CertificateServiceImpl implements ICertificateService {
 	}
 
 	@Override
-	public boolean validate(String serialNumber){
+	public boolean validateBySerialNumber(String serialNumber){
 		Certificate certificate = allCertificates.findBySerialNumber(serialNumber).orElseThrow(
 				() -> new CertificateNotFoundException());
 		try {
@@ -50,6 +54,20 @@ public class CertificateServiceImpl implements ICertificateService {
 			
 			return true;
 		} catch (Exception e) {
+			return false;
+		} 
+	}
+	
+	@Override
+	public boolean validateByUpload(String encodedFile){
+		try {
+			byte encodedCert[] = Base64.getDecoder().decode(encodedFile.split(",")[1]);
+			ByteArrayInputStream inputStream  =  new ByteArrayInputStream(encodedCert);
+			CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+			System.out.println("dovde");
+			X509Certificate cert = (X509Certificate)certFactory.generateCertificate(inputStream);
+			return this.validateBySerialNumber(cert.getSerialNumber().toString());
+		} catch (CertificateException e) {
 			return false;
 		}
 	}

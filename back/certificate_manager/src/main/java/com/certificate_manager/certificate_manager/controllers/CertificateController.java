@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
@@ -18,6 +20,7 @@ import com.certificate_manager.certificate_manager.services.interfaces.ICertific
 
 @Controller
 @RequestMapping("api/certificate")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CertificateController {
 	
 	@Autowired
@@ -41,9 +44,20 @@ public class CertificateController {
 	
 	@GetMapping(value = "/validate/{serialNumber}")
 //	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> validate(@PathVariable String serialNumber){
+	public ResponseEntity<?> validateBySerialNumber(@PathVariable String serialNumber){
 		String validationMessage = "This certificate is valid!";
-		if (!certificateService.validate(serialNumber)) {
+		if (!certificateService.validateBySerialNumber(serialNumber)) {
+			validationMessage = "This certificate is not valid!";
+		};
+		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/validate-upload")
+//	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> validateByUpload(@RequestBody String encodedFile){
+		String validationMessage = "This certificate is valid!";
+		System.out.println("neca");
+		if (!certificateService.validateByUpload(encodedFile)) {
 			validationMessage = "This certificate is not valid!";
 		};
 		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
