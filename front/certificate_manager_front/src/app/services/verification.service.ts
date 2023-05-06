@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserDTO } from './user.service';
 
-export interface SMSActivation {
-  email: string,
+export interface ResetPasswordDTO{
+  newPassword: string,
   code: string
 }
 
@@ -50,20 +50,30 @@ export class VerificationService {
     return this.http.get<any>(environment.apiHost + "/user/activate/"+verificationCode, options);
   }
 
-  sendNewSms(userDTO: UserDTO): Observable<any> {
+  sendResetPasswordEmail(email: string): Observable<any>{
     const options: any = {
       responseType: 'json',
       rejectUnauthorized: false,
     };
-    return this.http.put<any>(environment.apiHost+"/sms", userDTO, options);
+    return this.http.get<any>(environment.apiHost + "/user/reset/password/email/" + email, options);
   }
 
-  sendSms(userDTO: UserDTO): Observable<any> {
+  sendResetPasswordSms(email: string): Observable<any>{
     const options: any = {
       responseType: 'json',
       rejectUnauthorized: false,
     };
-    console.log(environment.apiHost+"/sms");
-    return this.http.post<any>(environment.apiHost+"/sms", userDTO, options);
+    
+    console.log(environment.apiHost + "/user/"+email+"/reset/password/sms");
+    return this.http.get<any>(environment.apiHost + "/user/reset/password/sms/" + email, options);
   }
+
+  resetPassword(resetPasswordDTO: ResetPasswordDTO): Observable<any>{
+    const options: any = {
+      responseType: 'json',
+      rejectUnauthorized: false,
+    };
+    return this.http.put<any>(environment.apiHost + "/user/resetPassword", resetPasswordDTO, options);
+  }
+
 }

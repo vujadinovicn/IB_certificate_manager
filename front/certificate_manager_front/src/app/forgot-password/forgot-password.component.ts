@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { VerificationService } from '../services/verification.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -19,12 +21,15 @@ export class ForgotPasswordComponent implements OnInit{
     email: new FormControl('', [Validators.required, Validators.email])
   })
 
-  constructor() { }
+  constructor(private verificationService: VerificationService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
-  requestReset() {
-    
+  sendVerificationCode() {
+    if (this.forgotPasswordForm.valid)
+      this.router.navigate(['verification', {email: this.forgotPasswordForm.value.email}]);
+    else 
+      console.log("error");
   }
 }

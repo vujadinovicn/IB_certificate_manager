@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, User } from '../services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserDTO } from '../services/user.service';
 import { VerificationService } from '../services/verification.service';
@@ -13,12 +13,14 @@ import { VerificationService } from '../services/verification.service';
 export class VerificationChoiceComponent implements OnInit{
 
   userDTO: UserDTO = {} as UserDTO;
+  emailForReset: string = '';
 
-  constructor(private router: Router, public snackBar: MatSnackBar, private verificationService: VerificationService){
+  constructor(private router: Router, private route: ActivatedRoute, public snackBar: MatSnackBar, private verificationService: VerificationService){
     
   }
   
   ngOnInit(): void {
+    this.emailForReset = this.route.snapshot.paramMap.get('email')!;
     this.verificationService.recieveUserDTO().subscribe((res: any) => {
       this.userDTO = res;
     })
@@ -38,6 +40,13 @@ export class VerificationChoiceComponent implements OnInit{
   }
 
   open() {
+    if (this.emailForReset == null || this.emailForReset == undefined)
+      this.openRegisterVerification();
+    else 
+      this.openResetPassword();
+  }
+
+  openRegisterVerification(){
     if (this.clickedEmail) {
       this.verificationService.sendVerificationMail(this.userDTO.email).subscribe({
         next: (res: any) => {
@@ -54,6 +63,35 @@ export class VerificationChoiceComponent implements OnInit{
         next: (res: any) => {
           console.log(res);
           this.router.navigate(['verification-code', {type: "sms"}]);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
+    } else {
+      this.snackBar.open("Please select one of the options.", "", {
+        duration: 2000,
+     });
+    }
+  }
+
+  openResetPassword(){
+    if (this.clickedEmail) {
+      this.verificationService.sendResetPasswordEmail(this.emailForReset).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.router.navigate(['reset-password']);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
+    } 
+    else if (this.clickedSms) {
+      this.verificationService.sendResetPasswordSms(this.emailForReset).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.router.navigate(['reset-password']);
         },
         error: (err: any) => {
           console.log(err);

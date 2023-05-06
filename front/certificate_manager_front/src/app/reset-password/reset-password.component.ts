@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { UserService } from '../services/user.service';
+import { VerificationService } from '../services/verification.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -24,7 +25,7 @@ export class ResetPasswordComponent {
     confpass: new FormControl('', [Validators.required])
   }, [])
 
-  constructor() { }
+  constructor(private verificationService: VerificationService, private router: Router) { }
   
   ngAfterViewInit() {
     this.childComponent?.nav?.nativeElement.classList.add('pos-rel');
@@ -36,7 +37,7 @@ export class ResetPasswordComponent {
 
   public otpConfig: NgxOtpInputConfig = {
     otpLength: 6,
-    numericInputMode: true
+    pattern: /^[a-zA-Z0-9_.-]$/
   };
 
   //ova funkcija se poziva svaki put kad se doda novi broj, na kraju kad kolektujes vrednosti dobavis samo this.otpvalue
@@ -45,7 +46,21 @@ export class ResetPasswordComponent {
   }
 
   resetPassword() {
-   
+    if (this.resetPasswordForm.valid){
+      this.verificationService.resetPassword({
+        newPassword: this.resetPasswordForm.value.password!,
+        code: this.otpValue
+      }).subscribe({
+        next: (res: any) => {
+          console.log(res);
+          this.router.navigate(['login']);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      })
+    } else 
+      console.log("err");
   }
 
 }
