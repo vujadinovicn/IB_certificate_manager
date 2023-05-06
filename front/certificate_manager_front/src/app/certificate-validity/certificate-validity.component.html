@@ -1,10 +1,3 @@
-<p style="display: none;">certificate-validity works! </p>
-<button style="display: none;" id="upload-btn" type="button" (click)="imageInput.click()">Upload file
-    <!-- <i class="fas fa-pencil-alt"></i> -->
-    <input #imageInput type="file" (change)="onFileSelect($event)" style="display: none">
-</button>
-<button (click)="submit()" style="display: none;"></button>
-
 <div>
     <h1 class="orange">Validate certificate</h1>
 
@@ -14,14 +7,14 @@
             <button (click)="clickedSecond()" mat-button [ngClass]="firstOption == false ? 'orange option-container weight-700' : 'gray option-container'">Upload certificate copy</button>
         </div>
         <div *ngIf="this.firstOption" style="display: flex;" class="resp-flex">
-            <form [formGroup]="serialNumberForm" (ngSubmit)="requestReset()">
+            <form [formGroup]="serialNumberForm">
                 <mat-form-field >
                     <mat-label>serial number</mat-label>
                     <input matInput type="text" name="serialNumber" formControlName="serialNumber" />
                     <mat-error *ngIf="serialNumberForm.get('serialNumber')?.errors?.['required']">entering ser. num. is required</mat-error>
                 </mat-form-field>
             </form>
-            <button mat-button class="back-yellow conf-button">validate</button>
+            <button mat-button class="back-yellow conf-button" (click)="validateBySerialNumber">validate</button>
         </div>
         <div *ngIf="!this.firstOption" style="display: flex;" class="resp-flex">
             <button mat-button class="back-orange conf-button" (click)="imageInput.click()">
@@ -34,7 +27,7 @@
                     <input matInput type="text" name="certName" formControlName="certName"/>
                 </mat-form-field>
             </form>
-            <button mat-button class="back-yellow conf-button">validate</button>
+            <button mat-button class="back-yellow conf-button" (click)="validateByUpload">validate</button>
         </div>
     </div>
     <!-- *ngIf="this.validity == 'valid'" -->

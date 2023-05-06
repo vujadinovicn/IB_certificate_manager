@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CertificateService } from '../services/certificate.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class CertificateValidityComponent {
   firstOption: boolean = true;
   validity: string = '';
 
-  constructor(private ref: ChangeDetectorRef, private certificateService: CertificateService){
+  constructor(private ref: ChangeDetectorRef, private certificateService: CertificateService, private snackBar: MatSnackBar){
 
   }
 
@@ -59,23 +60,41 @@ export class CertificateValidityComponent {
       this.certNameForm.setValue({
         certName: this.file.name,
       })
-      // this.certNameForm.value.certName = this.file.name;
     }
   }
 
-  submit(): any{
-    this.certificateService.findById(this.filePath).subscribe({
+  validateBySerialNumber(): any{
+    this.certificateService.validateBySerialNumber(this.serialNumberForm.value.serialNumber!).subscribe({
       next: (result) => {
-        console.log(result);
+      if (result == 'This certificate is valid!')
+          this.validity = "valid";
+        else
+          this.validity = "not";
       },
       error: (error) => {
-        console.log(error.error);
-      },
+        this.validity = "";
+        this.snackBar.open(error.error, "", {
+          duration: 2700,
+       });
+      }
     });
   }
 
-  requestReset(){
-
+  validateByUpload(){
+    this.certificateService.validateByUpload(this.filePath).subscribe({
+      next: (result) => {
+        if (result == 'This certificate is valid!')
+          this.validity = "valid";
+        else
+          this.validity = "not";
+      },
+      error: (error) => {
+        this.validity = "";
+        this.snackBar.open(error.error, "", {
+          duration: 2700,
+       });
+      },
+    });
   }
 
 }
