@@ -12,6 +12,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LoginComponent } from './login/login.component';
 import { SideNavbarComponent } from './side-navbar/side-navbar.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { CertificateValidityComponent } from './certificate-validity/certificate-validity.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { HomepageComponent } from './homepage/homepage.component';
     NavbarComponent,
     LoginComponent,
     SideNavbarComponent,
-    HomepageComponent
+    HomepageComponent,
+    CertificateValidityComponent
   ],
   imports: [
     BrowserModule,
