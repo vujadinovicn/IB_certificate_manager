@@ -68,6 +68,20 @@ body {
     background-color: white !important;
 }
 
+.mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+  }
+  .mat-mdc-snack-bar-container.snack-bar-front-error {
+    --mdc-snackbar-container-color: #fb8500;
+  }
+  .mat-mdc-snack-bar-container.snack-bar-success {
+    --mdc-snackbar-container-color: #ffb703;
+  }
+  .mat-mdc-snack-bar-container.snack-bar-server-error {
+    --mdc-snackbar-container-color: #000000;
+  }
+
 .conf-button {
     display: block !important;
     margin: 30px auto 12px auto;

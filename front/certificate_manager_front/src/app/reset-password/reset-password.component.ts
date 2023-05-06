@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -25,7 +26,9 @@ export class ResetPasswordComponent {
     confpass: new FormControl('', [Validators.required])
   }, [])
 
-  constructor(private verificationService: VerificationService, private router: Router) { }
+  constructor(private verificationService: VerificationService, 
+    private snackBar: MatSnackBar, 
+    private router: Router) { }
   
   ngAfterViewInit() {
     this.childComponent?.nav?.nativeElement.classList.add('pos-rel');
@@ -52,15 +55,21 @@ export class ResetPasswordComponent {
         code: this.otpValue
       }).subscribe({
         next: (res: any) => {
-          console.log(res);
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           this.router.navigate(['login']);
         },
         error: (err: any) => {
-          console.log(err);
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
         }
       })
     } else 
-      console.log("err");
+      this.snackBar.open("Check your inputs again!", "", {
+        duration: 2700,  panelClass: ['snack-bar-front-error'] 
+    });
   }
 
 }

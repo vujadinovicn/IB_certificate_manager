@@ -32,20 +32,24 @@ export class LoginComponent implements OnInit{
 
     if (this.loginForm.valid) {
       this.authService.login(credentials).subscribe({
-        next: (result) => {
+        next: (result: any) => {
           localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
+          this.snackBar.open(result.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           console.log(this.authService.getUser());
         },
         error: (error) => {
-          console.log(error);
-          console.log("tu")
           this.snackBar.open("Bad credentials. Please try again!", "", {
-            duration: 2000,
+            duration: 2700, panelClass: ['snack-bar-server-error']
          });
         },
       });
-    }
+    } else 
+      this.snackBar.open("Check your inputs again!", "", {
+        duration: 2700,  panelClass: ['snack-bar-front-error'] 
+    });
   }
 }

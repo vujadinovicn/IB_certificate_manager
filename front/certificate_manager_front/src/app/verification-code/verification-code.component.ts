@@ -4,6 +4,7 @@ import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { VerificationService } from '../services/verification.service';
 import { UserDTO } from '../services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-verification-code',
@@ -23,7 +24,8 @@ export class VerificationCodeComponent implements OnInit{
   
   otpValue: any;
 
-  constructor(private verificationService: VerificationService, private router: Router, private route: ActivatedRoute){
+  constructor(private snackBar: MatSnackBar, private verificationService: VerificationService, 
+    private router: Router, private route: ActivatedRoute){
 
   }
   ngOnInit(): void {
@@ -44,15 +46,24 @@ export class VerificationCodeComponent implements OnInit{
   }
 
   verifyRegistration(){ 
-    this.verificationService.verifyRegistration(this.otpValue).subscribe({
-      next: (res: any) => {
-        console.log(res.message);
-        this.router.navigate(['login']);
-      },
-      error: (err: any) => {
-        console.log(err);
-      }
-    })
+    if (this.otpValue != null && this.otpValue != undefined && this.otpValue.length == 6){
+      this.verificationService.verifyRegistration(this.otpValue).subscribe({
+        next: (res: any) => {
+          this.snackBar.open(res.message, "", {
+              duration: 2700, panelClass: ['snack-bar-success']
+          });
+          this.router.navigate(['login']);
+        },
+        error: (err: any) => {
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
+        }
+      })
+    } else 
+      this.snackBar.open("Check your inputs again!", "", {
+        duration: 2700,  panelClass: ['snack-bar-front-error'] 
+    });
   }
 
 }

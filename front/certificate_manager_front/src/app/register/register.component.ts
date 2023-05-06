@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 import { VerificationService } from '../services/verification.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -29,7 +30,9 @@ export class RegisterComponent {
     phonenum: new FormControl('', [Validators.required,]),
   });
 
-  constructor(private userService: UserService, private verificationService: VerificationService, private router: Router) { }
+  constructor(private snackBar: MatSnackBar, 
+    private userService: UserService, 
+    private verificationService: VerificationService, private router: Router) { }
 
   ngOnInit(): void {
     // markFormControlsTouched(this.registerForm);
@@ -47,16 +50,23 @@ export class RegisterComponent {
 
       this.userService.registerUser(user).subscribe({
         next: (res: ResponseMessageDTO) => {
-          console.log(res.message);
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           resetForm(this.regForm, formDirective);
           this.verificationService.sendUserDTO(user);
           this.router.navigate(['verification']);
         },
         error: (err: HttpErrorResponse) => {
-          console.log(err);
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
         }
       });
-    }
+    } else 
+      this.snackBar.open("Check your inputs again!", "", {
+        duration: 2700,  panelClass: ['snack-bar-front-error'] 
+    });
   }
 }
 

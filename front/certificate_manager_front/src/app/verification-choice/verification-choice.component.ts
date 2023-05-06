@@ -50,27 +50,35 @@ export class VerificationChoiceComponent implements OnInit{
     if (this.clickedEmail) {
       this.verificationService.sendVerificationMail(this.userDTO.email).subscribe({
         next: (res: any) => {
-          console.log(res);
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           this.router.navigate(['verification-code', {type: "sms"}]);
         },
         error: (err: any) => {
-          console.log(err);
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
         }
       })
     } 
     else if (this.clickedSms) {
       this.verificationService.sendVerificationSMS(this.userDTO.email).subscribe({
         next: (res: any) => {
-          console.log(res);
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           this.router.navigate(['verification-code', {type: "sms"}]);
         },
         error: (err: any) => {
-          console.log(err);
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
         }
       })
     } else {
       this.snackBar.open("Please select one of the options.", "", {
-        duration: 2000,
+        duration: 2700, panelClass: ['snack-bar-front-error'] 
      });
     }
   }
@@ -79,27 +87,35 @@ export class VerificationChoiceComponent implements OnInit{
     if (this.clickedEmail) {
       this.verificationService.sendResetPasswordEmail(this.emailForReset).subscribe({
         next: (res: any) => {
-          console.log(res);
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           this.router.navigate(['reset-password']);
         },
         error: (err: any) => {
-          console.log(err);
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
         }
       })
     } 
     else if (this.clickedSms) {
       this.verificationService.sendResetPasswordSms(this.emailForReset).subscribe({
         next: (res: any) => {
-          console.log(res);
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass: ['snack-bar-success']
+        });
           this.router.navigate(['reset-password']);
         },
         error: (err: any) => {
-          console.log(err);
+          this.snackBar.open(err.error, "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
         }
       })
     } else {
       this.snackBar.open("Please select one of the options.", "", {
-        duration: 2000,
+        duration: 2700,  panelClass: ['snack-bar-front-error'] 
      });
     }
   }
