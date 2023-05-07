@@ -11,6 +11,15 @@ export class CertificateService {
 
   private certificatesToDisplay = new BehaviorSubject<Cerificate[]>([]);
 
+  private isByMeSelected$ = new BehaviorSubject<boolean>(true);
+  getIsByMeSelected(): boolean {
+    return this.isByMeSelected$.value;
+  }
+
+  setIsByMeSelected(is: boolean): void {
+    this.isByMeSelected$.next(is);
+  }
+
   constructor(private http: HttpClient) { }
 
   setCertificatesToDisplay(certificates: Cerificate[]) {
@@ -43,6 +52,27 @@ export class CertificateService {
     return this.http.get<any>(environment.apiHost + "/certificate/validate/" + serialNumber, options);
   }
 
+  getAllRequestes() : Observable<any> {
+    const options: any = {
+      responseType: 'json',
+    };
+    return this.http.get<any>(environment.apiHost + "/certificate/request", options);
+  }
+
+  getAllRequestesByMe() : Observable<any> {
+    const options: any = {
+      responseType: 'json',
+    };
+    return this.http.get<any>(environment.apiHost + "/certificate/request/byMe", options);
+  }
+
+  getAllRequestesFromMe() : Observable<any> {
+    const options: any = {
+      responseType: 'json',
+    };
+    return this.http.get<any>(environment.apiHost + "/certificate/request/fromMe", options);
+  }
+
 
 }
 
@@ -55,4 +85,14 @@ export interface Cerificate {
   type: any,
   issuer: User,
   issuedTo: User
+}
+
+export interface CertificateRequest {
+  id: number,
+  date: string,
+  status: string,
+  rejectionReason: string, 
+  validTo: string,
+  issuer: Cerificate,
+  type: string
 }
