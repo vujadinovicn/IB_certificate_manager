@@ -10,9 +10,12 @@ import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.DownloadCertDTO;
 import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.entities.User;
@@ -57,13 +60,18 @@ public class CertificateServiceImpl implements ICertificateService {
 		Certificate certificate = allCertificates.findBySerialNumber(serialNumber).orElseThrow(
 				() -> new CertificateNotFoundException());
 		try {
-			if (this.hasCertificateExpired(certificate) || !certificate.isValid())
+			if (!certificate.isValid())
 				return false;
+			if (this.hasCertificateExpired(certificate)) {
+				this.invalidateCurrentAndBelow(certificate, "Certificate with SN." + certificate.getSerialNumber() + "has expired.");
+				return false;
+			}
 			
 			this.verify(certificate);
 			
 			return true;
 		} catch (Exception e) {
+			this.invalidateCurrentAndBelow(certificate, e.getMessage());
 			return false;
 		} 
 	}
@@ -74,7 +82,6 @@ public class CertificateServiceImpl implements ICertificateService {
 			byte encodedCert[] = Base64.getDecoder().decode(encodedFile.split(",")[1]);
 			ByteArrayInputStream inputStream  =  new ByteArrayInputStream(encodedCert);
 			CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-			System.out.println("dovde");
 			X509Certificate cert = (X509Certificate)certFactory.generateCertificate(inputStream);
 			return this.validateBySerialNumber(cert.getSerialNumber().toString());
 		} catch (CertificateException e) {
@@ -113,14 +120,15 @@ public class CertificateServiceImpl implements ICertificateService {
 		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
 	}
 	
-	private void invalidateCurrentAndBelow(Certificate cert, String reason) {
+	@Override
+	public void invalidateCurrentAndBelow(Certificate cert, String reason) {
 		cert.setValid(false);
 		cert.setWithdrawalReason(reason);
 		
 		allCertificates.save(cert);
 		allCertificates.flush();
 		
-		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getSerialNumber());
+		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getId());
 		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) 
 			this.invalidateCurrentAndBelow(c, reason);
 	}
@@ -139,6 +147,21 @@ public class CertificateServiceImpl implements ICertificateService {
 			ret.add(new CertificateDTO(cert));
 		}
 		return ret;
+	}
+	
+	@Override
+	public List<Certificate> getAllCertificatesWithCurrentCertificateAsIssuer(Certificate certificate){
+		return allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(certificate.getId());
+	}
+	
+	@Override
+	public List<Certificate> getRootCertificates(){
+		return allCertificates.getRootCertificates();
+	}
+
+	@Override
+	public DownloadCertDTO download(String serialNumber) {
+		 return this.allFileCertificates.readCertificateAsResource(serialNumber);
 	}
 
 }

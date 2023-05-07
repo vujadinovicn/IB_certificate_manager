@@ -16,6 +16,11 @@ import { CertificateValidityComponent } from './certificate-validity/certificate
 import { TokenInterceptor } from './interceptor/token-interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestReviewComponent } from './request-review/request-review.component';
+import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.component';
+import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
 
 @NgModule({
   declarations: [
@@ -26,6 +31,8 @@ import { RequestReviewComponent } from './request-review/request-review.componen
     HomepageComponent,
     CertificateValidityComponent,
     RequestReviewComponent
+    WithdrawDialogComponent,
+    GenerateRequestDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +41,9 @@ import { RequestReviewComponent } from './request-review/request-review.componen
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},
