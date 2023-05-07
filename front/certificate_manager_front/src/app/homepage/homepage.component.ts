@@ -75,6 +75,17 @@ export class HomepageComponent {
       data: {serialNumber: certificate.serialNumber}
     });
   }
+
+  download(serialNumber: string) {
+    this.certificateService.download(serialNumber).subscribe({
+      next: (value) => {
+        console.log(value);
+      }, 
+      error: (err) => {
+        console.log(err);
+      },
+    })
+  }
 }
 
 export function formatDate(dateStr: string) {

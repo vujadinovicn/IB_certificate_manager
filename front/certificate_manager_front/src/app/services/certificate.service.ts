@@ -50,7 +50,9 @@ export class CertificateService {
     return this.http.put<any>(environment.apiHost + "/certificate/withdraw/" + serialNumber, {reason: reason}, options);
   }
 
-
+  download(serialNumber: String): Observable<any> {
+    return this.http.get<any>(environment.apiHost + "/certificate/download/" + serialNumber);
+  }
 }
 
 export interface Cerificate {
