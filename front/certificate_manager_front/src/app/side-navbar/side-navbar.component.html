@@ -37,11 +37,11 @@
     <div class="section">
         <p class="section-title">Requests</p>
         <hr>
-        <div class="section-item" (click)="openRequestReview(true)" [ngClass]="url == '/requests-by-me'? 'selected-option': ''">
+        <div class="section-item" (click)="openRequestReview(true)" [ngClass]="reqByMe == true && url == '/request-review' ? 'selected-option': ''">
             <i class="fa-solid fa-file-circle-plus"></i>
             <p>requested by me</p>
         </div>
-        <div class="section-item" (click)="openRequestReview(false)" [ngClass]="url == '/requests-from-me'? 'selected-option': ''">
+        <div class="section-item" (click)="openRequestReview(false)" [ngClass]="reqFromMe == true && url == '/request-review' ? 'selected-option': ''">
             <i class="fa-solid fa-file-circle-plus"></i>
             <p>requested from me</p>
         </div>
