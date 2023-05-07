@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
@@ -32,11 +32,12 @@ import com.certificate_manager.certificate_manager.services.interfaces.IUserServ
 import com.certificate_manager.certificate_manager.sms.ISMSService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200")
+@Validated
 public class UserController {
 	
 	@Autowired
@@ -61,22 +62,20 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "send/verification/email/{email}")
-	public ResponseEntity<?> sendVerificationMail(@PathVariable String email) {
+	public ResponseEntity<?> sendVerificationMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		this.userService.sendEmailVerification(email); 
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "send/verification/sms/{email}")
-    public ResponseEntity<?> sendVerificationSMS(@PathVariable String email) {
+    public ResponseEntity<?> sendVerificationSMS(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		smsService.sendVerificationSMS(email);
     	return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Code sent successfully!"), HttpStatus.OK);
-    }  
-	
-	
+    } 
 	 
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") String verificationCode) {
+	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode) {
 		this.userService.verifyRegistration(verificationCode);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully activated your account!"), HttpStatus.OK);
 	}
@@ -109,16 +108,16 @@ public class UserController {
 	
 	
 	@GetMapping(value = "reset/password/email/{email}")
-	public ResponseEntity<?> sendResetPasswordMail(@PathVariable String email) {
+	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		System.err.println("usao");
 		this.userService.sendResetPasswordMail(email);
-		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
 	
 	@GetMapping(value = "reset/password/sms/{email}")
-	public ResponseEntity<?> sendResetPasswordSms(@PathVariable String email) {
+	public ResponseEntity<?> sendResetPasswordSms(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		this.smsService.sendResetSMS(email);
-		return new ResponseEntity<String>("Email with reset code has been sent!", HttpStatus.NO_CONTENT);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
 
 //	http://localhost:4388/api/user/vujadinovic01@gmail.com/reset/password/sms
@@ -126,7 +125,7 @@ public class UserController {
 	@PutMapping(value = "resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
 		this.userService.resetPassword(dto);
-		return new ResponseEntity<String>("Password successfully changed!", HttpStatus.NO_CONTENT);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully changed!"), HttpStatus.NO_CONTENT);
 	}
 
 }
