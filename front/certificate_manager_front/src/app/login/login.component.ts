@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit{
         error: (error) => {
           console.log(error);
           console.log("tu")
+          console.log(error.error)
           this.snackBar.open("Bad credentials. Please try again!", "", {
             duration: 2000,
          });
