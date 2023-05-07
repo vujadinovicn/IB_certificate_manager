@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
+import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
 import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
@@ -59,7 +60,7 @@ public class UserController {
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO) {
 		this.userService.register(userDTO);
-		return new ResponseEntity<String>("You have successfully registered!", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully registered!"), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -70,7 +71,7 @@ public class UserController {
 			authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
 		} catch (BadCredentialsException e) {
-			return new ResponseEntity<String>("Wrong username or password!", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Wrong username or password!"), HttpStatus.BAD_REQUEST);
 		} catch (Exception ex) {
 			System.out.println(ex.getStackTrace());
 			return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);

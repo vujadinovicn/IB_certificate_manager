@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateRequestCreateDTO;
 import com.certificate_manager.certificate_manager.dtos.CertificateRequestReturnedDTO;
+import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateRequestService;
 
@@ -41,19 +42,19 @@ public class CertificateRequestController {
 	@PostMapping(value = "")
 	public ResponseEntity<?> generateCertificateRequest(@RequestBody CertificateRequestCreateDTO dto) throws AccessDeniedException {
 		requestGenerator.generateCertificateRequest(dto);
-		return new ResponseEntity<String>("Successfully created certificate request", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Successfully created certificate request"), HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/accept/{id}")
-	public ResponseEntity<String> acceptCertificateRequest(@PathVariable long id) {
+	public ResponseEntity<?> acceptCertificateRequest(@PathVariable long id) {
 		this.requestService.acceptRequest(id);
-		return new ResponseEntity<String>("Request successfully accepted. Certificate generated.", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Request successfully accepted. Certificate generated."), HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/deny/{id}")
-	public ResponseEntity<String> denyCertificateRequest(@PathVariable long id, @RequestBody @NotNull String rejectionReason) {
+	public ResponseEntity<?> denyCertificateRequest(@PathVariable long id, @RequestBody @NotNull String rejectionReason) {
 		this.requestService.denyRequest(id, rejectionReason);
-		return new ResponseEntity<String>("Request successfully denied.", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Request successfully denied."), HttpStatus.OK);
 	}
 
 }

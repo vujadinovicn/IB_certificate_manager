@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
 import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
@@ -44,7 +45,7 @@ public class CertificateController {
 		try {
 			return new ResponseEntity<List<CertificateDTO>>(certificateService.getAllForUser(), HttpStatus.OK);
 		} catch(UserNotFoundException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 		
 	}
@@ -53,7 +54,7 @@ public class CertificateController {
 	@PostMapping(value = "/root")
 	public ResponseEntity<?> generateRoot() {
 		certificateGenerator.generateSelfSignedCertificate();
-		return new ResponseEntity<String>("Sucessefully created root certificate.", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Sucessefully created root certificate."), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/validate/{serialNumber}")
@@ -63,7 +64,7 @@ public class CertificateController {
 		if (!certificateService.validateBySerialNumber(serialNumber)) {
 			validationMessage = "This certificate is not valid!";
 		};
-		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO(validationMessage), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/validate-upload")
@@ -74,13 +75,13 @@ public class CertificateController {
 		if (!certificateService.validateByUpload(encodedFile)) {
 			validationMessage = "This certificate is not valid!";
 		};
-		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO(validationMessage), HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/withdraw/{serialNumber}")
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
 		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
-		return new ResponseEntity<String>("Successfully withdraw of certificate", HttpStatus.OK);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Successfully withdraw of certificate"), HttpStatus.OK);
 	}
 }
