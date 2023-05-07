@@ -5,7 +5,7 @@ body {
     margin: 0; font-family: 'Poppins', sans-serif;
     position: relative;
     padding: 0;
-    background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url("./assets/background.jpeg");
+    background-image: linear-gradient(rgba(255,255,255,0.96), rgba(255,255,255,0.96)), url("./assets/background.jpeg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

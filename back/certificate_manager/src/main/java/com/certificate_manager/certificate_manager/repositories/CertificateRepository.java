@@ -12,6 +12,9 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
 	public Optional<Certificate> findBySerialNumber(String serialNumber);
 	
+	@Query(value = "select * from \"certificates\" where \"issuer_serial_number\" = :serialNumber", nativeQuery=true)
+	public List<Certificate> getAllCertificatesWithCurrentCertificateAsIssuer(String serialNumber);
+
 	@Query("select c from Certificate c where c.issuedTo.id = ?1")
 	public List<Certificate> findAllForUser(long userId);
 	

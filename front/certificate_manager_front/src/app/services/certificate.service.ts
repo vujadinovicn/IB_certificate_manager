@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { User } from './auth.service';
 import { HttpClient } from '@angular/common/http';
@@ -29,6 +28,21 @@ export class CertificateService {
   getAllCertificates(): Observable<any> {
     return this.http.get<any>(environment.apiHost + "/certificate");
   }
+
+  validateByUpload(file: String): Observable<any> {
+    const options: any = {
+        responseType: 'json',
+      };
+    return this.http.post<any>(environment.apiHost + "/certificate/validate-upload", file, options);
+  }
+
+  validateBySerialNumber(serialNumber: String): Observable<any> {
+    const options: any = {
+        responseType: 'json',
+      };
+    return this.http.get<any>(environment.apiHost + "/certificate/validate/" + serialNumber, options);
+  }
+
 
 }
 

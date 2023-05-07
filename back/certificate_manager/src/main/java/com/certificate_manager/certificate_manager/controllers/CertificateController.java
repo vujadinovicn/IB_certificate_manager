@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
@@ -55,11 +58,29 @@ public class CertificateController {
 	
 	@GetMapping(value = "/validate/{serialNumber}")
 //	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> validate(@PathVariable String serialNumber){
+	public ResponseEntity<?> validateBySerialNumber(@PathVariable String serialNumber){
 		String validationMessage = "This certificate is valid!";
-		if (!certificateService.validate(serialNumber)) {
+		if (!certificateService.validateBySerialNumber(serialNumber)) {
 			validationMessage = "This certificate is not valid!";
 		};
 		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/validate-upload")
+//	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> validateByUpload(@RequestBody String encodedFile){
+		String validationMessage = "This certificate is valid!";
+		System.out.println("neca");
+		if (!certificateService.validateByUpload(encodedFile)) {
+			validationMessage = "This certificate is not valid!";
+		};
+		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/withdraw/{serialNumber}")
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
+		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
+		return new ResponseEntity<String>("Successfully withdraw of certificate", HttpStatus.OK);
 	}
 }

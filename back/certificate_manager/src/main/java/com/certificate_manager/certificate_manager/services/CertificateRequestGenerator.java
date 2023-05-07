@@ -55,8 +55,8 @@ public class CertificateRequestGenerator implements ICertificateRequestGenerator
 		}
 		else if (cert == null) {
 			throw new CertificateNotFoundException();
-		}
-		else if (cert.getType() == CertificateType.END) {
+		} 
+		else if (!cert.isValid() || cert.getType() == CertificateType.END || cert.getValidTo().isBefore(dto.getValidTo())) {
 			throw new CertificateNotValidException();
 		}
 		else if (user.getRole() != UserRole.ADMIN && dto.getType() == CertificateType.ROOT) {
@@ -67,7 +67,7 @@ public class CertificateRequestGenerator implements ICertificateRequestGenerator
 		this.allRequests.save(request);
 		this.allRequests.flush();
 		
-		if (user.getRole() == UserRole.ADMIN) {
+		if (user.getRole() == UserRole.ADMIN || user == cert.getIssuedTo()) {
 			certificateGenerator.generateCertificate(request);
 		}
 	}
