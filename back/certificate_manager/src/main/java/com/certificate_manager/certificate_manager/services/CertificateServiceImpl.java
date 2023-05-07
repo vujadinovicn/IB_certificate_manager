@@ -120,7 +120,7 @@ public class CertificateServiceImpl implements ICertificateService {
 		allCertificates.save(cert);
 		allCertificates.flush();
 		
-		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getSerialNumber());
+		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getId());
 		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) 
 			this.invalidateCurrentAndBelow(c, reason);
 	}

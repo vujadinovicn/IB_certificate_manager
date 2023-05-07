@@ -47,7 +47,7 @@ export class CertificateService {
     const options: any = {
         responseType: 'json',
       };
-    return this.http.put<any>(environment.apiHost + "/certificate/withdraw/{serialNumber}" + serialNumber, {reason: reason}, options);
+    return this.http.put<any>(environment.apiHost + "/certificate/withdraw/" + serialNumber, {reason: reason}, options);
   }
 
 

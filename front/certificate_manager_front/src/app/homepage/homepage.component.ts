@@ -29,8 +29,10 @@ export class HomepageComponent {
     //   console.log(value);
     // });
     // this.subs.push(sub);
+
     this.role = this.authService.getRole();
     this.url = this.router.url;
+    console.log(this.role)
     if (this.url == '/all-certificates') {
       this.certificateService.getAllCertificates().subscribe({
         next: (value) => {
@@ -68,7 +70,7 @@ export class HomepageComponent {
     return formatDate(dataStr);
   }
 
-  withdraw(certificate: Cerificate){
+  withdraw(certificate: any){
     this.dialog.open(WithdrawDialogComponent, {
       data: {serialNumber: certificate.serialNumber}
     });

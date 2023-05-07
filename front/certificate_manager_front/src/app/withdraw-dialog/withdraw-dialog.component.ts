@@ -29,8 +29,9 @@ export class WithdrawDialogComponent implements OnInit{
     this.certificateService.withdraw(this.serialNumber, this.reason).subscribe({
       next: (res) => {
         this.snackBar.open(res.message, "", {
-          duration: 2700, panelClass: ['snack-bar-success']
+          duration: 2700, panelClass:['snack-bar-success']
        });
+       this.dialogRef.close();
       },
       error: (err) => {
         this.snackBar.open(err.error, "", {
