@@ -114,7 +114,7 @@ export class AuthService {
         role: role,
         email: email,
         name: name,
-        lastname: lastname
+        lastName: lastname
       }
     }
     return null;
@@ -135,9 +135,9 @@ export class AuthService {
 export interface User {
   id: number,
   email: string,
-  role: string,
+  role?: string,
   name: string,
-  lastname: string
+  lastName: string
 }
 
 export interface TokenDTO {

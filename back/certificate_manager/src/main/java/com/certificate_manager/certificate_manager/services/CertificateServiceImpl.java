@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
+import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
+import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
 public class CertificateServiceImpl implements ICertificateService {
@@ -25,12 +28,15 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Autowired
 	private CertificateFileRepository allFileCertificates;
 	
+	@Autowired
+	private IUserService userService;
+	
 	@Override
 	public List<CertificateDTO> getAll() {
 		List<Certificate> certs = allCertificates.findAll();
-		if (certs.size() == 0) {
-			throw new CertificateNotFoundException();
-		}
+//		if (certs.size() == 0) {
+//			throw new CertificateNotFoundException();
+//		}
 		List<CertificateDTO> ret = new ArrayList<CertificateDTO>();
 		for (Certificate cert : certs) {
 			ret.add(new CertificateDTO(cert));
@@ -60,7 +66,7 @@ public class CertificateServiceImpl implements ICertificateService {
 	
 	private void verify(Certificate certificate) throws Exception {
 		X509Certificate currentCert509 = allFileCertificates.readX509Certificate(certificate.getSerialNumber());
-		X509Certificate issuerCert509 = allFileCertificates.readX509Certificate(certificate.getIssuerSerialNumber());
+		X509Certificate issuerCert509 = allFileCertificates.readX509Certificate(certificate.getIssuer().getSerialNumber());
 		currentCert509.verify(issuerCert509.getPublicKey());
 	}
     
@@ -72,5 +78,22 @@ public class CertificateServiceImpl implements ICertificateService {
 		}
 		
 		return new CertificateDTO(cert);
+	}
+
+	@Override
+	public List<CertificateDTO> getAllForUser() {
+		User user = this.userService.getCurrentUser();
+		
+		if (user == null) {
+			throw new UserNotFoundException();
+		}
+		
+		List<Certificate> certs = allCertificates.findAllForUser(user.getId());
+
+		List<CertificateDTO> ret = new ArrayList<CertificateDTO>();
+		for (Certificate cert : certs) {
+			ret.add(new CertificateDTO(cert));
+		}
+		return ret;
 	}
 }

@@ -14,11 +14,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="certificates")
+@Table(name = "certificates")
 public class Certificate {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String serialNumber;
@@ -27,11 +27,12 @@ public class Certificate {
 
 	private LocalDateTime validTo;
 
-	private String issuerSerialNumber;
-
 	private boolean valid;
 
 	private CertificateType type;
+
+	@ManyToOne
+	private Certificate issuer;
 
 	@ManyToOne
 	private User issuedTo;
@@ -40,28 +41,28 @@ public class Certificate {
 
 	}
 
-	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
-			String issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
+	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo, boolean valid,
+			CertificateType type, Certificate issuer, User issuedTo) {
 		super();
 		this.serialNumber = serialNumber;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
-		this.issuerSerialNumber = issuerSerialNumber;
 		this.valid = valid;
 		this.type = type;
+		this.issuer = issuer;
 		this.issuedTo = issuedTo;
 	}
 
-	public Certificate(CertificateRequest request, X509Certificate cert509) {
+	public Certificate(CertificateRequest request, X509Certificate cert509, Certificate issuer) {
 		this.serialNumber = cert509.getSerialNumber().toString();
 		this.issuedTo = request.getRequester();
 		this.validFrom = DateUtils.toLocalDate(cert509.getNotBefore());
 		this.validTo = DateUtils.toLocalDate(cert509.getNotAfter());
-		this.issuerSerialNumber = request.getIssuerSerialNumber();
+		this.issuer = issuer;
 		this.valid = true;
 		this.type = request.getType();
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -94,12 +95,12 @@ public class Certificate {
 		this.validTo = validTo;
 	}
 
-	public String getIssuerSerialNumber() {
-		return issuerSerialNumber;
+	public Certificate getIssuer() {
+		return issuer;
 	}
 
-	public void setIssuerSerialNumber(String issuerSerialNumber) {
-		this.issuerSerialNumber = issuerSerialNumber;
+	public void setIssuer(Certificate issuer) {
+		this.issuer = issuer;
 	}
 
 	public boolean isValid() {

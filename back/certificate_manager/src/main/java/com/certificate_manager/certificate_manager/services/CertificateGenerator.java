@@ -136,12 +136,21 @@ public class CertificateGenerator implements ICertificateGenerator{
 			X509Certificate cert509 = certConverter.getCertificate(certHolder);
 			System.out.println(cert509);
 			
-			Certificate certDB = new Certificate(cert509.getSerialNumber().toString(), validFrom, validTo, cert509.getSerialNumber().toString(), true, CertificateType.ROOT, user);
+			Certificate parent = allCertificates.findBySerialNumber(cert509.getSerialNumber().toString()).orElse(null);
+			
+			Certificate certDB = new Certificate(cert509.getSerialNumber().toString(), validFrom, validTo, true, CertificateType.ROOT, parent, user);
 			
 			fileRepository.saveCertificateAsPEMFile(cert509);
 			fileRepository.savePrivateKeyAsPEMFile(keys.getPrivate(), cert509.getSerialNumber().toString());
 			allCertificates.save(certDB);
 			allCertificates.flush();
+			
+			if (parent == null) {
+				parent = allCertificates.findBySerialNumber(cert509.getSerialNumber().toString()).orElse(null);
+				certDB.setIssuer(parent);
+				allCertificates.save(certDB);
+				allCertificates.flush();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -151,7 +160,13 @@ public class CertificateGenerator implements ICertificateGenerator{
 	private Certificate saveCertificate(CertificateRequest request, X509Certificate cert509, KeyPair keys) {
 		try {
 			// save DB instance
-			Certificate certDB = new Certificate(request, cert509);
+			Certificate parent = allCertificates.findBySerialNumber(request.getIssuerSerialNumber()).orElse(null);
+			
+			if (parent == null) {
+				throw new CertificateNotFoundException();
+			}
+			
+			Certificate certDB = new Certificate(request, cert509, parent);
 	
 			// save Disk .crt instance
 			fileRepository.saveCertificateAsPEMFile(cert509);

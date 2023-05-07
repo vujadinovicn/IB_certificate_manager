@@ -1,3 +1,4 @@
+import { CertificateService } from './../services/certificate.service';
 import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit{
     password: new FormControl('', [Validators.required])
   });
 
-  constructor(private authService: AuthService, public snackBar: MatSnackBar, private router: Router){
+  constructor(private authService: AuthService, public snackBar: MatSnackBar, private router: Router, private certificateService: CertificateService){
     
   }
   
@@ -37,7 +38,17 @@ export class LoginComponent implements OnInit{
           localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
-          this.router.navigate(['home']);
+          this.certificateService.getAllCertificates().subscribe({
+            next: (value) => {
+              this.certificateService.setCertificatesToDisplay(value);
+              
+            },
+            error: (err) => {
+              // TODO: make snackbar
+              console.log("Error wile trying to fetch all certificates.")
+            },
+          });
+          this.router.navigate(['all-certificates']);
           console.log(this.authService.getUser());
         },
         error: (error) => {

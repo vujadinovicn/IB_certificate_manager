@@ -1,5 +1,6 @@
+import { CertificateService } from './../services/certificate.service';
 import { UserService } from './../services/user.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from './../services/auth.service';
 import { Component } from '@angular/core';
 
@@ -11,13 +12,26 @@ import { Component } from '@angular/core';
 export class SideNavbarComponent {
 
   name = "Tina";
+  url = '';
 
-  constructor(private authService: AuthService, private router: Router, private userService: UserService) {}
+  constructor(private authService: AuthService, 
+              private router: Router, 
+              private userService: UserService,
+              private certificateService: CertificateService) {
+                
+                
+  }
 
   ngOnInit(): void {
     let loggedUser = this.authService.getUser();
     this.name = loggedUser? loggedUser.name: "";
     this.handleSmallScreens();
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.url = event.urlAfterRedirects;
+      }
+    });
   }
 
   logout() {
@@ -56,6 +70,34 @@ export class SideNavbarComponent {
     closeBtn.style.display = 'none';
 
     navbarMenuSmaller.style.display = 'block';
+  }
+
+  showCertificates(type: string) {
+    if (type == 'all') {
+      this.certificateService.getAllCertificates().subscribe({
+        next: (value) => {
+          this.certificateService.setCertificatesToDisplay(value);
+        },
+        error: (err) => {
+          // TODO: make snackbar
+          console.log("Error wile trying to fetch all certificates.")
+        },
+      });
+      this.router.navigate(['all-certificates']);
+    } else {
+      if (type == "my") {
+        this.certificateService.getMyCertificates().subscribe({
+          next: (value) => {
+            this.certificateService.setCertificatesToDisplay(value);
+          },
+          error: (err) => {
+            // TODO: make snackbar
+            console.log("Error wile trying to fetch your certificates.")
+          },
+        });
+        this.router.navigate(['my-certificates']);
+      }
+    }
   }
 
 }

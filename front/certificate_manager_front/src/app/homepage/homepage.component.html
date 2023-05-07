@@ -1,67 +1,22 @@
 <div class="hp-container">
     <div class="cards-container">
-        <div class="certificate-card basic-container">
+        <p class="no-certificates basic-container" *ngIf="certificates.length==0 && loaded">Oh :( There are no certificates at the moment</p>
+        <div class="certificate-card basic-container" *ngFor="let certificate of certificates">
             <div class="certificate-options">
-                <i class="fa-solid fa-file-circle-plus certificate-option-request"></i>
+                <i class="fa-solid fa-ban withdraw-icon" *ngIf="url == '/my-certificates'"></i>
+                <i class="fa-solid fa-file-circle-plus certificate-option-request" *ngIf="certificate.type != 'END'"></i>
                 <img src="../../assets/download.svg" class="certificate-option-download" alt="">
             </div>
             <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
             <div class="certificate-info-container">
-                <p><span class="light-gray">issued to: </span>Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">issued by:</span> Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">valid from:</span> 13.4.2021. <span class="light-gray">to</span> 13.4.2024.</p>
+                <p><span class="light-gray">issued to: </span>{{certificate.issuedTo.name + " " + certificate.issuedTo.lastName}} - <span class="light-gray">{{certificate.issuedTo.email}}</span></p>
+                <p><span class="light-gray">issued by:</span> {{certificate.issuer.name + " " + certificate.issuer.lastName}} - <span class="light-gray">{{certificate.issuer.email}}</span></p>
+                <p><span class="light-gray">valid from:</span> {{formatDate(certificate.validFrom)}} <span class="light-gray">to</span> {{formatDate(certificate.validTo)}}</p>
             </div>
-            <div class="certificate-type">
-                <p>intermidiate</p>
-            </div>
-        </div>
-        
-        <div class="certificate-card basic-container">
-            <div class="certificate-options">
-                <i class="fa-solid fa-file-circle-plus certificate-option-request"></i>
-                <img src="../../assets/download.svg" class="certificate-option-download" alt="">
-            </div>
-            <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
-            <div class="certificate-info-container">
-                <p><span class="light-gray">issued to: </span>Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">issued by:</span> Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">valid from:</span> 13.4.2021. <span class="light-gray">to</span> 13.4.2024.</p>
-            </div>
-            <div class="certificate-type">
-                <p>intermidiate</p>
-            </div>
-        </div>
-        
-        
-        <div class="certificate-card basic-container">
-            <div class="certificate-options">
-                <i class="fa-solid fa-file-circle-plus certificate-option-request"></i>
-                <img src="../../assets/download.svg" class="certificate-option-download" alt="">
-            </div>
-            <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
-            <div class="certificate-info-container">
-                <p><span class="light-gray">issued to: </span>Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">issued by:</span> Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">valid from:</span> 13.4.2021. <span class="light-gray">to</span> 13.4.2024.</p>
-            </div>
-            <div class="certificate-type">
-                <p>intermidiate</p>
-            </div>
-        </div>
-
-        <div class="certificate-card basic-container">
-            <div class="certificate-options">
-                <i class="fa-solid fa-file-circle-plus certificate-option-request"></i>
-                <img src="../../assets/download.svg" class="certificate-option-download" alt="">
-            </div>
-            <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
-            <div class="certificate-info-container">
-                <p><span class="light-gray">issued to: </span>Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">issued by:</span> Lara Croft - <span class="light-gray">lara@gmail.com</span></p>
-                <p><span class="light-gray">valid from:</span> 13.4.2021. <span class="light-gray">to</span> 13.4.2024.</p>
-            </div>
-            <div class="certificate-type">
-                <p>intermidiate</p>
+            <div class="certificate-type" [ngClass]="{ 'back-orange': certificate.type == 'ROOT',
+                                                       'back-yellow-light': certificate.type == 'END',
+                                                       'back-yellow': certificate.type == 'INTERMEDIATE' }">
+                <p>{{certificate.type.toLowerCase()}}</p>
             </div>
         </div>
     </div>
