@@ -64,6 +64,7 @@ export class CertificateValidityComponent {
   }
 
   validateBySerialNumber(): any{
+    console.log("aaa");
     this.certificateService.validateBySerialNumber(this.serialNumberForm.value.serialNumber!).subscribe({
       next: (result) => {
       if (result == 'This certificate is valid!')
