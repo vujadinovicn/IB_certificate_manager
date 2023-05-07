@@ -3,8 +3,11 @@
     width: 400px;
     background-color: white;
     padding: 5px 0;
+    padding-bottom: 0;
     margin: 0 auto;
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .height {
@@ -13,6 +16,7 @@
 
 #request-header {
     height: 80px;
+    width: 100%;
 }
 
 #header-buttons {
@@ -51,6 +55,7 @@ p {
     height: 410px;
     padding: 5px 10px;
     overflow: auto;
+    width: 100%;
 }
 
 .driver-name {
@@ -134,4 +139,30 @@ p {
 
 .denied-request {
     border: 2px solid #A8201A;
+}
+
+#buttons {
+    margin-top: auto;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: fit-content;
+}
+
+#acceptBtn {
+    width: 50%;
+    background-color: #33A02C;
+    color: white;
+    padding: 10px 0;
+    border: none;
+    border-radius: 0 0 0 5px;
+}
+
+#declineBtn {
+    width: 50%;
+    color: white;
+    background-color: #A8201A;
+    padding: 10px 0;
+    border: none;
+    border-radius: 0 0 5px 0;
 }
