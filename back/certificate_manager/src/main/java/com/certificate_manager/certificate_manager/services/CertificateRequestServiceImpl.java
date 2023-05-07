@@ -44,7 +44,7 @@ public class CertificateRequestServiceImpl implements ICertificateRequestService
 		if (requester.getRole() == UserRole.USER)
 			requests = allRequests.findAllForRequester(requester.getId());
 		else 
-			requests = allRequests.findAll();
+			requests = allRequests.findAll(); 
 		
 		List<CertificateRequestReturnedDTO> ret = new ArrayList<CertificateRequestReturnedDTO>();
 		for (CertificateRequest req : requests) {

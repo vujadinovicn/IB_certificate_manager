@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.WithdrawReasonDTO;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
 
@@ -60,6 +62,13 @@ public class CertificateController {
 		if (!certificateService.validateByUpload(encodedFile)) {
 			validationMessage = "This certificate is not valid!";
 		};
+		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/withdraw/{serialNumber}")
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawReasonDTO withdrawReasonDTO){
+		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
 		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
 	}
 }

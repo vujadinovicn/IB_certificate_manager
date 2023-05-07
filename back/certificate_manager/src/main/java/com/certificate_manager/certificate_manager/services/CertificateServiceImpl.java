@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.WithdrawReasonDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
@@ -90,5 +91,11 @@ public class CertificateServiceImpl implements ICertificateService {
 		}
 		
 		return new CertificateDTO(cert);
+	}
+
+	@Override
+	public void withdraw(String serialNumber, WithdrawReasonDTO withdrawReasonDTO) {
+		// TODO Auto-generated method stub
+		
 	}
 }
