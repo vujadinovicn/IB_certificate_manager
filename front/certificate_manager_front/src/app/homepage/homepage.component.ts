@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
+import * as saveAs from 'file-saver';
 
 @Component({
   selector: 'app-homepage',
@@ -79,7 +80,7 @@ export class HomepageComponent {
   download(serialNumber: string) {
     this.certificateService.download(serialNumber).subscribe({
       next: (value) => {
-        console.log(value);
+        saveAs(value, serialNumber);
       }, 
       error: (err) => {
         console.log(err);
