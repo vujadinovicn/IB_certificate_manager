@@ -15,6 +15,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { CertificateValidityComponent } from './certificate-validity/certificate-validity.component';
 import { TokenInterceptor } from './interceptor/token-interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     LoginComponent,
     SideNavbarComponent,
     HomepageComponent,
-    CertificateValidityComponent
+    CertificateValidityComponent,
+    WithdrawDialogComponent
   ],
   imports: [
     BrowserModule,

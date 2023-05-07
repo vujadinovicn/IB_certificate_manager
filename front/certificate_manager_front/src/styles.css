@@ -194,3 +194,15 @@ p {
   ::-webkit-scrollbar-thumb:hover {
     background: #afafaf; 
   }
+
+  .conf-button {
+    display: inline-block !important;
+    margin: 30px auto 12px auto;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-size: 1.1em;
+    font-weight: 600;
+    transform: scale(1.05);
+}

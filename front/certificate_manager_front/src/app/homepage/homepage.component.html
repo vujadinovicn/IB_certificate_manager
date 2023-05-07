@@ -3,7 +3,7 @@
         <p class="no-certificates basic-container" *ngIf="certificates.length==0 && loaded">Oh :( There are no certificates at the moment</p>
         <div class="certificate-card basic-container" *ngFor="let certificate of certificates">
             <div class="certificate-options">
-                <i class="fa-solid fa-ban withdraw-icon" *ngIf="url == '/my-certificates'"></i>
+                <i class="fa-solid fa-ban withdraw-icon" *ngIf="url == '/my-certificates' || role == 'ROLE_ADMIN'"  (click)="withdraw(certificate)"></i>
                 <i class="fa-solid fa-file-circle-plus certificate-option-request" *ngIf="certificate.type != 'END'"></i>
                 <img src="../../assets/download.svg" class="certificate-option-download" alt="">
             </div>
@@ -22,4 +22,4 @@
     </div>
 </div>
 
-
+<button (click)="withdraw('')">AAAAAAAAAAAAAAAAAA</button>

@@ -45,7 +45,7 @@ public class Certificate {
 
 	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo, boolean valid,
 			CertificateType type, Certificate issuer, User issuedTo) {
-		super();
+		super();    
 		this.serialNumber = serialNumber;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
@@ -53,7 +53,7 @@ public class Certificate {
 		this.type = type;
 		this.issuer = issuer;
 		this.issuedTo = issuedTo;
-	}
+	} 
 
 	public Certificate(CertificateRequest request, X509Certificate cert509, Certificate issuer) {
 		this.serialNumber = cert509.getSerialNumber().toString();

@@ -43,6 +43,13 @@ export class CertificateService {
     return this.http.get<any>(environment.apiHost + "/certificate/validate/" + serialNumber, options);
   }
 
+  withdraw(serialNumber: String, reason: String): Observable<any> {
+    const options: any = {
+        responseType: 'json',
+      };
+    return this.http.put<any>(environment.apiHost + "/certificate/withdraw/" + serialNumber, {reason: reason}, options);
+  }
+
 
 }
 

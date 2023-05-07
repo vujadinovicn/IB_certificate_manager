@@ -2,6 +2,9 @@ import { Subscription } from 'rxjs';
 import { Cerificate, CertificateService } from './../services/certificate.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 
 @Component({
   selector: 'app-homepage',
@@ -14,8 +17,9 @@ export class HomepageComponent {
   subs: Subscription[] = [];
   loaded = false;
   url = '';
+  role: string = '';
 
-  constructor(private certificateService: CertificateService, private router: Router) {
+  constructor(private dialog: MatDialog, private authService: AuthService, private certificateService: CertificateService, private router: Router) {
     
   }
 
@@ -25,7 +29,10 @@ export class HomepageComponent {
     //   console.log(value);
     // });
     // this.subs.push(sub);
+
+    this.role = this.authService.getRole();
     this.url = this.router.url;
+    console.log(this.role)
     if (this.url == '/all-certificates') {
       this.certificateService.getAllCertificates().subscribe({
         next: (value) => {
@@ -61,6 +68,12 @@ export class HomepageComponent {
 
   formatDate(dataStr: string) {
     return formatDate(dataStr);
+  }
+
+  withdraw(certificate: any){
+    this.dialog.open(WithdrawDialogComponent, {
+      data: {serialNumber: certificate.serialNumber}
+    });
   }
 }
 
