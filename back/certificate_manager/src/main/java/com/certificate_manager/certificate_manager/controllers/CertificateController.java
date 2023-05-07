@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +23,13 @@ import com.certificate_manager.certificate_manager.exceptions.UserNotFoundExcept
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+
 @Controller
 @RequestMapping("api/certificate")
 @CrossOrigin(origins = "http://localhost:4200")
+@Validated
 public class CertificateController {
 	
 	@Autowired
@@ -47,7 +52,7 @@ public class CertificateController {
 		try {
 			return new ResponseEntity<List<CertificateDTO>>(certificateService.getAllForUser(), HttpStatus.OK);
 		} catch(UserNotFoundException e) {
-			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		
 	}
@@ -61,7 +66,7 @@ public class CertificateController {
 	
 	@GetMapping(value = "/validate/{serialNumber}")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-	public ResponseEntity<?> validateBySerialNumber(@PathVariable String serialNumber){
+	public ResponseEntity<?> validateBySerialNumber(@PathVariable @NotEmpty String serialNumber){
 		String validationMessage = "This certificate is valid!";
 		if (!certificateService.validateBySerialNumber(serialNumber)) {
 			validationMessage = "This certificate is not valid!";
@@ -71,7 +76,7 @@ public class CertificateController {
 	
 	@PostMapping(value = "/validate-upload")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-	public ResponseEntity<?> validateByUpload(@RequestBody String encodedFile){
+	public ResponseEntity<?> validateByUpload(@Valid @RequestBody @NotEmpty String encodedFile){
 		String validationMessage = "This certificate is valid!";
 		System.out.println("neca");
 		if (!certificateService.validateByUpload(encodedFile)) {
@@ -82,7 +87,7 @@ public class CertificateController {
 	
 	@PutMapping(value = "/withdraw/{serialNumber}")
 //	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
+	public ResponseEntity<?> withdraw(@PathVariable @NotEmpty String serialNumber, @Valid @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
 		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Successfully withdraw of certificate"), HttpStatus.OK);
 	}
