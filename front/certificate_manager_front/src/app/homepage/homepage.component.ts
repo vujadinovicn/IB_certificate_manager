@@ -70,7 +70,7 @@ export class HomepageComponent {
 
   withdraw(certificate: Cerificate){
     this.dialog.open(WithdrawDialogComponent, {
-      data: {requestId: 5}
+      data: {serialNumber: certificate.serialNumber}
     });
   }
 }
