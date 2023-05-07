@@ -56,6 +56,7 @@ button {
     color: #455A64;
     text-decoration: none;
     font-weight: 600;
+    display: block;
 }
 
 #forgotten-password-ref:hover{
