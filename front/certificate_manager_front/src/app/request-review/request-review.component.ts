@@ -38,13 +38,17 @@ export class RequestReviewComponent {
       });
     }
     else {
-      this.certificateService.getAllRequestes().subscribe({
-        next: (res) => {
-          console.log(res);
-          this.separateRequests(res);
-        }
-      });
+      this.getAllRequests();
     }
+  }
+
+  getAllRequests() {
+    this.certificateService.getAllRequestes().subscribe({
+      next: (res) => {
+        console.log(res);
+        this.separateRequests(res);
+      }
+    });
   }
 
 
@@ -93,6 +97,7 @@ export class RequestReviewComponent {
 
   changeTab(option : string) {
     this.currentOption = option;
+    this.selectedRequestId = -1;
     if (this.currentOption == 'pending') {
       this.requests = this.pendingRequests;
     }
@@ -119,6 +124,18 @@ export class RequestReviewComponent {
       this.certificateService.acceptRequestes(this.selectedRequestId).subscribe({
         next: (res) => {
           console.log(res);
+          this.selectedRequestId = -1;
+          if (this._role == 'ROLE_ADMIN') {
+            this.getAllRequests();
+          }
+          else {
+            if(this.areByMe) {
+              this.getRequestsByMe()
+            }
+            else {
+              this.getRequestsFromMe()
+            }
+          }
         },
         error: (error:any) => {
           console.log(error)
@@ -132,6 +149,18 @@ export class RequestReviewComponent {
       this.certificateService.declineRequestes(this.selectedRequestId).subscribe({
         next: (res) => {
           console.log(res);
+          this.selectedRequestId = -1;
+          if (this._role == 'ROLE_ADMIN') {
+            this.getAllRequests();
+          }
+          else {
+            if(this.areByMe) {
+              this.getRequestsByMe()
+            }
+            else {
+              this.getRequestsFromMe()
+            }
+          }
         },
         error: (error:any) => {
           console.log(error)

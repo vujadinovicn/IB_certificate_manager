@@ -77,14 +77,14 @@ export class CertificateService {
     const options: any = {
       responseType: 'json',
     };
-    return this.http.post<any>(environment.apiHost + "/certificate/request/accept/" + id, options);
+    return this.http.put<any>(environment.apiHost + "/certificate/request/accept/" + id, options);
   }
 
   declineRequestes(id: number) : Observable<any> {
     const options: any = {
       responseType: 'json',
     };
-    return this.http.post<any>(environment.apiHost + "/certificate/request/deny/" + id, '', options);
+    return this.http.put<any>(environment.apiHost + "/certificate/request/deny/" + id, 'Declined', options);
   }
 
 
