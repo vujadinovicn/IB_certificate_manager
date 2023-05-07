@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
 import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
+import com.certificate_manager.certificate_manager.entities.Certificate;
 
 public interface ICertificateService {
 
@@ -18,5 +19,11 @@ public interface ICertificateService {
 	public void withdraw(String serialNumber, WithdrawalReasonDTO withdrawReasonDTO);
 	
 	public List<CertificateDTO> getAllForUser();
+
+	public Certificate getRootCertificate();
+
+	public List<Certificate> getAllCertificatesWithCurrentCertificateAsIssuer(Certificate certificate);
+
+	public void invalidateCurrentAndBelow(Certificate cert, String reason);
 
 }

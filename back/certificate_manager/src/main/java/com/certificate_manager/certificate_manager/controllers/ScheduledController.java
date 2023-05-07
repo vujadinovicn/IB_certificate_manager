@@ -15,8 +15,8 @@ public class ScheduledController {
 	private IScheduledService scheduledService; 
 
 	@Transactional
-	@Scheduled(initialDelayString = "${initialdelay}", fixedRateString = "${fixedratearrival}")
+	@Scheduled(initialDelayString = "${initialdelay}", fixedDelayString = "${fixeddelay}")
 	public void test() {
-		
+		System.out.println("ajde");
 	} 
 } 
