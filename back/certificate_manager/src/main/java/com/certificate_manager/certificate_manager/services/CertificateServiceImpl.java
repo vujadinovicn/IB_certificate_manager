@@ -57,13 +57,18 @@ public class CertificateServiceImpl implements ICertificateService {
 		Certificate certificate = allCertificates.findBySerialNumber(serialNumber).orElseThrow(
 				() -> new CertificateNotFoundException());
 		try {
-			if (this.hasCertificateExpired(certificate) || !certificate.isValid())
+			if (!certificate.isValid())
 				return false;
+			if (this.hasCertificateExpired(certificate)) {
+				this.invalidateCurrentAndBelow(certificate, "Certificate with SN." + certificate.getSerialNumber() + "has expired.");
+				return false;
+			}
 			
 			this.verify(certificate);
 			
 			return true;
 		} catch (Exception e) {
+			this.invalidateCurrentAndBelow(certificate, e.getMessage());
 			return false;
 		} 
 	}
