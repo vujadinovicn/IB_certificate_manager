@@ -35,12 +35,14 @@ public class CertificateController {
 	
 	
 	@GetMapping(value = "")
+//	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> getAll() {
 		System.out.println("tu");
 		return new ResponseEntity<List<CertificateDTO>>(certificateService.getAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/mine")
+//	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> getAllForUser() {
 		try {
 			return new ResponseEntity<List<CertificateDTO>>(certificateService.getAllForUser(), HttpStatus.OK);
@@ -58,7 +60,7 @@ public class CertificateController {
 	}
 	
 	@GetMapping(value = "/validate/{serialNumber}")
-//	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> validateBySerialNumber(@PathVariable String serialNumber){
 		String validationMessage = "This certificate is valid!";
 		if (!certificateService.validateBySerialNumber(serialNumber)) {
@@ -68,7 +70,7 @@ public class CertificateController {
 	}
 	
 	@PostMapping(value = "/validate-upload")
-//	@PreAuthorize("hasRole('USER')")
+//	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> validateByUpload(@RequestBody String encodedFile){
 		String validationMessage = "This certificate is valid!";
 		System.out.println("neca");
@@ -79,7 +81,7 @@ public class CertificateController {
 	}
 	
 	@PutMapping(value = "/withdraw/{serialNumber}")
-	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+//	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
 		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Successfully withdraw of certificate"), HttpStatus.OK);

@@ -33,6 +33,7 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.RequestStatus;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRequestRepository;
@@ -122,7 +123,7 @@ public class CertificateGenerator implements ICertificateGenerator{
 
 			String serialNumber = UUID.randomUUID().toString().replace("-", "");
 
-			User user = allUsers.findById(1l).orElse(null);
+			User user = allUsers.findAdmin().orElseThrow(() -> new UserNotFoundException());
 
 			X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(buildX500Name(user),
 					new BigInteger(serialNumber, 16), DateUtils.toDate(validFrom), DateUtils.toDate(validTo),

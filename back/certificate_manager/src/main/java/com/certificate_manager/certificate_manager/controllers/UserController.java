@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
@@ -53,6 +55,7 @@ public class UserController {
 	private AuthenticationManager authenticationManager;
 	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> getById(@PathVariable @Min(value = 0, message = "Field id must be greater than 0.") int id) {
 		return new ResponseEntity<UserRetDTO>(this.userService.findById(id), HttpStatus.OK);
 	}
@@ -71,7 +74,7 @@ public class UserController {
 			authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
 		} catch (BadCredentialsException e) {
-			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Wrong username or password!"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("Wrong username or password!", HttpStatus.BAD_REQUEST);
 		} catch (Exception ex) {
 			System.out.println(ex.getStackTrace());
 			return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
