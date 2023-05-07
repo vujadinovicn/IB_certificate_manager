@@ -22,18 +22,31 @@ export class GenerateRequestDialogComponent {
   reason: string = "";
   issuedTo: string = "";
   certType: String[] = ['Root', 'Intermediate', 'End']
+  selectedType: string = '';
 
   requestForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+    date: new FormControl('', [Validators.required])
   });
 
   ngOnInit(): void {
-    this.issuedTo = this.data.serialNumber;
+    this.issuedTo = this.data.issuerNumber;
   }
 
-  withdrawCertificate(): void {
-    this.certificateService.withdraw(this.issuedTo, this.reason).subscribe({
+  generateRequest(): void {
+    if (!this.requestForm.valid || this.selectedType == ''){
+      this.snackBar.open("Check inputs again!", "", {
+        duration: 2700, panelClass: ['snack-bar-success']
+     });
+     return;
+    }
+
+    this.certificateService.generateRequest(
+      {
+        validTo: new Date(this.requestForm.value.date!).toISOString(),
+        issuerSerialNumber: this.issuedTo,
+        type: this.selectedType.toUpperCase()
+      }
+    ).subscribe({
       next: (res) => {
         this.snackBar.open(res.message, "", {
           duration: 2700, panelClass:['snack-bar-success']
@@ -48,12 +61,8 @@ export class GenerateRequestDialogComponent {
     })
   }
 
-  submit(){
-
-  }
-
-  searchByType(event: any){
-
+  selectType(event: any){
+    this.selectedType = event.value;
   }
 
 

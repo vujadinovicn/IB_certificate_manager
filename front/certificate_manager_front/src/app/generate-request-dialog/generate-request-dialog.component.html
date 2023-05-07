@@ -2,10 +2,10 @@
     <h1 mat-dialog-title class="orange" style="font-size: 1.3em; font-weight: 600; font-family: 'Poppins' !important" align="center">Generate request</h1>
     <p style="color: #A9A9A9; margin: 0;">Issued to SN.: {{ issuedTo }}</p>
     <div id="form-container" mat-dialog-content align="center">
-        <form [formGroup]="requestForm" (ngSubmit)="submit()">
+        <form [formGroup]="requestForm">
             <mat-form-field  id="cuisine-dd">
                 <mat-label>Certificate type</mat-label>
-                <mat-select (selectionChange)="searchByType($event)">
+                <mat-select (selectionChange)="selectType($event)">
                   <mat-option *ngFor="let item of certType" [value]="item" >
                     {{item}}
                   </mat-option>
@@ -19,7 +19,7 @@
                 <!-- <mat-error *ngIf="registerForm.get('date')?.errors?.['required']">entering date is required</mat-error> -->
                 <!-- <mat-error *ngIf="registerForm.get('date')?.errors?.['dateAheadOfToday']  && !registerForm.get('date')?.errors?.['required']">invalid date format</mat-error> -->
               </mat-form-field>
-              <button mat-button class="conf-button back-yellow" (click)="withdrawCertificate()">Submit</button>
+              <button mat-button class="conf-button back-yellow" (click)="generateRequest()">Submit</button>
         </form>
     </div>
     <!-- </div> -->
