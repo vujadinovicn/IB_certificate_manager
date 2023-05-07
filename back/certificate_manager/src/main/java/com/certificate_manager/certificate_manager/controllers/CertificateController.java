@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
-import com.certificate_manager.certificate_manager.dtos.WithdrawReasonDTO;
+import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
 
@@ -67,8 +67,8 @@ public class CertificateController {
 	
 	@PutMapping(value = "/withdraw/{serialNumber}")
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawReasonDTO withdrawReasonDTO){
+	public ResponseEntity<?> withdraw(@PathVariable String serialNumber, @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
 		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
-		return new ResponseEntity<String>(validationMessage, HttpStatus.OK);
+		return new ResponseEntity<String>("Successfully withdraw of certificate", HttpStatus.OK);
 	}
 }

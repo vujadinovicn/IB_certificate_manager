@@ -21,6 +21,7 @@ import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoun
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
+import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -88,6 +89,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(CertificateNotValidException.class)
     protected ResponseEntity<Object> handleCertificateNotValidException(CertificateNotValidException e){
     	return new ResponseEntity<>("Certificate is not valid!", HttpStatus.EXPECTATION_FAILED);
+    }
+    
+    @ExceptionHandler(RootCertificateNotForWithdrawalException.class)
+    protected ResponseEntity<Object> handleRootCertificateNotForWithdrawalException(RootCertificateNotForWithdrawalException e){
+    	return new ResponseEntity<>("Root certificate is not for withdrawal!", HttpStatus.BAD_REQUEST);
     }
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})

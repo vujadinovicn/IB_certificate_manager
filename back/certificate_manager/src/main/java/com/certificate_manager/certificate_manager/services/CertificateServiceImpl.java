@@ -1,7 +1,6 @@
 package com.certificate_manager.certificate_manager.services;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -14,12 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
-import com.certificate_manager.certificate_manager.dtos.WithdrawReasonDTO;
+import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
+import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.enums.CertificateType;
+import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
+import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
+import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
+import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
 public class CertificateServiceImpl implements ICertificateService {
@@ -29,6 +34,9 @@ public class CertificateServiceImpl implements ICertificateService {
 	
 	@Autowired
 	private CertificateFileRepository allFileCertificates;
+	
+	@Autowired
+	private IUserService userService;
 	
 	@Override
 	public List<CertificateDTO> getAll() {
@@ -94,8 +102,26 @@ public class CertificateServiceImpl implements ICertificateService {
 	}
 
 	@Override
-	public void withdraw(String serialNumber, WithdrawReasonDTO withdrawReasonDTO) {
-		// TODO Auto-generated method stub
+	public void withdraw(String serialNumber, WithdrawalReasonDTO withdrawReasonDTO) {
+		User user = this.userService.getCurrentUser();
+		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElseThrow(() -> new CertificateNotFoundException());
+		if (cert.getType() == CertificateType.ROOT)
+			throw new RootCertificateNotForWithdrawalException();
+		if (user != cert.getIssuedTo() && user.getRole() == UserRole.USER)
+			throw new NotTheIssuerException();
+		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
+	}
+	
+	private void invalidateCurrentAndBelow(Certificate cert, String reason) {
+		cert.setValid(false);
+		cert.setWithdrawalReason(reason);
 		
+		allCertificates.save(cert);
+		allCertificates.flush();
+		
+		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getSerialNumber());
+		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) {
+			this.invalidateCurrentAndBelow(c, reason);
+		}
 	}
 }

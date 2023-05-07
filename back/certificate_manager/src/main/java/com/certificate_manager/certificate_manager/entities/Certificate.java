@@ -32,6 +32,8 @@ public class Certificate {
 	private boolean valid;
 
 	private CertificateType type;
+	
+	private String withdrawalReason;
 
 	@ManyToOne
 	private User issuedTo;
@@ -125,5 +127,15 @@ public class Certificate {
 	public void setIssuedTo(User issuedTo) {
 		this.issuedTo = issuedTo;
 	}
+
+	public String getWithdrawalReason() {
+		return withdrawalReason;
+	}
+
+	public void setWithdrawalReason(String withdrawalReason) {
+		this.withdrawalReason = withdrawalReason;
+	}
+	
+	
 
 }
