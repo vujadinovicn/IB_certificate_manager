@@ -50,6 +50,13 @@ export class CertificateService {
     return this.http.put<any>(environment.apiHost + "/certificate/withdraw/" + serialNumber, {reason: reason}, options);
   }
 
+  generateRequest(cReqDTO: CertificateRequestDTO): Observable<any> {
+    const options: any = {
+        responseType: 'json',
+      };
+    return this.http.post<any>(environment.apiHost + "/certificate/request", cReqDTO, options);
+  }
+
 
 }
 
@@ -62,4 +69,10 @@ export interface Cerificate {
   type: any,
   issuer: User,
   issuedTo: User
+}
+
+export interface CertificateRequestDTO {
+  validTo: string,
+  issuerSerialNumber: string,
+  type: string
 }
