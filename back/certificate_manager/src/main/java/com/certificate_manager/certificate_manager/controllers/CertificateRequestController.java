@@ -44,6 +44,11 @@ public class CertificateRequestController {
 		return new ResponseEntity<List<CertificateRequestReturnedDTO>>(requestService.getAllForRequester(), HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/byMe")
+	public ResponseEntity<?> getAllRequestsByMe() {
+		return new ResponseEntity<List<CertificateRequestReturnedDTO>>(requestService.getAllRequestsByMe(), HttpStatus.OK);
+	}
+	
 	@PostMapping(value = "")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> generateCertificateRequest(@RequestBody CertificateRequestCreateDTO dto) throws AccessDeniedException {
