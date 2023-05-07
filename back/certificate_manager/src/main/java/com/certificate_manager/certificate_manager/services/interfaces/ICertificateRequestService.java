@@ -14,4 +14,6 @@ public interface ICertificateRequestService {
 	public void denyRequest(long id, String rejectionReason);
 
 	public List<CertificateRequestReturnedDTO> getAllRequestsByMe();
+
+	public List<CertificateRequestReturnedDTO> getAllRequestsFromMe();
 }
