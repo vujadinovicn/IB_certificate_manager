@@ -56,6 +56,14 @@ export class CertificateService {
     };
     return this.http.get<any>(environment.apiHost + "/certificate/download/" + serialNumber, options);
   }
+  generateRequest(cReqDTO: CertificateRequestDTO): Observable<any> {
+    const options: any = {
+        responseType: 'json',
+      };
+    return this.http.post<any>(environment.apiHost + "/certificate/request", cReqDTO, options);
+  }
+
+
 }
 
 export interface Cerificate {
@@ -67,4 +75,10 @@ export interface Cerificate {
   type: any,
   issuer: User,
   issuedTo: User
+}
+
+export interface CertificateRequestDTO {
+  validTo: string,
+  issuerSerialNumber: string,
+  type: string
 }

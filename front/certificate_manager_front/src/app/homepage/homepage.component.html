@@ -4,8 +4,8 @@
         <div class="certificate-card basic-container" *ngFor="let certificate of certificates">
             <div class="certificate-options">
                 <i class="fa-solid fa-ban withdraw-icon" *ngIf="url == '/my-certificates' || role == 'ROLE_ADMIN'"  (click)="withdraw(certificate)"></i>
-                <i class="fa-solid fa-file-circle-plus certificate-option-request" *ngIf="certificate.type != 'END'"></i>
-                <img src="../../assets/download.svg" class="certificate-option-download" alt="" (click)="download(certificate.serialNumber)">
+                <i class="fa-solid fa-file-circle-plus certificate-option-request" *ngIf="certificate.type != 'END'" (click)="generateRequest(certificate)"></i>
+                <img src="../../assets/download.svg" class="certificate-option-download" alt="">
             </div>
             <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
             <div class="certificate-info-container">

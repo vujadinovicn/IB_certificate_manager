@@ -60,13 +60,18 @@ public class CertificateServiceImpl implements ICertificateService {
 		Certificate certificate = allCertificates.findBySerialNumber(serialNumber).orElseThrow(
 				() -> new CertificateNotFoundException());
 		try {
-			if (this.hasCertificateExpired(certificate) || !certificate.isValid())
+			if (!certificate.isValid())
 				return false;
+			if (this.hasCertificateExpired(certificate)) {
+				this.invalidateCurrentAndBelow(certificate, "Certificate with SN." + certificate.getSerialNumber() + "has expired.");
+				return false;
+			}
 			
 			this.verify(certificate);
 			
 			return true;
 		} catch (Exception e) {
+			this.invalidateCurrentAndBelow(certificate, e.getMessage());
 			return false;
 		} 
 	}
@@ -77,7 +82,6 @@ public class CertificateServiceImpl implements ICertificateService {
 			byte encodedCert[] = Base64.getDecoder().decode(encodedFile.split(",")[1]);
 			ByteArrayInputStream inputStream  =  new ByteArrayInputStream(encodedCert);
 			CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-			System.out.println("dovde");
 			X509Certificate cert = (X509Certificate)certFactory.generateCertificate(inputStream);
 			return this.validateBySerialNumber(cert.getSerialNumber().toString());
 		} catch (CertificateException e) {
@@ -116,7 +120,8 @@ public class CertificateServiceImpl implements ICertificateService {
 		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
 	}
 	
-	private void invalidateCurrentAndBelow(Certificate cert, String reason) {
+	@Override
+	public void invalidateCurrentAndBelow(Certificate cert, String reason) {
 		cert.setValid(false);
 		cert.setWithdrawalReason(reason);
 		
@@ -142,6 +147,16 @@ public class CertificateServiceImpl implements ICertificateService {
 			ret.add(new CertificateDTO(cert));
 		}
 		return ret;
+	}
+	
+	@Override
+	public List<Certificate> getAllCertificatesWithCurrentCertificateAsIssuer(Certificate certificate){
+		return allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(certificate.getId());
+	}
+	
+	@Override
+	public List<Certificate> getRootCertificates(){
+		return allCertificates.getRootCertificates();
 	}
 
 	@Override
