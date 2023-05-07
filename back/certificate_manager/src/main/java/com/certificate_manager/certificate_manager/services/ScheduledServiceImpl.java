@@ -17,12 +17,14 @@ public class ScheduledServiceImpl implements IScheduledService{
 	private ICertificateService certificateService;
 	
 	public void invalidateCertificatesWhichExpired() {
-		Certificate certRoot = certificateService.getRootCertificate();
-		if (certRoot.getValidTo().isBefore(LocalDateTime.now())) {
-			this.certificateService.invalidateCurrentAndBelow(certRoot, "Certificate with SN" + certRoot.getSerialNumber() + "has expired.");
-			return;
+		List<Certificate> rootCertificates = certificateService.getRootCertificate();
+		for (Certificate certRoot : rootCertificates) {
+			if (certRoot.getValidTo().isBefore(LocalDateTime.now())) {
+				this.certificateService.invalidateCurrentAndBelow(certRoot, "Certificate with SN" + certRoot.getSerialNumber() + "has expired.");
+				return;
+			}
+			this.checkAndInvalidateChildren(certRoot);
 		}
-		this.checkAndInvalidateChildren(certRoot);
 	}
 	
 	private void checkAndInvalidateChildren(Certificate certRoot) {

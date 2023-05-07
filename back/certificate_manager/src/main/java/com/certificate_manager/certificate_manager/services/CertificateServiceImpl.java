@@ -152,8 +152,8 @@ public class CertificateServiceImpl implements ICertificateService {
 	}
 	
 	@Override
-	public Certificate getRootCertificate(){
-		return allCertificates.getRootCertificate();
+	public List<Certificate> getRootCertificate(){
+		return allCertificates.getRootCertificates();
 	}
 
 }

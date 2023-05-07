@@ -20,7 +20,7 @@ public interface ICertificateService {
 	
 	public List<CertificateDTO> getAllForUser();
 
-	public Certificate getRootCertificate();
+	public List<Certificate> getRootCertificate();
 
 	public List<Certificate> getAllCertificatesWithCurrentCertificateAsIssuer(Certificate certificate);
 
