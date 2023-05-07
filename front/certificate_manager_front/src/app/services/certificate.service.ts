@@ -50,6 +50,12 @@ export class CertificateService {
     return this.http.put<any>(environment.apiHost + "/certificate/withdraw/" + serialNumber, {reason: reason}, options);
   }
 
+  download(serialNumber: String): Observable<any> {
+    const options: any = {
+      responseType: 'blob',
+    };
+    return this.http.get<any>(environment.apiHost + "/certificate/download/" + serialNumber, options);
+  }
   generateRequest(cReqDTO: CertificateRequestDTO): Observable<any> {
     const options: any = {
         responseType: 'json',

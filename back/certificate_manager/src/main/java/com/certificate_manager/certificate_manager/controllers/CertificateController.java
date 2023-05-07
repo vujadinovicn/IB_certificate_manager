@@ -1,5 +1,9 @@
 package com.certificate_manager.certificate_manager.controllers;
 
+import org.springframework.http.HttpHeaders;
+
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.DownloadCertDTO;
 import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
 import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
+import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
@@ -90,5 +96,18 @@ public class CertificateController {
 	public ResponseEntity<?> withdraw(@PathVariable @NotEmpty String serialNumber, @Valid @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
 		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Successfully withdraw of certificate"), HttpStatus.OK);
+	}
+	
+	@GetMapping(value="/download/{serialNumber}")
+	public ResponseEntity<?> download(@PathVariable @NotEmpty String serialNumber) {
+		DownloadCertDTO ret = this.certificateService.download(serialNumber);
+		try {
+			return ResponseEntity.ok()
+			          .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(ret.getPath()))
+			          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + serialNumber + ".crt" + "\"")
+			          .body(ret.getFile());
+		} catch (IOException e) {
+			throw new CertificateNotFoundException();
+		}
 	}
 }

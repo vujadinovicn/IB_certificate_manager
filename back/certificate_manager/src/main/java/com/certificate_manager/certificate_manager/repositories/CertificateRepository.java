@@ -19,6 +19,6 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 	public List<Certificate> findAllForUser(long userId);
 	
 	@Query("select c from Certificate c where c.type = 0")
-	public Certificate getRootCertificate();
+	public List<Certificate> getRootCertificates();
 	
 }

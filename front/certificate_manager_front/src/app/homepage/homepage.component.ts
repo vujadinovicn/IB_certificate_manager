@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 // import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 import { GenerateRequestDialogComponent } from '../generate-request-dialog/generate-request-dialog.component';
 import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
+import * as saveAs from 'file-saver';
 
 @Component({
   selector: 'app-homepage',
@@ -78,6 +79,17 @@ export class HomepageComponent {
     });
   }
 
+  download(serialNumber: string) {
+    this.certificateService.download(serialNumber).subscribe({
+      next: (value) => {
+        saveAs(value, serialNumber);
+      }, 
+      error: (err) => {
+        // TODO: dodati snackbar
+        console.log(err);
+      },
+    })
+  }
   generateRequest(certificate: Cerificate){
     this.dialog.open(GenerateRequestDialogComponent, {
       data: {issuerNumber: certificate.serialNumber}

@@ -10,9 +10,12 @@ import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
+import com.certificate_manager.certificate_manager.dtos.DownloadCertDTO;
 import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
 import com.certificate_manager.certificate_manager.entities.Certificate;
 import com.certificate_manager.certificate_manager.entities.User;
@@ -152,8 +155,13 @@ public class CertificateServiceImpl implements ICertificateService {
 	}
 	
 	@Override
-	public Certificate getRootCertificate(){
-		return allCertificates.getRootCertificate();
+	public List<Certificate> getRootCertificates(){
+		return allCertificates.getRootCertificates();
+	}
+
+	@Override
+	public DownloadCertDTO download(String serialNumber) {
+		 return this.allFileCertificates.readCertificateAsResource(serialNumber);
 	}
 
 }
