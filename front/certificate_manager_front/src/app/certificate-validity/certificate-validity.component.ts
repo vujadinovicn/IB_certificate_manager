@@ -67,7 +67,7 @@ export class CertificateValidityComponent {
     console.log("aaa");
     this.certificateService.validateBySerialNumber(this.serialNumberForm.value.serialNumber!).subscribe({
       next: (result) => {
-      if (result == 'This certificate is valid!')
+      if (result.message == 'This certificate is valid!')
           this.validity = "valid";
         else
           this.validity = "not";
@@ -84,7 +84,7 @@ export class CertificateValidityComponent {
   validateByUpload(){
     this.certificateService.validateByUpload(this.filePath).subscribe({
       next: (result) => {
-        if (result == 'This certificate is valid!')
+        if (result.message == 'This certificate is valid!')
           this.validity = "valid";
         else
           this.validity = "not";
