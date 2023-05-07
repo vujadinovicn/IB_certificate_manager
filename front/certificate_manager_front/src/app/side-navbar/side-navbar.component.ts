@@ -100,4 +100,9 @@ export class SideNavbarComponent {
     }
   }
 
+  openRequestReview(option: boolean) {
+    this.certificateService.setIsByMeSelected(option);
+    this.router.navigate(['request-review']);
+  }
+
 }
