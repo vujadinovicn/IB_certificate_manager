@@ -83,6 +83,7 @@ export class HomepageComponent {
         saveAs(value, serialNumber);
       }, 
       error: (err) => {
+        // TODO: dodati snackbar
         console.log(err);
       },
     })
