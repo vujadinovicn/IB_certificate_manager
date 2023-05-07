@@ -53,7 +53,7 @@ p {
 
 #request-cards {
     height: 410px;
-    padding: 5px 10px;
+    padding: 5px 0;
     overflow: auto;
     width: 100%;
 }
@@ -77,6 +77,9 @@ p {
     margin-top: 10px;
     margin-bottom: 5px;
     min-height: 60px;
+    width: 90%;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .driver-data {
@@ -165,4 +168,9 @@ p {
     padding: 10px 0;
     border: none;
     border-radius: 0 0 5px 0;
+}
+
+
+.not-clickable {
+    background-color: #849882 !important;
 }

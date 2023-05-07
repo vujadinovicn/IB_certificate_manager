@@ -12,8 +12,8 @@ export class CertificateService {
   private certificatesToDisplay = new BehaviorSubject<Cerificate[]>([]);
 
   private isByMeSelected$ = new BehaviorSubject<boolean>(true);
-  getIsByMeSelected(): boolean {
-    return this.isByMeSelected$.value;
+  getIsByMeSelected(): Observable<any> {
+    return this.isByMeSelected$;
   }
 
   setIsByMeSelected(is: boolean): void {
@@ -71,6 +71,20 @@ export class CertificateService {
       responseType: 'json',
     };
     return this.http.get<any>(environment.apiHost + "/certificate/request/fromMe", options);
+  }
+
+  acceptRequestes(id: number) : Observable<any> {
+    const options: any = {
+      responseType: 'json',
+    };
+    return this.http.post<any>(environment.apiHost + "/certificate/request/accept/" + id, options);
+  }
+
+  declineRequestes(id: number) : Observable<any> {
+    const options: any = {
+      responseType: 'json',
+    };
+    return this.http.post<any>(environment.apiHost + "/certificate/request/deny/" + id, '', options);
   }
 
 

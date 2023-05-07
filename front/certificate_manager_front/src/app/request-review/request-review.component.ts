@@ -13,22 +13,37 @@ export class RequestReviewComponent {
   currentOption: string = "pending";
   areByMe: boolean = true;
   requests: CertificateRequest[] = []
-  selectedRequestId: number = 2;
+  selectedRequestId: number = -1;
   pendingRequests: CertificateRequest[] = []
   notPendingRequests: CertificateRequest[] = []
   
 
   constructor(private authService: AuthService, private certificateService: CertificateService) {
       this._role = this.authService.getRole();
+      console.log(this._role)
   }
 
   ngOnInit(): void {
-    this.areByMe = this.certificateService.getIsByMeSelected();
-    if(this.areByMe) {
-      this.getRequestsByMe()
+    if (this._role == 'ROLE_USER') {
+      this.certificateService.getIsByMeSelected().subscribe({
+        next: (res) => {
+          this.areByMe = res;
+          if(this.areByMe) {
+            this.getRequestsByMe()
+          }
+          else {
+            this.getRequestsFromMe()
+          }
+        }
+      });
     }
     else {
-      this.getRequestsFromMe()
+      this.certificateService.getAllRequestes().subscribe({
+        next: (res) => {
+          console.log(res);
+          this.separateRequests(res);
+        }
+      });
     }
   }
 
@@ -67,7 +82,7 @@ export class RequestReviewComponent {
       }
     }
 
-    if (this.currentOption == 'PENDING') {
+    if (this.currentOption == 'pending') {
       this.requests = this.pendingRequests;
     }
     else {
@@ -83,6 +98,45 @@ export class RequestReviewComponent {
     }
     else {
       this.requests = this.notPendingRequests;
+    }
+  }
+
+  public formatDate(dateStr: string): string {
+    let date = new Date(dateStr);
+    date.setMonth(date.getMonth() + 1);
+    if (date.getMonth() == 0)
+      date.setMonth(1);
+    return "at " + date.getHours() + ":" + date.getMinutes() + ", " + date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+  }
+
+  selectRequest(request: CertificateRequest) {
+    this.selectedRequestId = request.id;
+  }
+
+
+  acceptRequest() {
+    if (this.selectedRequestId != -1) {
+      this.certificateService.acceptRequestes(this.selectedRequestId).subscribe({
+        next: (res) => {
+          console.log(res);
+        },
+        error: (error:any) => {
+          console.log(error)
+        }
+      })
+    }
+  }
+
+  declineRequest() {
+    if (this.selectedRequestId != -1) {
+      this.certificateService.declineRequestes(this.selectedRequestId).subscribe({
+        next: (res) => {
+          console.log(res);
+        },
+        error: (error:any) => {
+          console.log(error)
+        }
+      })
     }
   }
 }
