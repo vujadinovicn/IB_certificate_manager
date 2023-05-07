@@ -58,6 +58,11 @@ p {
     fill: #fb8500 !important;
 }
 
+.selected-option {
+    color: #fb8500 !important;
+    fill: #fb8500 !important;
+}
+
 .section-title {
     font-size: 1.1em ;
     margin-left: 0px !important;

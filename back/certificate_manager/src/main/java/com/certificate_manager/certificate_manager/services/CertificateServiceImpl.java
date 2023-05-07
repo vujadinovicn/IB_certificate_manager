@@ -21,6 +21,7 @@ import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
@@ -41,9 +42,9 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Override
 	public List<CertificateDTO> getAll() {
 		List<Certificate> certs = allCertificates.findAll();
-		if (certs.size() == 0) {
-			throw new CertificateNotFoundException();
-		}
+//		if (certs.size() == 0) {
+//			throw new CertificateNotFoundException();
+//		}
 		List<CertificateDTO> ret = new ArrayList<CertificateDTO>();
 		for (Certificate cert : certs) {
 			ret.add(new CertificateDTO(cert));
@@ -87,7 +88,7 @@ public class CertificateServiceImpl implements ICertificateService {
 	
 	private void verify(Certificate certificate) throws Exception {
 		X509Certificate currentCert509 = allFileCertificates.readX509Certificate(certificate.getSerialNumber());
-		X509Certificate issuerCert509 = allFileCertificates.readX509Certificate(certificate.getIssuerSerialNumber());
+		X509Certificate issuerCert509 = allFileCertificates.readX509Certificate(certificate.getIssuer().getSerialNumber());
 		currentCert509.verify(issuerCert509.getPublicKey());
 	}
     
@@ -120,8 +121,24 @@ public class CertificateServiceImpl implements ICertificateService {
 		allCertificates.flush();
 		
 		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getSerialNumber());
-		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) {
+		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) 
 			this.invalidateCurrentAndBelow(c, reason);
-		}
 	}
+		
+	public List<CertificateDTO> getAllForUser() {
+		User user = this.userService.getCurrentUser();
+		
+		if (user == null) {
+			throw new UserNotFoundException();
+		}
+		
+		List<Certificate> certs = allCertificates.findAllForUser(user.getId());
+
+		List<CertificateDTO> ret = new ArrayList<CertificateDTO>();
+		for (Certificate cert : certs) {
+			ret.add(new CertificateDTO(cert));
+		}
+		return ret;
+	}
+
 }

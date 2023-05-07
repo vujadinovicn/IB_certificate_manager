@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.certificate_manager.certificate_manager.dtos.CertificateDTO;
 import com.certificate_manager.certificate_manager.dtos.WithdrawalReasonDTO;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
 
@@ -34,7 +35,18 @@ public class CertificateController {
 	
 	@GetMapping(value = "")
 	public ResponseEntity<?> getAll() {
+		System.out.println("tu");
 		return new ResponseEntity<List<CertificateDTO>>(certificateService.getAll(), HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/mine")
+	public ResponseEntity<?> getAllForUser() {
+		try {
+			return new ResponseEntity<List<CertificateDTO>>(certificateService.getAllForUser(), HttpStatus.OK);
+		} catch(UserNotFoundException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")

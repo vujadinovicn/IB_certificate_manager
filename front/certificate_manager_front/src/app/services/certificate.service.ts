@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { User } from './auth.service';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -8,7 +9,25 @@ import { environment } from 'src/environments/environment';
 })
 export class CertificateService {
 
-  constructor(private http:HttpClient) { }
+  private certificatesToDisplay = new BehaviorSubject<Cerificate[]>([]);
+
+  constructor(private http: HttpClient) { }
+
+  setCertificatesToDisplay(certificates: Cerificate[]) {
+    this.certificatesToDisplay.next(certificates);
+  }
+
+  getCertificatesToDisplay() {
+    return this.certificatesToDisplay.asObservable();
+  }
+
+  getMyCertificates(): Observable<any> {
+    return this.http.get<any>(environment.apiHost + "/certificate/mine");
+  }
+
+  getAllCertificates(): Observable<any> {
+    return this.http.get<any>(environment.apiHost + "/certificate");
+  }
 
   validateByUpload(file: String): Observable<any> {
     const options: any = {
@@ -25,4 +44,15 @@ export class CertificateService {
   }
 
 
+}
+
+export interface Cerificate {
+  id: number,
+  serialNumber: string,
+  validFrom: string,
+  validTo: string,
+  valid: boolean,
+  type: any,
+  issuer: User,
+  issuedTo: User
 }
