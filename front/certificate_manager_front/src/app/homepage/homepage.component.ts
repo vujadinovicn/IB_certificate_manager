@@ -4,7 +4,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
+// import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
+import { GenerateRequestDialogComponent } from '../generate-request-dialog/generate-request-dialog.component';
 
 @Component({
   selector: 'app-homepage',
@@ -71,7 +72,7 @@ export class HomepageComponent {
   }
 
   withdraw(certificate: any){
-    this.dialog.open(WithdrawDialogComponent, {
+    this.dialog.open(GenerateRequestDialogComponent, {
       data: {serialNumber: certificate.serialNumber}
     });
   }
