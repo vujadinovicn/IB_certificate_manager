@@ -5,7 +5,8 @@ import { LoginComponent } from 'src/app/login/login.component';
 
 const routes: Routes = [
   {path: "login", component: LoginComponent},
-  {path: "home", component: HomepageComponent},
+  {path: "all-certificates", component: HomepageComponent},
+  {path: "my-certificates", component: HomepageComponent},
 ];
 
 @NgModule({

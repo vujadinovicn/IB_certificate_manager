@@ -4,7 +4,6 @@ import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
 
-import jakarta.validation.constraints.Min;
 
 public interface IUserService {
 	
