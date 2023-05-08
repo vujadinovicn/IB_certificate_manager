@@ -6,6 +6,6 @@ public interface ISMSService {
 			  
 	public void sendVerificationSMS(String email);
 
-	public void sendResetSMS(String email);
+	public void sendResetSMS(String phoneNumber);
 
 }

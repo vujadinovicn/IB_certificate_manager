@@ -25,5 +25,7 @@ public interface IUserService {
 	public void sendEmailVerification(String email);
 
 	
-	public void activateUser(User user); 
+	public void activateUser(User user);
+
+	public User getUserByPhoneNumber(String phoneNumber); 
 }

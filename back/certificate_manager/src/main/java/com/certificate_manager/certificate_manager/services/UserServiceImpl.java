@@ -51,6 +51,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	}
 	
 	@Override
+	public User getUserByPhoneNumber(String phoneNumber) {
+		return allUsers.findByPhoneNumber(phoneNumber).orElseThrow(() -> new UserNotFoundException());
+	}
+	
+	@Override
 	public boolean doesUserExist(String email) {
 		try {
 			this.getUserByEmail(email);
@@ -134,7 +139,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	public void sendResetPasswordMail(String email) {
 		User user = this.allUsers.findByEmail(email).orElse(null);
 		if (user == null){
-			throw new UserNotFoundException();
+			return;
 		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
 

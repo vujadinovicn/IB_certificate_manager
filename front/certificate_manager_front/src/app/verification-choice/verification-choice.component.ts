@@ -40,7 +40,8 @@ export class VerificationChoiceComponent implements OnInit{
   }
 
   open() {
-    if (this.emailForReset == null || this.emailForReset == undefined)
+    console.log(this.emailForReset)
+    if (this.emailForReset != null && this.emailForReset != undefined)
       this.openRegisterVerification();
     else 
       this.openResetPassword();
@@ -84,40 +85,16 @@ export class VerificationChoiceComponent implements OnInit{
   }
 
   openResetPassword(){
-    if (this.clickedEmail) {
-      this.verificationService.sendResetPasswordEmail(this.emailForReset).subscribe({
-        next: (res: any) => {
-          this.router.navigate(['reset-password']);
-          this.snackBar.open("If this email exists, reset code will be sent to it", "", {
-            duration: 2700, panelClass: ['snack-bar-success']
-        });
-        },
-        error: (err: any) => {
-          this.snackBar.open(err.error, "", {
-            duration: 2700, panelClass: ['snack-bar-server-error']
-         });
-        }
-      })
-    } 
-    else if (this.clickedSms) {
-      this.verificationService.sendResetPasswordSms(this.emailForReset).subscribe({
-        next: (res: any) => {
-          this.router.navigate(['reset-password']);
-          console.log(res);
-          this.snackBar.open("If this email exists, reset code will be sent to it", "", {
-            duration: 2700, panelClass: ['snack-bar-success']
-        });
-        },
-        error: (err: any) => {
-          this.snackBar.open(err.error, "", {
-            duration: 2700, panelClass: ['snack-bar-server-error']
-         });
-        }
-      })
-    } else {
+    console.log("eee")
+    if (this.clickedEmail){
+      this.router.navigate(['forgot-password', {email: this.clickedEmail}])
+    } else if (this.clickedSms)  {
+      this.router.navigate(['forgot-password', {email: this.clickedEmail}])
+    } else{
       this.snackBar.open("Please select one of the options.", "", {
         duration: 2700,  panelClass: ['snack-bar-front-error'] 
      });
+    
     }
   }
 }

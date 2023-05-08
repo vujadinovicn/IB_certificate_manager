@@ -23,18 +23,18 @@ public class SMSController {
 	@Autowired
 	private ISMSService smsService;
 	
-	@PostMapping("")
-    public ResponseEntity<?> sendSMS(@Valid @RequestBody UserDTO userDTO) {
-		System.err.println("EEEEEEEEEEEEEEEE");
-		smsService.sendSMS(userDTO);
-    	return new ResponseEntity<String>("Code sent successfully!", HttpStatus.OK);
-    }
-      
-    @PutMapping("")
-    public ResponseEntity<?> sendNewSMS(@RequestBody UserDTO userDTO) throws Exception {
-    	smsService.sendNewSMS(userDTO);
-    	return new ResponseEntity<String>("New code sent successfully!", HttpStatus.OK);
-    }
+//	@PostMapping("")
+//    public ResponseEntity<?> sendSMS(@Valid @RequestBody UserDTO userDTO) {
+//		System.err.println("EEEEEEEEEEEEEEEE");
+//		smsService.sendSMS(userDTO);
+//    	return new ResponseEntity<String>("Code sent successfully!", HttpStatus.OK);
+//    }
+//      
+//    @PutMapping("")
+//    public ResponseEntity<?> sendNewSMS(@RequestBody UserDTO userDTO) throws Exception {
+//    	smsService.sendNewSMS(userDTO);
+//    	return new ResponseEntity<String>("New code sent successfully!", HttpStatus.OK);
+//    }
     
 //    @PutMapping("/activate")
 //    public ResponseEntity<?> activateBySMS(@RequestBody SMSActivationDTO smsActivationDTO) throws Exception {

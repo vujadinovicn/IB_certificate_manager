@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.SecureTokenType;
+import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
 import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
@@ -53,8 +54,13 @@ public class SMSServiceImpl implements ISMSService{
     }
 	
 	@Override
-	public void sendResetSMS(String email) {
-		User user = userService.getUserByEmail(email);
+	public void sendResetSMS(String phoneNumber) {
+		User user;
+		try {
+			user = userService.getUserByPhoneNumber(phoneNumber);
+		} catch (UserNotFoundException e){
+			return;
+		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
 		
 		 Twilio.init(twilioAccountSid, twilioAuthToken); 

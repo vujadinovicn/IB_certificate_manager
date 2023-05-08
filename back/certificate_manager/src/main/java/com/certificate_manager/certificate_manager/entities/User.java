@@ -3,6 +3,7 @@ package com.certificate_manager.certificate_manager.entities;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +35,7 @@ public class User {
 	private String email;
 
 	@NotEmpty
+	@Column(unique=true)
 	@Pattern(regexp = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*")
 	private String phoneNumber;
 

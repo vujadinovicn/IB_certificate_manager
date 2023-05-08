@@ -22,7 +22,7 @@ justify-content: center; height: 100%;">
                     <mat-error *ngIf="loginForm.get('password')?.errors?.['required']">entering password is required</mat-error>
                 </mat-form-field>
                 <button type="submit" class="conf-button back-yellow" mat-raised-button>Login</button>
-                <a id="forgotten-password-ref" [routerLink]="['/forgot-password']">forgot your password?</a>
+                <a id="forgotten-password-ref" (click)="redirectToResetPassword()">forgot your password?</a>
             </form>
         </div>
     </div>

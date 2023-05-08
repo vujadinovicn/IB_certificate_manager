@@ -45,6 +45,7 @@ h1 {
     color: #455A64;
     text-decoration: none;
     font-weight: 600;
+    cursor: pointer;
 }
 
 #forgotten-password-ref:hover{

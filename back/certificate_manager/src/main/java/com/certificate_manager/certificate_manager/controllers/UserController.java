@@ -111,13 +111,14 @@ public class UserController {
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		System.err.println("usao");
 		this.userService.sendResetPasswordMail(email);
-		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
+		System.out.println("eee");
+		return new ResponseEntity<String>("If this email exists, reset code has been sent to it!", HttpStatus.NO_CONTENT);
 	}
 	
-	@GetMapping(value = "reset/password/sms/{email}")
-	public ResponseEntity<?> sendResetPasswordSms(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		this.smsService.sendResetSMS(email);
-		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
+	@GetMapping(value = "reset/password/sms/{phoneNumber}")
+	public ResponseEntity<?> sendResetPasswordSms(@PathVariable @NotEmpty(message = "Phone number is required") String phoneNumber) {
+		this.smsService.sendResetSMS(phoneNumber);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("If this number exists, reset code has been sent to it!"), HttpStatus.NO_CONTENT);
 	}
 
 //	http://localhost:4388/api/user/vujadinovic01@gmail.com/reset/password/sms
