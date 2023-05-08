@@ -50,7 +50,7 @@ export class VerificationChoiceComponent implements OnInit{
     if (this.clickedEmail) {
       this.verificationService.sendVerificationMail(this.userDTO.email).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.snackBar.open("Email with verification code has been sent", "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
           this.router.navigate(['verification-code', {type: "sms"}]);
@@ -65,7 +65,7 @@ export class VerificationChoiceComponent implements OnInit{
     else if (this.clickedSms) {
       this.verificationService.sendVerificationSMS(this.userDTO.email).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.snackBar.open("SMS with verification code has been sent", "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
           this.router.navigate(['verification-code', {type: "sms"}]);
@@ -87,10 +87,10 @@ export class VerificationChoiceComponent implements OnInit{
     if (this.clickedEmail) {
       this.verificationService.sendResetPasswordEmail(this.emailForReset).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.router.navigate(['reset-password']);
+          this.snackBar.open("If this email exists, reset code will be sent to it", "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
-          this.router.navigate(['reset-password']);
         },
         error: (err: any) => {
           this.snackBar.open(err.error, "", {
@@ -102,10 +102,11 @@ export class VerificationChoiceComponent implements OnInit{
     else if (this.clickedSms) {
       this.verificationService.sendResetPasswordSms(this.emailForReset).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.router.navigate(['reset-password']);
+          console.log(res);
+          this.snackBar.open("If this email exists, reset code will be sent to it", "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
-          this.router.navigate(['reset-password']);
         },
         error: (err: any) => {
           this.snackBar.open(err.error, "", {

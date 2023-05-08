@@ -49,7 +49,7 @@ export class VerificationCodeComponent implements OnInit{
     if (this.otpValue != null && this.otpValue != undefined && this.otpValue.length == 6){
       this.verificationService.verifyRegistration(this.otpValue).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.snackBar.open("You have successfully verified your account!", "", {
               duration: 2700, panelClass: ['snack-bar-success']
           });
           this.router.navigate(['login']);

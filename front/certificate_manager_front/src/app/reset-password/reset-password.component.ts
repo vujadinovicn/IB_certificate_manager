@@ -55,7 +55,7 @@ export class ResetPasswordComponent {
         code: this.otpValue
       }).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.snackBar.open("You have successfully reset your password!", "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
           this.router.navigate(['login']);
