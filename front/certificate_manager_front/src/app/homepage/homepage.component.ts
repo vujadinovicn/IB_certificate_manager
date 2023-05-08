@@ -22,6 +22,7 @@ export class HomepageComponent {
   loaded = false;
   url = '';
   role: string = '';
+  loggedId = -1;
 
   constructor(private snackBar: MatSnackBar,
     private dialog: MatDialog, private authService: AuthService, private certificateService: CertificateService, private router: Router) {
@@ -36,6 +37,8 @@ export class HomepageComponent {
     // this.subs.push(sub);
 
     this.role = this.authService.getRole();
+    this.loggedId = this.authService.getId();
+    console.log(this.role, this.loggedId)
     this.url = this.router.url;
     console.log(this.role)
     if (this.url == '/all-certificates') {
@@ -91,13 +94,28 @@ export class HomepageComponent {
         saveAs(value, serialNumber);
       }, 
       error: (err) => {
-        this.snackBar.open("Error downloadin the files.", "", {
+        this.snackBar.open("Error downloadin the file.", "", {
           duration: 2700, panelClass: ['snack-bar-server-error']
        });
         console.log(err);
       },
     })
   }
+
+  downloadKey(serialNumber: string) {
+    this.certificateService.downloadKey(serialNumber).subscribe({
+      next: (value) => {
+        saveAs(value, serialNumber);
+      }, 
+      error: (err) => {
+        this.snackBar.open("Error downloadin the file.", "", {
+          duration: 2700, panelClass: ['snack-bar-server-error']
+       });
+        console.log(err);
+      },
+    })
+  }
+
   generateRequest(certificate: Cerificate){
     this.dialog.open(GenerateRequestDialogComponent, {
       data: {issuerNumber: certificate.serialNumber}

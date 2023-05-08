@@ -110,4 +110,17 @@ public class CertificateController {
 			throw new CertificateNotFoundException();
 		}
 	}
+	
+	@GetMapping(value="/download-key/{serialNumber}")
+	public ResponseEntity<?> downloadKey(@PathVariable @NotEmpty String serialNumber) {
+		DownloadCertDTO ret = this.certificateService.downloadKey(serialNumber);
+		try {
+			return ResponseEntity.ok()
+			          .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(ret.getPath()))
+			          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + serialNumber + ".key" + "\"")
+			          .body(ret.getFile());
+		} catch (IOException e) {
+			throw new CertificateNotFoundException();
+		}
+	}
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
@@ -64,6 +65,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(CertificateNotFoundException.class)
   	protected ResponseEntity<String> handleCertificateNotFoundException(CertificateNotFoundException e) {
   		return new ResponseEntity<String>("Certificate not found!", HttpStatus.BAD_REQUEST);
+  	}
+    
+    @ExceptionHandler(NoAuthorizationForKeyException.class)
+  	protected ResponseEntity<String> handleNoAuthorizationForKeyException(NoAuthorizationForKeyException e) {
+  		return new ResponseEntity<String>("You have no authorization to acces the key for the certificate.", HttpStatus.BAD_REQUEST);
   	}
     
     @ExceptionHandler(BadCredentialsException.class)

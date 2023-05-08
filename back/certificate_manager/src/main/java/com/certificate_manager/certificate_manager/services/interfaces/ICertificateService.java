@@ -24,6 +24,9 @@ public interface ICertificateService {
 	public List<CertificateDTO> getAllForUser();
 
 	public DownloadCertDTO download(String serialNumber);
+	
+	public DownloadCertDTO downloadKey(String serialNumber);
+	
 	public List<Certificate> getRootCertificates();
 
 	public List<Certificate> getAllCertificatesWithCurrentCertificateAsIssuer(Certificate certificate);
