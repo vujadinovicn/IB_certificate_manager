@@ -13,6 +13,8 @@ export class SideNavbarComponent {
 
   name = "Tina";
   url = '';
+  reqByMe: boolean = false;
+  reqFromMe: boolean = false;
 
   constructor(private authService: AuthService, 
               private router: Router, 
@@ -98,6 +100,19 @@ export class SideNavbarComponent {
         this.router.navigate(['my-certificates']);
       }
     }
+  }
+
+  openRequestReview(option: boolean) {
+    if (option) {
+      this.reqByMe = true;
+      this.reqFromMe = false;
+    }
+    else {
+      this.reqByMe = false;
+      this.reqFromMe = true;
+    }
+    this.certificateService.setIsByMeSelected(option);
+    this.router.navigate(['request-review']);
   }
 
 }

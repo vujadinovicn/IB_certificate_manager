@@ -54,6 +54,37 @@ public class CertificateRequestServiceImpl implements ICertificateRequestService
 		
 		return ret;
 	}
+	
+	@Override
+	public List<CertificateRequestReturnedDTO> getAllRequestsByMe() {
+		User requester = userService.getCurrentUser();
+		List<CertificateRequest> requests = new ArrayList<CertificateRequest>();
+		requests = allRequests.findAllForRequester(requester.getId());
+		
+		List<CertificateRequestReturnedDTO> ret = new ArrayList<CertificateRequestReturnedDTO>();
+		for (CertificateRequest req : requests) {
+			CertificateDTO issuer = certificateService.getBySerialNumber(req.getIssuerSerialNumber());
+			ret.add(new CertificateRequestReturnedDTO(req, issuer));
+		}
+		
+		return ret;
+	}
+	
+	@Override
+	public List<CertificateRequestReturnedDTO> getAllRequestsFromMe() {
+		User requester = userService.getCurrentUser();
+		List<CertificateRequest> requests = new ArrayList<CertificateRequest>();
+		requests = allRequests.findAll();
+		
+		List<CertificateRequestReturnedDTO> ret = new ArrayList<CertificateRequestReturnedDTO>();
+		for (CertificateRequest req : requests) {
+			CertificateDTO issuer = certificateService.getBySerialNumber(req.getIssuerSerialNumber());
+			if (requester.getId() == issuer.getIssuedTo().getId())
+				ret.add(new CertificateRequestReturnedDTO(req, issuer));
+		}
+		
+		return ret;
+	}
 
 	@Override
 	public void acceptRequest(long id) {

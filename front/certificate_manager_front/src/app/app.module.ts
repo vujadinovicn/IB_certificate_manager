@@ -15,10 +15,12 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { CertificateValidityComponent } from './certificate-validity/certificate-validity.component';
 import { TokenInterceptor } from './interceptor/token-interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RequestReviewComponent } from './request-review/request-review.component';
 import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.component';
 import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     SideNavbarComponent,
     HomepageComponent,
     CertificateValidityComponent,
+    RequestReviewComponent
     WithdrawDialogComponent,
     GenerateRequestDialogComponent
   ],
