@@ -81,11 +81,12 @@ export class CertificateService {
     return this.http.put<any>(environment.apiHost + "/certificate/request/accept/" + id, options);
   }
 
-  declineRequestes(id: number) : Observable<any> {
+  declineRequestes(id: number, reason: String) : Observable<any> {
     const options: any = {
       responseType: 'json',
     };
-    return this.http.put<any>(environment.apiHost + "/certificate/request/deny/" + id, 'Declined', options);
+    return this.http.put<any>(environment.apiHost + "/certificate/request/deny/" + id, reason, options);
+  }
 
   withdraw(serialNumber: String, reason: String): Observable<any> {
     const options: any = {
@@ -105,7 +106,13 @@ export class CertificateService {
         responseType: 'json',
       };
     return this.http.post<any>(environment.apiHost + "/certificate/request", cReqDTO, options);
+  }
 
+  generateRoot(): Observable<any>{
+    const options: any = {
+      responseType: 'json',
+    };
+  return this.http.post<any>(environment.apiHost + "/certificate/root", options);
   }
 
 
@@ -129,6 +136,8 @@ export interface CertificateRequest {
   rejectionReason: string, 
   validTo: string,
   issuer: Cerificate,
+  type: string
+}
 
 export interface CertificateRequestDTO {
   validTo: string,

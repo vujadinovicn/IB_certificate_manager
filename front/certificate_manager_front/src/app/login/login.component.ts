@@ -44,7 +44,9 @@ export class LoginComponent implements OnInit{
               
             },
             error: (err) => {
-              // TODO: make snackbar
+              this.snackBar.open("Error wile trying to fetch all certificates.", "", {
+                duration: 2700, panelClass: ['snack-bar-server-error']
+             });
               console.log("Error wile trying to fetch all certificates.")
             },
           });
@@ -56,7 +58,7 @@ export class LoginComponent implements OnInit{
           console.log("tu")
           console.log(error.error)
           this.snackBar.open("Bad credentials. Please try again!", "", {
-            duration: 2000,
+            duration: 2700, panelClass: ['snack-bar-server-error']
          });
         },
       });

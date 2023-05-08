@@ -21,7 +21,7 @@ export class GenerateRequestDialogComponent {
 
   reason: string = "";
   issuedTo: string = "";
-  certType: String[] = ['Root', 'Intermediate', 'End']
+  certType: String[] = ['Intermediate', 'End']
   selectedType: string = '';
 
   requestForm = new FormGroup({
@@ -35,7 +35,7 @@ export class GenerateRequestDialogComponent {
   generateRequest(): void {
     if (!this.requestForm.valid || this.selectedType == ''){
       this.snackBar.open("Check inputs again!", "", {
-        duration: 2700, panelClass: ['snack-bar-success']
+        duration: 2700, panelClass: ['snack-bar-front-error']
      });
      return;
     }

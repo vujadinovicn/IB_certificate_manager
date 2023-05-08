@@ -30,7 +30,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     SideNavbarComponent,
     HomepageComponent,
     CertificateValidityComponent,
-    RequestReviewComponent
+    RequestReviewComponent,
     WithdrawDialogComponent,
     GenerateRequestDialogComponent
   ],

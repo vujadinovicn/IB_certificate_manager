@@ -35,9 +35,9 @@
         <!-- <i class="fa-solid fa-xmark" style="width: 30px; color: #A8201A;"></i> -->
         <!-- <span id="boot-icon" class="bi bi-x" style="font-size: 10rem; -webkit-text-stroke-width: 2px;"></span> -->
         <img src="../../assets/green-check.png" style="width: 25px;" *ngIf="this.validity == 'valid'"/>
-        <p style="color: #B9B9B9;">Hoooray! Certificate is valid!</p>
+        <p style="color: #B9B9B9;" *ngIf="this.validity == 'valid'">Hoooray! Certificate is valid!</p>
 
         <img src="../../assets/remove.png" style="width: 25px;" *ngIf="this.validity == 'not'"/>
-        <p style="color: #B9B9B9;">Wooops! Certificate is not valid!</p>
+        <p style="color: #B9B9B9;" *ngIf="this.validity == 'not'">Wooops! Certificate is not valid!</p>
     </div>
 </div>

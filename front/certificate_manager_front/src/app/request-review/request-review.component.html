@@ -1,6 +1,6 @@
 <div id="requests-container" class="border">
     <div id="requests-header">
-        <h3 class="title dark-blue">Certificate requests</h3>
+        <h3 class="title orange">Certificate requests</h3>
         <div id="header-buttons">
             <div class="header-button" [ngClass]="currentOption == 'pending'? 'selected-header-button': ''" (click)="changeTab('pending')">
                 pending
@@ -18,9 +18,9 @@
                 <div class="driver-info">
                     <!-- <p class="driver-name dark-blue"></p> -->
                     <div class="driver-contact-info">
-                    <p class="driver-email dark-gray"><span class="dark-blue">Issuer email: </span>{{request.issuer.issuedTo.email}}</p>
-                    <p class="driver-phone dark-gray"><span class="dark-blue">Type: </span>{{request.type}}</p>
-                    <p class="driver-email dark-gray"><span class="dark-blue">Valid to: </span>{{formatDate(request.validTo)}}</p>
+                    <p class="driver-email dark-gray"><span class="orange">Issuer email: </span>{{request.issuer.issuedTo.email}}</p>
+                    <p class="driver-phone dark-gray"><span class="orange">Type: </span>{{request.type}}</p>
+                    <p class="driver-email dark-gray"><span class="orange">Valid to: </span>{{formatDate(request.validTo)}}</p>
                 </div>    
             </div> 
             </div>

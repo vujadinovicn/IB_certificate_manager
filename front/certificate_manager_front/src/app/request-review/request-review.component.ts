@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
 import { Cerificate, CertificateRequest, CertificateService } from '../services/certificate.service';
+import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 
 @Component({
   selector: 'app-request-review',
@@ -18,7 +21,9 @@ export class RequestReviewComponent {
   notPendingRequests: CertificateRequest[] = []
   
 
-  constructor(private authService: AuthService, private certificateService: CertificateService) {
+  constructor(private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private authService: AuthService, private certificateService: CertificateService) {
       this._role = this.authService.getRole();
       console.log(this._role)
   }
@@ -122,8 +127,10 @@ export class RequestReviewComponent {
   acceptRequest() {
     if (this.selectedRequestId != -1) {
       this.certificateService.acceptRequestes(this.selectedRequestId).subscribe({
-        next: (res) => {
-          console.log(res);
+        next: (res: any) => {
+          this.snackBar.open(res.message, "", {
+            duration: 2700, panelClass:['snack-bar-success']
+         });
           this.selectedRequestId = -1;
           if (this._role == 'ROLE_ADMIN') {
             this.getAllRequests();
@@ -138,7 +145,9 @@ export class RequestReviewComponent {
           }
         },
         error: (error:any) => {
-          console.log(error)
+          this.snackBar.open(error.error, "", {
+            duration: 2700, panelClass:['snack-bar-server-error']
+         });
         }
       })
     }
@@ -146,26 +155,24 @@ export class RequestReviewComponent {
 
   declineRequest() {
     if (this.selectedRequestId != -1) {
-      this.certificateService.declineRequestes(this.selectedRequestId).subscribe({
-        next: (res) => {
-          console.log(res);
-          this.selectedRequestId = -1;
-          if (this._role == 'ROLE_ADMIN') {
-            this.getAllRequests();
+      let dialogRef = this.dialog.open(WithdrawDialogComponent, {
+        data: {selectedRequestId: this.selectedRequestId}
+      }).afterClosed().subscribe(()=>{
+        dialogRef.unsubscribe();
+        this.selectedRequestId = -1;
+        if (this._role == 'ROLE_ADMIN') {
+          this.getAllRequests();
+        }
+        else {
+          if(this.areByMe) {
+            this.getRequestsByMe()
           }
           else {
-            if(this.areByMe) {
-              this.getRequestsByMe()
-            }
-            else {
-              this.getRequestsFromMe()
-            }
+            this.getRequestsFromMe()
           }
-        },
-        error: (error:any) => {
-          console.log(error)
         }
-      })
+      }
+      );
     }
   }
 }

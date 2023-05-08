@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenerateRequestDialogComponent } from '../generate-request-dialog/generate-request-dialog.component';
 import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 import * as saveAs from 'file-saver';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-homepage',
@@ -22,7 +23,8 @@ export class HomepageComponent {
   url = '';
   role: string = '';
 
-  constructor(private dialog: MatDialog, private authService: AuthService, private certificateService: CertificateService, private router: Router) {
+  constructor(private snackBar: MatSnackBar,
+    private dialog: MatDialog, private authService: AuthService, private certificateService: CertificateService, private router: Router) {
     
   }
 
@@ -43,8 +45,10 @@ export class HomepageComponent {
           this.loaded = true;
         },
         error: (err) => {
-          // TODO: make snackbar
-          console.log("Error wile trying to fetch all certificates.")
+          this.snackBar.open("Error while trying to fetch all certificates.", "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
+          console.log("Error while trying to fetch all certificates.")
         },
       });
     } else {
@@ -55,8 +59,10 @@ export class HomepageComponent {
             this.loaded = true;
           },
           error: (err) => {
-            // TODO: make snackbar
-            console.log("Error wile trying to fetch your certificates.")
+            this.snackBar.open("Error while trying to fetch all certificates.", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
+            console.log("Error while trying to fetch your certificates.")
           },
         });
       }
@@ -85,7 +91,9 @@ export class HomepageComponent {
         saveAs(value, serialNumber);
       }, 
       error: (err) => {
-        // TODO: dodati snackbar
+        this.snackBar.open("Error downloadin the files.", "", {
+          duration: 2700, panelClass: ['snack-bar-server-error']
+       });
         console.log(err);
       },
     })

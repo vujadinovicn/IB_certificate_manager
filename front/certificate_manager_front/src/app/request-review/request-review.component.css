@@ -35,15 +35,16 @@
 }
 
 .selected-header-button {
-    border: 1px solid #1E4A5A;
-    color: #1E4A5A;
+    border: 1px solid #fb8500;
+    color: #fb8500;
 }
 
 h3 {
     text-align: center;
-    font-size: 1.1em;
+    font-size: 1.2em;
     margin-bottom: 5px;
     padding: 10px;
+    margin-top: 5px;
 }
 
 p {
@@ -87,6 +88,10 @@ p {
     align-items: center;
 }
 
+button {
+    cursor: pointer;
+}
+
 .driver-photo {
     border-radius: 50%;
     width: 55px;
@@ -96,14 +101,23 @@ p {
 }
 
 .driver-info {
+    display: flex;
+    justify-content: space-around;
+    /* justify-content: space-around; */
+    padding-top: 5px;
+    padding-bottom: 5px;
     margin-top: 2px;
     margin-left: 10px;
+    height: 50px;
 }
 
 .driver-contact-info {
     margin-top: 2px;
     line-height: 0.7em;
     font-weight: 300 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: inherit;
 }
 
 .request-time {
@@ -117,23 +131,8 @@ p {
     color: #92989B;
 }
 
-.request-type-tag {
-    width: 50px;
-    display: inline-block;
-    height: fit-content;
-    font-size: 0.6em;
-    background-color: #92989B;
-    padding: 5px 10px;
-    color: white;
-    border-radius: 10px;
-    bottom: 5px;
-    right: 10px;
-    position: absolute;
-    text-align: center;
-}
-
 .selected-request-card {
-    border: 2px solid #1E4A5A !important;
+    border: 2px solid #fb8500 !important;
 }
 
 .accepted-request {
@@ -172,5 +171,5 @@ p {
 
 
 .not-clickable {
-    background-color: #849882 !important;
+    background-color: #DCDCDC !important;
 }

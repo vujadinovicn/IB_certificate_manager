@@ -6,7 +6,7 @@ import { CertificateValidityComponent } from 'src/app/certificate-validity/certi
 import { RequestReviewComponent } from 'src/app/request-review/request-review.component';
 
 const routes: Routes = [
-  {path: "certificte-validity", component: CertificateValidityComponent},
+  {path: "validate", component: CertificateValidityComponent},
   {path: "login", component: LoginComponent},
   {path: "all-certificates", component: HomepageComponent},
   {path: "request-review", component: RequestReviewComponent},

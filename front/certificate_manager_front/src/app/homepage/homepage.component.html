@@ -1,11 +1,11 @@
 <div class="hp-container">
     <div class="cards-container">
         <p class="no-certificates basic-container" *ngIf="certificates.length==0 && loaded">Oh :( There are no certificates at the moment</p>
-        <div class="certificate-card basic-container" *ngFor="let certificate of certificates">
+        <div [ngClass]=" !certificate.valid ? 'back-invalid certificate-card basic-container' : 'certificate-card basic-container' " *ngFor="let certificate of certificates">
             <div class="certificate-options">
-                <i class="fa-solid fa-ban withdraw-icon" *ngIf="url == '/my-certificates' || role == 'ROLE_ADMIN'"  (click)="withdraw(certificate)"></i>
-                <i class="fa-solid fa-file-circle-plus certificate-option-request" *ngIf="certificate.type != 'END'" (click)="generateRequest(certificate)"></i>
-                <img src="../../assets/download.svg" class="certificate-option-download" alt="">
+                <i class="fa-solid fa-ban withdraw-icon" style="cursor: pointer" *ngIf="(url == '/my-certificates' || role == 'ROLE_ADMIN') && certificate.valid"  (click)="withdraw(certificate)"></i>
+                <i class="fa-solid fa-file-circle-plus certificate-option-request" style="cursor: pointer" *ngIf="certificate.type != 'END'" (click)="generateRequest(certificate)"></i>
+                <img src="../../assets/download.svg" style="cursor: pointer" class="certificate-option-download" alt="" (click)="download(certificate.serialNumber)">
             </div>
             <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
             <div class="certificate-info-container">

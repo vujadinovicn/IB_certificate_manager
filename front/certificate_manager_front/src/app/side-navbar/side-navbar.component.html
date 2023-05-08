@@ -37,19 +37,34 @@
     <div class="section">
         <p class="section-title">Requests</p>
         <hr>
-        <div class="section-item" (click)="openRequestReview(true)" [ngClass]="reqByMe == true && url == '/request-review' ? 'selected-option': ''">
+        <div class="section-item" (click)="openRequestReview(true)" *ngIf="role!='ROLE_ADMIN'" [ngClass]="reqByMe == true && url == '/request-review' ? 'selected-option': ''">
             <i class="fa-solid fa-file-circle-plus"></i>
             <p>requested by me</p>
         </div>
-        <div class="section-item" (click)="openRequestReview(false)" [ngClass]="reqFromMe == true && url == '/request-review' ? 'selected-option': ''">
+        <div class="section-item" (click)="openRequestReview(false)" *ngIf="role!='ROLE_ADMIN'" [ngClass]="reqFromMe == true && url == '/request-review' ? 'selected-option': ''">
             <i class="fa-solid fa-file-circle-plus"></i>
             <p>requested from me</p>
         </div>
+        <div class="section-item" (click)="openRequestReview(false)" *ngIf="role=='ROLE_ADMIN'" [ngClass]="url == '/request-review' ? 'selected-option': ''">
+            <i class="fa-solid fa-file-circle-plus"></i>
+            <p>all requests</p>
+        </div>
     </div>
-    <div class="section" [routerLink]="['#']" [ngClass]="url == '/validate'? 'selected-option': ''">
+    <div class="section" (click)="showValidate()" [ngClass]="url == '/validate'? 'selected-option': ''">
+        <p class="section-title">Validation</p>
+        <hr>
         <div class="section-item" >
             <i class="fa-solid fa-circle-check"></i>
             <p>validate certificate</p>
+        </div>
+        
+    </div>
+    <div class="section" *ngIf="role == 'ROLE_ADMIN'">
+        <p class="section-title">Root certificate</p>
+        <hr>
+        <div class="section-item" (click)="createRootCertificate()">
+            <i class="fa-solid fa-file-circle-plus certificate-option-request" style="cursor: pointer"></i>
+            <p>create root certificate</p>
         </div>
     </div>
     <div id="logout-container">

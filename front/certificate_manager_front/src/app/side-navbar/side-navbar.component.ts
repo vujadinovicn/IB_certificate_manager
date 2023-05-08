@@ -3,6 +3,9 @@ import { UserService } from './../services/user.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from './../services/auth.service';
 import { Component } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { GenerateRequestDialogComponent } from '../generate-request-dialog/generate-request-dialog.component';
 
 @Component({
   selector: 'app-side-navbar',
@@ -15,11 +18,14 @@ export class SideNavbarComponent {
   url = '';
   reqByMe: boolean = false;
   reqFromMe: boolean = false;
+  role: any;
 
   constructor(private authService: AuthService, 
               private router: Router, 
               private userService: UserService,
-              private certificateService: CertificateService) {
+              private certificateService: CertificateService,
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog) {
                 
                 
   }
@@ -34,6 +40,7 @@ export class SideNavbarComponent {
         this.url = event.urlAfterRedirects;
       }
     });
+    this.role = this.authService.getRole();
   }
 
   logout() {
@@ -81,7 +88,9 @@ export class SideNavbarComponent {
           this.certificateService.setCertificatesToDisplay(value);
         },
         error: (err) => {
-          // TODO: make snackbar
+          this.snackBar.open("Error while trying to fetch all certificates.", "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
           console.log("Error wile trying to fetch all certificates.")
         },
       });
@@ -93,7 +102,9 @@ export class SideNavbarComponent {
             this.certificateService.setCertificatesToDisplay(value);
           },
           error: (err) => {
-            // TODO: make snackbar
+            this.snackBar.open("Error wile trying to fetch all certificates.", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
             console.log("Error wile trying to fetch your certificates.")
           },
         });
@@ -113,6 +124,26 @@ export class SideNavbarComponent {
     }
     this.certificateService.setIsByMeSelected(option);
     this.router.navigate(['request-review']);
+  }
+
+  showValidate(){
+    this.router.navigate(['/validate']);
+  }
+
+  createRootCertificate() {
+    this.certificateService.generateRoot().subscribe({
+      next: (res: any) => {
+        this.snackBar.open(res.message, "", {
+          duration: 2700, panelClass: ['snack-bar-success']
+       });
+      }, 
+      error: (err) => {
+        this.snackBar.open(err.error, "", {
+          duration: 2700, panelClass: ['snack-bar-server-error']
+       });
+        console.log(err);
+      },
+    })
   }
 
 }

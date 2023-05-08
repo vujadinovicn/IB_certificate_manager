@@ -20,24 +20,49 @@ export class WithdrawDialogComponent implements OnInit{
 
   reason: string = "";
   serialNumber: string = "";
+  selectedRequestId: number = 0;
 
   ngOnInit(): void {
     this.serialNumber = this.data.serialNumber;
+    this.selectedRequestId = this.data.selectedRequestId;
   }
 
   withdrawCertificate(): void {
     this.certificateService.withdraw(this.serialNumber, this.reason).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.snackBar.open(res.message, "", {
           duration: 2700, panelClass:['snack-bar-success']
        });
        this.dialogRef.close();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.snackBar.open(err.error, "", {
-          duration: 2700,
+          duration: 2700, panelClass: ['snack-bar-server-error']
        });
       },
+    })
+  }
+
+  decide(){
+    if (this.serialNumber == '')
+      this.withdrawCertificate();
+    else 
+      this.declineRequest();
+  }
+
+  declineRequest(){
+    this.certificateService.declineRequestes(this.selectedRequestId, this.reason).subscribe({
+      next: (res: any) => {
+        this.snackBar.open(res.message, "", {
+          duration: 2700, panelClass:['snack-bar-success']
+       });
+       this.dialogRef.close();
+      },
+      error: (error:any) => {
+        this.snackBar.open(error.error, "", {
+          duration: 2700, panelClass: ['snack-bar-server-error']
+       });
+      }
     })
   }
 

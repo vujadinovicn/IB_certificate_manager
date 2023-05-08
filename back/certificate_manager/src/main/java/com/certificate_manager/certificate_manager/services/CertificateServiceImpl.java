@@ -112,11 +112,13 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Override
 	public void withdraw(String serialNumber, WithdrawalReasonDTO withdrawReasonDTO) {
 		User user = this.userService.getCurrentUser();
+		System.err.println(serialNumber);
 		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElseThrow(() -> new CertificateNotFoundException());
-		if (cert.getType() == CertificateType.ROOT)
+		if (cert.getType() == CertificateType.ROOT && user.getRole() == UserRole.USER)
 			throw new RootCertificateNotForWithdrawalException();
 		if (user != cert.getIssuedTo() && user.getRole() == UserRole.USER)
 			throw new NotTheIssuerException();
+		System.err.println("eerr");
 		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
 	}
 	
@@ -128,9 +130,14 @@ public class CertificateServiceImpl implements ICertificateService {
 		allCertificates.save(cert);
 		allCertificates.flush();
 		
+		if (cert.getType() == CertificateType.END)
+			return; 
+		
 		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getId());
+		System.out.println(allCertificatesWithCurrentCertificateAsIssuer);
 		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) 
 			this.invalidateCurrentAndBelow(c, reason);
+		System.out.println("ee");
 	}
 		
 	public List<CertificateDTO> getAllForUser() {
