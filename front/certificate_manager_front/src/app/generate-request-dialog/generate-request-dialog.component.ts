@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CertificateService } from '../services/certificate.service';
+import { dateBeforeTodayValidator } from '../validators/userValidator';
 import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 
 @Component({
@@ -25,7 +26,7 @@ export class GenerateRequestDialogComponent {
   selectedType: string = '';
 
   requestForm = new FormGroup({
-    date: new FormControl('', [Validators.required])
+    date: new FormControl('', [Validators.required, dateBeforeTodayValidator()])
   });
 
   ngOnInit(): void {

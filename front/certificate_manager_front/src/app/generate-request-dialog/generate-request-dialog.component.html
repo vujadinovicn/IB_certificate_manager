@@ -16,8 +16,8 @@
                 <input matInput [matDatepicker]="picker" formControlName="date" >
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <!-- <mat-error *ngIf="registerForm.get('date')?.errors?.['required']">entering date is required</mat-error> -->
-                <!-- <mat-error *ngIf="registerForm.get('date')?.errors?.['dateAheadOfToday']  && !registerForm.get('date')?.errors?.['required']">invalid date format</mat-error> -->
+                <mat-error *ngIf="requestForm.get('date')?.errors?.['required']">entering date is required</mat-error>
+                <mat-error *ngIf="requestForm.get('date')?.errors?.['dateAheadOfToday']  && !requestForm.get('date')?.errors?.['required']">invalid date format</mat-error>
               </mat-form-field>
               <button mat-button class="conf-button back-yellow" (click)="generateRequest()">Submit</button>
         </form>

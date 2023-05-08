@@ -28,6 +28,7 @@ export class WithdrawDialogComponent implements OnInit{
   }
 
   withdrawCertificate(): void {
+    if (this.reason != ''){
     this.certificateService.withdraw(this.serialNumber, this.reason).subscribe({
       next: (res: any) => {
         this.snackBar.open(res.message, "", {
@@ -40,7 +41,10 @@ export class WithdrawDialogComponent implements OnInit{
           duration: 2700, panelClass: ['snack-bar-server-error']
        });
       },
-    })
+    })} else {
+      this.snackBar.open("Reason is required!", "", {
+        duration: 2700, panelClass: ['snack-bar-front-error']
+     });}
   }
 
   decide(){
@@ -51,6 +55,7 @@ export class WithdrawDialogComponent implements OnInit{
   }
 
   declineRequest(){
+    if (this.reason != ''){
     this.certificateService.declineRequestes(this.selectedRequestId, this.reason).subscribe({
       next: (res: any) => {
         this.snackBar.open(res.message, "", {
@@ -63,7 +68,12 @@ export class WithdrawDialogComponent implements OnInit{
           duration: 2700, panelClass: ['snack-bar-server-error']
        });
       }
-    })
+    })} else {
+      this.snackBar.open("Reason is required!", "", {
+        duration: 2700, panelClass: ['snack-bar-front-error']
+     });
+    }
+    
   }
 
 

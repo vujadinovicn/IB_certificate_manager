@@ -22,23 +22,19 @@ body {
     font-size: 16px;
 }
 
-.mat-mdc-snack-bar-container.snack-bar-success {
-    --mat-mdc-snack-bar-button-color: white;
-    --mdc-snackbar-container-color: #ffb703;
-    --mdc-snackbar-supporting-text-color: white;
-}
-
-.mat-mdc-snack-bar-container.snack-bar-front-error {
-    --mat-mdc-snack-bar-button-color: white;
+.mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: #ffffff;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+  }
+  .mat-mdc-snack-bar-container.snack-bar-front-error {
     --mdc-snackbar-container-color: #fb8500;
-    --mdc-snackbar-supporting-text-color: white;
-}
-
-.mat-mdc-snack-bar-container.snack-bar-server-error {
-    --mat-mdc-snack-bar-button-color: white;
-    --mdc-snackbar-container-color: #383838;
-    --mdc-snackbar-supporting-text-color: white;
-}
+  }
+  .mat-mdc-snack-bar-container.snack-bar-success {
+    --mdc-snackbar-container-color: #ffb703;
+  }
+  .mat-mdc-snack-bar-container.snack-bar-server-error {
+    --mdc-snackbar-container-color: #000000;
+  }
     
 .mat-form-field-label {
     width: 150px; /* set to the desired width */

@@ -64,7 +64,7 @@ export class CertificateValidityComponent {
   }
 
   validateBySerialNumber(): any{
-    console.log("aaa");
+    if (this.serialNumberForm.valid){
     this.certificateService.validateBySerialNumber(this.serialNumberForm.value.serialNumber!).subscribe({
       next: (result) => {
       if (result.message == 'This certificate is valid!')
@@ -75,10 +75,15 @@ export class CertificateValidityComponent {
       error: (error) => {
         this.validity = "";
         this.snackBar.open(error.error, "", {
-          duration: 2700,
+          duration: 2700,panelClass: ['snack-bar-server-error']
        });
       }
     });
+  } else {
+    this.snackBar.open("Check inputs again!", "", {
+      duration: 2700, panelClass: ['snack-bar-front-error']
+   });
+  }
   }
 
   validateByUpload(){
