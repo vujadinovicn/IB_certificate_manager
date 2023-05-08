@@ -105,7 +105,7 @@ export class HomepageComponent {
   downloadKey(serialNumber: string) {
     this.certificateService.downloadKey(serialNumber).subscribe({
       next: (value) => {
-        saveAs(value, serialNumber);
+        saveAs(value, serialNumber+".key");
       }, 
       error: (err) => {
         this.snackBar.open("Error downloadin the file.", "", {
