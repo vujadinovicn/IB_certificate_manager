@@ -109,9 +109,9 @@ public class UserController {
 	
 	@GetMapping(value = "reset/password/email/{email}")
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		System.err.println("usao");
+//		System.err.println("usao");
 		this.userService.sendResetPasswordMail(email);
-		System.out.println("eee");
+//		System.out.println("eee");
 		return new ResponseEntity<String>("If this email exists, reset code has been sent to it!", HttpStatus.NO_CONTENT);
 	}
 	

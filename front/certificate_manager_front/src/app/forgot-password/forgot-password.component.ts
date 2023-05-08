@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { VerificationService } from '../services/verification.service';
+import { phonenumRegexValidator } from '../validators/userValidator';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,7 +22,7 @@ export class ForgotPasswordComponent implements OnInit{
   
   forgotPasswordForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    number: new FormControl('', [Validators.required])
+    number: new FormControl('', [Validators.required, phonenumRegexValidator])
   })
 
   constructor(private snackBar: MatSnackBar, 

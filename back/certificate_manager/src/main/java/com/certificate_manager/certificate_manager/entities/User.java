@@ -40,6 +40,7 @@ public class User {
 	private String phoneNumber;
 
 	@NotEmpty
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
 	private String password;
 
 	private Boolean verified;

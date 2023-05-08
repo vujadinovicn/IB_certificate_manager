@@ -7,6 +7,8 @@ import { Router, RouterModule } from '@angular/router';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 import { VerificationService } from '../services/verification.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { nameRegexValidator, surnameRegexValidator, passwordRegexValidator, phonenumRegexValidator } from '../validators/userValidator';
+import { ConfirmValidParentMatcher, passwordMatcher } from '../validators/passwordMatch';
 
 
 @Component({
@@ -16,19 +18,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class RegisterComponent {
 
-  // confirmValidParentMatcher = new ConfirmValidParentMatcher();
+  confirmValidParentMatcher = new ConfirmValidParentMatcher();
 
   isFirstVisible: boolean = false;
   isSecondVisible: boolean = false;
   
   regForm = new FormGroup({
-    name: new FormControl('', [Validators.required,]),
-    surname: new FormControl('', [Validators.required,]),
+    name: new FormControl('', [Validators.required, nameRegexValidator]),
+    surname: new FormControl('', [Validators.required, surnameRegexValidator]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required,]),
-    confpass: new FormControl('', [Validators.required,]),
-    phonenum: new FormControl('', [Validators.required,]),
-  });
+    password: new FormControl('', [Validators.required, passwordRegexValidator]),
+    confpass: new FormControl('', [Validators.required, passwordRegexValidator]),
+    phonenum: new FormControl('', [Validators.required, phonenumRegexValidator]),
+  }, [passwordMatcher("password", "confpass")]);
 
   constructor(private snackBar: MatSnackBar, 
     private userService: UserService, 

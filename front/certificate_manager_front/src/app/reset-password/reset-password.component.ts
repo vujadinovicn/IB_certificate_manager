@@ -6,6 +6,8 @@ import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { UserService } from '../services/user.service';
 import { VerificationService } from '../services/verification.service';
+import { ConfirmValidParentMatcher, passwordMatcher } from '../validators/passwordMatch';
+import { passwordRegexValidator } from '../validators/userValidator';
 
 @Component({
   selector: 'app-reset-password',
@@ -15,6 +17,8 @@ import { VerificationService } from '../services/verification.service';
 export class ResetPasswordComponent {
 
   @ViewChild('child') childComponent: NavbarComponent | undefined;
+
+  confirmValidParentMatcher = new ConfirmValidParentMatcher();
   
   code: string = '';
   otpValue: string = '';
@@ -22,9 +26,9 @@ export class ResetPasswordComponent {
   isSecondVisible: boolean = false;
 
   resetPasswordForm = new FormGroup({
-    password: new FormControl('', [Validators.required]),
-    confpass: new FormControl('', [Validators.required])
-  }, [])
+    password: new FormControl('', [Validators.required, passwordRegexValidator]),
+    confpass: new FormControl('', [Validators.required, passwordRegexValidator])
+  }, [passwordMatcher("password", "confpass")]);
 
   constructor(private verificationService: VerificationService, 
     private snackBar: MatSnackBar, 
