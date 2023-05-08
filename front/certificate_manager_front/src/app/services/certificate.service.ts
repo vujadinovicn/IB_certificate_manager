@@ -101,6 +101,14 @@ export class CertificateService {
     };
     return this.http.get<any>(environment.apiHost + "/certificate/download/" + serialNumber, options);
   }
+
+  downloadKey(serialNumber: String): Observable<any> {
+    const options: any = {
+      responseType: 'blob',
+    };
+    return this.http.get<any>(environment.apiHost + "/certificate/download-key/" + serialNumber, options);
+  }
+
   generateRequest(cReqDTO: CertificateRequestDTO): Observable<any> {
     const options: any = {
         responseType: 'json',

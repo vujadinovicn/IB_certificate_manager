@@ -102,6 +102,19 @@ public class CertificateFileRepository implements ICertificateFileRepository {
         
 	}
 
+	@Override
+	public DownloadCertDTO readKeyAsResource(String serialNumber) {
+		Resource resource;
+		resource = new FileSystemResource(KEY_DIR + serialNumber + ".key");
+		Path file = Paths.get(KEY_DIR).resolve(serialNumber + ".key");
+
+        if (resource.exists() || resource.isReadable()) {
+            return new DownloadCertDTO(resource, file);
+        } else {
+        	throw new CertificateNotFoundException();
+        }
+	}
+
 	
 	
 }

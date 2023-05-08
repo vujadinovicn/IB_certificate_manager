@@ -22,6 +22,7 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
+import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
@@ -169,6 +170,22 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Override
 	public DownloadCertDTO download(String serialNumber) {
 		 return this.allFileCertificates.readCertificateAsResource(serialNumber);
+	}
+
+	@Override
+	public DownloadCertDTO downloadKey(String serialNumber) {
+		User loggedUser = this.userService.getCurrentUser();
+		Certificate wantedCertificate = this.allCertificates.findBySerialNumber(serialNumber).orElse(null);
+		
+		if (wantedCertificate == null) {
+			throw new CertificateNotFoundException();
+		}
+		
+		if (loggedUser.getRole() != UserRole.ADMIN && wantedCertificate.getIssuedTo().getId() != loggedUser.getId()) {
+			throw new NoAuthorizationForKeyException();
+		}
+		
+		return this.allFileCertificates.readKeyAsResource(serialNumber);
 	}
 
 }
