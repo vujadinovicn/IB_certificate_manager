@@ -6,6 +6,7 @@
                 <i class="fa-solid fa-ban withdraw-icon" style="cursor: pointer" *ngIf="(url == '/my-certificates' || role == 'ROLE_ADMIN') && certificate.valid"  (click)="withdraw(certificate)"></i>
                 <i class="fa-solid fa-file-circle-plus certificate-option-request" style="cursor: pointer" *ngIf="certificate.type != 'END'" (click)="generateRequest(certificate)"></i>
                 <img src="../../assets/download.svg" style="cursor: pointer" class="certificate-option-download" alt="" (click)="download(certificate.serialNumber)">
+                <i class="fa-solid fa-key certificate-option-download-key" (click)="downloadKey(certificate.serialNumber)" *ngIf="certificate.issuedTo.id == this.loggedId || this.role=='ROLE_ADMIN'"></i>
             </div>
             <img class="certificate-icon" src="../../assets/certificate.svg" alt="">
             <div class="certificate-info-container">

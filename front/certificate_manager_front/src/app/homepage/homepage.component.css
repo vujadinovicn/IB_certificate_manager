@@ -54,6 +54,13 @@ p, h1, h2 {
     margin-bottom: -0.22em;
 }
 
+.certificate-option-download-key {
+    cursor: pointer;
+    height: 1.25em;
+    color: rgb(213, 171, 0);
+    margin-left: 10px;
+}
+
 .certificate-type {
     background-color: gray;
     padding: 5px 15px;

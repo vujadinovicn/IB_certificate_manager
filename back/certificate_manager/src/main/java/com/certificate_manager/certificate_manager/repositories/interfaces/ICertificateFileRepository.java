@@ -19,4 +19,6 @@ public interface ICertificateFileRepository {
 	public X509Certificate readX509Certificate(String serialNumber) throws Exception;
 
 	public DownloadCertDTO readCertificateAsResource(String serialNumber);
+	
+	public DownloadCertDTO readKeyAsResource(String serialNumber);
 }
