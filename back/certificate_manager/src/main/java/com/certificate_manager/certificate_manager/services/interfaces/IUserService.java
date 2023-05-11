@@ -16,4 +16,8 @@ public interface IUserService {
 	public User getCurrentUser();
 
 	public UserRetDTO findById(int id);
+
+	public void sendEmailVerification(String email);
+
+	public void verifyRegistration(String verificationCode);
 }
