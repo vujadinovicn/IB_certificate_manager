@@ -20,6 +20,11 @@ import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.compo
 import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { RegisterComponent } from './register/register.component';
+import { NgxOtpInputModule } from 'ngx-otp-input';
+import { CommonModule } from '@angular/common';
+import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
+
 
 
 @NgModule({
@@ -32,18 +37,23 @@ import { MatNativeDateModule } from '@angular/material/core';
     CertificateValidityComponent,
     RequestReviewComponent,
     WithdrawDialogComponent,
-    GenerateRequestDialogComponent
+    GenerateRequestDialogComponent,
+    RegisterComponent,
+    VerificationChoiceComponent,
+    VerificationChoiceComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    CommonModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    NgxOtpInputModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},
