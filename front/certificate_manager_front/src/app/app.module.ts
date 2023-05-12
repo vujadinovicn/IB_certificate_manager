@@ -24,6 +24,7 @@ import { RegisterComponent } from './register/register.component';
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { CommonModule } from '@angular/common';
 import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
+import { VerificationCodeComponent } from './verification-code/verification-code.component';
 
 
 
@@ -40,7 +41,7 @@ import { VerificationChoiceComponent } from './verification-choice/verification-
     GenerateRequestDialogComponent,
     RegisterComponent,
     VerificationChoiceComponent,
-    VerificationChoiceComponent
+    VerificationCodeComponent
   ],
   imports: [
     BrowserModule,
