@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
@@ -94,6 +95,34 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 
 		this.activateUser(token.getUser());
 		this.tokenService.markAsUsed(token);
+	}
+	
+	@Override
+	public void resetPassword(ResetPasswordDTO dto) {
+		SecureToken token = this.tokenService.findByToken(dto.getCode());
+		if (token == null || !this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.FORGOT_PASSWORD) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code is expired or not correct!");
+		}
+		
+		User user = token.getUser();
+		
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		allUsers.save(user);
+		allUsers.flush();
+
+		tokenService.markAsUsed(token);
+		System.err.println(dto.getNewPassword());  
+	}
+	
+	@Override
+	public void sendResetPasswordMail(String email) {
+		User user = this.allUsers.findByEmail(email).orElse(null);
+		if (user == null){
+			throw new UserNotFoundException();
+		}
+		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
+
+		mailService.sendForgotPasswordMail(user, token.getToken());
 	}
 	
 	@Override
