@@ -30,7 +30,6 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
-import com.certificate_manager.certificate_manager.sms.ISMSService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -52,9 +51,6 @@ public class UserController {
 	private TokenUtils tokenUtils;
 	
 	@Autowired
-	private ISMSService smsService;
-
-	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,11 +71,7 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "send/verification/sms/{email}")
-    public ResponseEntity<?> sendVerificationSMS(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		smsService.sendVerificationSMS(email);
-    	return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Code sent successfully!"), HttpStatus.OK);
-    }
+
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode) {
@@ -115,12 +107,6 @@ public class UserController {
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		System.err.println("usao");
 		this.userService.sendResetPasswordMail(email);
-		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
-	}
-	
-	@GetMapping(value = "reset/password/sms/{email}")
-	public ResponseEntity<?> sendResetPasswordSms(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		this.smsService.sendResetSMS(email);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
 	
