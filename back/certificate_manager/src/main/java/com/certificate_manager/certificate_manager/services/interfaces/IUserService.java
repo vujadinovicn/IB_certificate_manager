@@ -28,5 +28,5 @@ public interface IUserService {
 
 	public void sendTwoFactorEmail(String email);
 
-	public void verifyTwoFactor(String verificationCode);
+	public void verifyTwoFactor(String verificationCode, String jwt);
 }

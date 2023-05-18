@@ -1,7 +1,9 @@
 package com.certificate_manager.certificate_manager.security.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class JWTTokenServiceImpl implements IJWTTokenService {
 	
 	@Autowired
@@ -25,6 +27,7 @@ public class JWTTokenServiceImpl implements IJWTTokenService {
 		
 		if (jwt != null) {
 			jwt.setValid(false);
+			jwt.setVerified(true);
 			this.tokenRepo.save(jwt);
 			this.tokenRepo.flush();
 		}
@@ -34,9 +37,20 @@ public class JWTTokenServiceImpl implements IJWTTokenService {
 	public boolean isValid(String token) {
 		JWTToken jwt = this.tokenRepo.findByToken(token).orElse(null);
 		
-		if (jwt != null && jwt.isValid()) {
+		if (jwt != null && jwt.isValid() && jwt.isVerified()) {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void verifyToken(String token) {
+		JWTToken jwt = this.tokenRepo.findByToken(token).orElse(null);
+		if (jwt != null) {
+			jwt.setValid(true);
+			jwt.setVerified(true);
+			this.tokenRepo.save(jwt);
+			this.tokenRepo.flush();
+		}
 	}
 }

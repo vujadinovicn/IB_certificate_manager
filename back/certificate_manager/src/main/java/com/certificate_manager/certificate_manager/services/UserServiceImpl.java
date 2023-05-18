@@ -25,6 +25,7 @@ import com.certificate_manager.certificate_manager.mail.IMailService;
 import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
 import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
+import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -38,6 +39,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Autowired
 	private ISecureTokenService tokenService;
+	
+	@Autowired
+	private IJWTTokenService jwtService;
 	
 	@Autowired
 	private IMailService mailService;
@@ -89,16 +93,21 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	}
 	
 	@Override
-	public void verifyTwoFactor(String verificationCode) {
+	public void verifyTwoFactor(String verificationCode, String jwt) {
 		SecureToken token = this.tokenService.findByToken(verificationCode);
 		
 		if (token == null) {
+			jwtService.invalidateToken(jwt);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Two-factor authentication with entered id does not exist!");
 		}
 
-		if (!this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.REGISTRATION) {
+		if (!this.tokenService.isValid(token) || token.isExpired()) {
+			jwtService.invalidateToken(jwt);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
+		
+		jwtService.verifyToken(jwt);
+		tokenService.markAsUsed(token);
 	}
 	
 	@Override

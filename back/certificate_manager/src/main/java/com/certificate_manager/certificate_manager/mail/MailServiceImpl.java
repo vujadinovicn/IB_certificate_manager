@@ -61,7 +61,7 @@ public class MailServiceImpl implements IMailService {
 	    personalization.addDynamicTemplateData("firstName", user.getName());
 	    personalization.addDynamicTemplateData("code", token);
 	    mail.addPersonalization(personalization);
-		mail.setTemplateId("d-e29ed48afc794a1bbdea8aac6b177d42");
+		mail.setTemplateId("d-4890f22ba6684bd49e7b6b3a24c80e4c");
 		
 		Request req = new Request();
 		try {

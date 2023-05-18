@@ -53,7 +53,7 @@ export class VerificationChoiceComponent implements OnInit{
           this.snackBar.open(res.message, "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
-          this.router.navigate(['verification-code', {type: "sms"}]);
+          this.router.navigate(['verification-code']);
         },
         error: (err: any) => {
           this.snackBar.open(err.error, "", {

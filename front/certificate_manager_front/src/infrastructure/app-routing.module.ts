@@ -6,6 +6,7 @@ import { CertificateValidityComponent } from 'src/app/certificate-validity/certi
 import { RequestReviewComponent } from 'src/app/request-review/request-review.component';
 import { VerificationCodeComponent } from 'src/app/verification-code/verification-code.component';
 import { VerificationChoiceComponent } from 'src/app/verification-choice/verification-choice.component';
+import { RegisterComponent } from 'src/app/register/register.component';
 
 const routes: Routes = [
   {path: "validate", component: CertificateValidityComponent},
@@ -13,6 +14,8 @@ const routes: Routes = [
   {path: "all-certificates", component: HomepageComponent},
   {path: "request-review", component: RequestReviewComponent},
   {path: "my-certificates", component: HomepageComponent},
+  {path: "register", component: RegisterComponent},
+
   {path: "verification-code", component: VerificationCodeComponent},
   {path: "verification-choice", component: VerificationChoiceComponent},
 ];

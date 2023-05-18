@@ -9,5 +9,7 @@ public interface IJWTTokenService {
 	public boolean isValid(String token);
 
 	public void createToken(String token);
+
+	public void verifyToken(String token);
 	
 }
