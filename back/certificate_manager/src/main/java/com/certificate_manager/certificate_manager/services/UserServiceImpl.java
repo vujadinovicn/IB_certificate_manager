@@ -82,6 +82,26 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	}
 	
 	@Override
+	public void sendTwoFactorEmail(String email) {
+		User user = getUserByEmail(email);
+		SecureToken token = tokenService.createToken(user, SecureTokenType.TWO_FACTOR_AUTH);
+		this.mailService.sendVerificationMail(user, token.getToken());
+	}
+	
+	@Override
+	public void verifyTwoFactor(String verificationCode) {
+		SecureToken token = this.tokenService.findByToken(verificationCode);
+		
+		if (token == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Two-factor authentication with entered id does not exist!");
+		}
+
+		if (!this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.REGISTRATION) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
+		}
+	}
+	
+	@Override
 	public void verifyRegistration(String verificationCode) {
 		SecureToken token = this.tokenService.findByToken(verificationCode);
 		

@@ -25,4 +25,8 @@ public interface IUserService {
 	public void resetPassword(ResetPasswordDTO dto);
 
 	public void sendResetPasswordMail(String email);
+
+	public void sendTwoFactorEmail(String email);
+
+	public void verifyTwoFactor(String verificationCode);
 }

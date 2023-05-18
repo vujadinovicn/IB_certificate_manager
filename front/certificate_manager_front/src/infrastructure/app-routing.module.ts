@@ -4,6 +4,8 @@ import { HomepageComponent } from 'src/app/homepage/homepage.component';
 import { LoginComponent } from 'src/app/login/login.component';
 import { CertificateValidityComponent } from 'src/app/certificate-validity/certificate-validity.component';
 import { RequestReviewComponent } from 'src/app/request-review/request-review.component';
+import { VerificationCodeComponent } from 'src/app/verification-code/verification-code.component';
+import { VerificationChoiceComponent } from 'src/app/verification-choice/verification-choice.component';
 
 const routes: Routes = [
   {path: "validate", component: CertificateValidityComponent},
@@ -11,6 +13,8 @@ const routes: Routes = [
   {path: "all-certificates", component: HomepageComponent},
   {path: "request-review", component: RequestReviewComponent},
   {path: "my-certificates", component: HomepageComponent},
+  {path: "verification-code", component: VerificationCodeComponent},
+  {path: "verification-choice", component: VerificationChoiceComponent},
 ];
 
 @NgModule({

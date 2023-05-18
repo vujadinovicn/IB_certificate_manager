@@ -27,6 +27,7 @@ import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
@@ -51,6 +52,9 @@ public class UserController {
 	private TokenUtils tokenUtils;
 	
 	@Autowired
+	private IJWTTokenService tokenService;
+	
+	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,7 +75,11 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
-
+//	@PostMapping(value = "send/twofactor/email/{email}")
+//	public ResponseEntity<?> sendTwoFactorMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
+//		this.userService.sendEmailVerification(email); 
+//		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
+//	}
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode) {
@@ -97,6 +105,7 @@ public class UserController {
 		UserDetails user = (UserDetails) authentication.getPrincipal();
 		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
 		String jwt = tokenUtils.generateToken(user, userFromDb);
+		this.tokenService.createToken(jwt);
 
 		return new ResponseEntity<TokenDTO>(new TokenDTO(jwt, jwt), HttpStatus.OK);
 		
