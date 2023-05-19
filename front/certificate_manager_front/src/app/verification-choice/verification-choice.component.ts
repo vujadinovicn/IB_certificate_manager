@@ -14,7 +14,7 @@ export class VerificationChoiceComponent implements OnInit{
 
   userDTO: UserDTO = {} as UserDTO;
   emailForReset: string = '';
-  cause: string = 'registration';
+  cause: string = '';
   email: string = '';
 
   constructor(private router: Router, private route: ActivatedRoute, public snackBar: MatSnackBar, private verificationService: VerificationService){

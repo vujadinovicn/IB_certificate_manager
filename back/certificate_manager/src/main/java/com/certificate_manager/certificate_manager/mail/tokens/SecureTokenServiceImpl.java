@@ -32,7 +32,7 @@ public class SecureTokenServiceImpl implements ISecureTokenService {
 		token.setToken(new BigInteger(30, random).toString(32).toUpperCase());
 		token.setUsed(false);
 		token.setUser(user);
-		token.setExpirationDate(Date.from(Instant.now().plus(1, ChronoUnit.MINUTES)).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		token.setExpirationDate(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		token.setType(type);
 		
 		this.allTokens.save(token);
