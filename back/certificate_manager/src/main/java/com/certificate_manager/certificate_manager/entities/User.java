@@ -1,5 +1,7 @@
 package com.certificate_manager.certificate_manager.entities;
 
+import java.time.LocalDateTime;
+
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 
@@ -44,6 +46,8 @@ public class User {
 
 	@NotNull
 	private UserRole role;
+	
+	private LocalDateTime timeOfLastSetPassword;
 
 	public User() {
 
@@ -60,6 +64,7 @@ public class User {
 		this.password = password;
 		this.verified = verified;
 		this.role = UserRole.USER;
+		this.timeOfLastSetPassword = LocalDateTime.now();
 	}
 
 	public User(int id, String name, String lastname, String email, String phoneNumber, String password,
@@ -73,6 +78,7 @@ public class User {
 		this.password = password;
 		this.verified = verified;
 		this.role = role;
+		this.timeOfLastSetPassword = LocalDateTime.now();
 	}
 	
 	public User(UserDTO userDTO) {
@@ -146,5 +152,15 @@ public class User {
 	public void setRole(UserRole role) {
 		this.role = role;
 	}
+
+	public LocalDateTime getTimeOfLastSetPassword() {
+		return timeOfLastSetPassword;
+	}
+
+	public void setTimeOfLastSetPassword(LocalDateTime timeOfLastSetPassword) {
+		this.timeOfLastSetPassword = timeOfLastSetPassword;
+	}
+	
+	
 
 }

@@ -1,8 +1,10 @@
 package com.certificate_manager.certificate_manager.services;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,6 +31,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@Value("${password-time-for-renawal}")
+	private long timeForRenawal;
+	
 	@Override
 	public User getUserByEmail(String email) {
 		return allUsers.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
@@ -53,6 +58,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		User user = new User(userDTO);
 		user.setPassword(userDTO.getPassword());
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		user.setTimeOfLastSetPassword(LocalDateTime.now());
 		user.setRole(UserRole.USER);
 		allUsers.save(user);
 		allUsers.flush();
@@ -79,6 +85,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Override
 	public UserRetDTO findById(int id) {
 		return new UserRetDTO(allUsers.findById((long) id).orElseThrow(() -> new UserNotFoundException()));
+	}
+
+	@Override
+	public boolean isPasswordForRenewal(User user) {
+		if (user.getTimeOfLastSetPassword().isBefore(LocalDateTime.now().minusMinutes(timeForRenawal))) 
+			return true;
+		return false;
 	}
 
 }

@@ -16,4 +16,6 @@ public interface IUserService {
 	public User getCurrentUser();
 
 	public UserRetDTO findById(int id);
+	
+	public boolean isPasswordForRenewal(User user);
 }

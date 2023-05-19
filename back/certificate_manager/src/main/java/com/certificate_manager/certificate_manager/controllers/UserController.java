@@ -85,6 +85,10 @@ public class UserController {
 
 		UserDetails user = (UserDetails) authentication.getPrincipal();
 		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
+		
+		if (this.userService.isPasswordForRenewal(userFromDb))
+			return new ResponseEntity<String>("You should renew your password!", HttpStatus.UNAUTHORIZED);
+		
 		String jwt = tokenUtils.generateToken(user, userFromDb);
 
 		return new ResponseEntity<TokenDTO>(new TokenDTO(jwt, jwt), HttpStatus.OK);
