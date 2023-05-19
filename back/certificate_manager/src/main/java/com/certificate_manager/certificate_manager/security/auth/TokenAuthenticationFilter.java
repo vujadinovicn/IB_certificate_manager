@@ -41,7 +41,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
 
 		String email;
-		
+		System.out.println(request.getRequestURI());
 		String authToken = tokenUtils.getToken(request);
 		
 		try {

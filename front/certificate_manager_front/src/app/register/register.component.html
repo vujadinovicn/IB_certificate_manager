@@ -13,13 +13,13 @@ justify-content: center; height: 100%;">
                     <mat-label>Name</mat-label>
                     <input matInput type="text" name="name" formControlName="name" />
                     <mat-error *ngIf="regForm.get('name')?.errors?.['required']">entering name is required</mat-error>
-                    <!-- <mat-error *ngIf="regForm.get('name')?.errors?.['nameRegexError'] && !registerForm.get('name')?.errors?.['required']">invalid name format</mat-error> -->
+                    <mat-error *ngIf="regForm.get('name')?.errors?.['nameRegexError'] && !regForm.get('name')?.errors?.['required']">invalid name format</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Surname</mat-label>
                     <input matInput type="text" name="surname" formControlName="surname" />
                     <mat-error *ngIf="regForm.get('surname')?.errors?.['required']">entering surname is required</mat-error>
-                    <!-- <mat-error *ngIf="regForm.get('surname')?.errors?.['surnameRegexError'] && !registerForm.get('surname')?.errors?.['required']">invalid surname format</mat-error> -->
+                    <mat-error *ngIf="regForm.get('surname')?.errors?.['surnameRegexError'] && !regForm.get('surname')?.errors?.['required']">invalid surname format</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Email</mat-label>
@@ -32,14 +32,14 @@ justify-content: center; height: 100%;">
                     <mat-icon id="eye-icon" matSuffix (click)="isFirstVisible = !isFirstVisible">{{isFirstVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
                     <input matInput type="password" name="password" formControlName="password" />
                     <mat-error *ngIf="regForm.get('password')?.errors?.['required']">entering password is required</mat-error>
-                    <!-- <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !registerForm.get('password')?.errors?.['required']">incorrect input/min 6 char</mat-error> -->
+                    <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !regForm.get('password')?.errors?.['required']">incorrect input/min 6 char</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Confirm password</mat-label>
                     <mat-icon id="eye-icon" matSuffix (click)="isSecondVisible = !isSecondVisible">{{isSecondVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
                     <input matInput type="password" name="conf-password" formControlName="confpass"/>
                     <mat-error *ngIf="regForm.get('confpass')?.errors?.['required']">confirming password is required</mat-error>
-                    <!-- <mat-error *ngIf="regForm.errors?.['passwordMismatchError']">passwords don't match</mat-error> -->
+                    <mat-error *ngIf="regForm.errors?.['passwordMismatchError']">passwords don't match</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Phone number</mat-label>

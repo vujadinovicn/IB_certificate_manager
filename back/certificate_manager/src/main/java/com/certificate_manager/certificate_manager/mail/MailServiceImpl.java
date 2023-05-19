@@ -77,19 +77,19 @@ public class MailServiceImpl implements IMailService {
 	
 	
 	public void sendForgotPasswordMail(User user, String token) {
+		System.out.println(user.getName());
+		System.out.println(token);
 		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
 		String subject = "Password reset";
 		Email to = new Email(user.getEmail());
+		Content c = new Content("text/plain", "message");
+		Mail mail = new Mail(from, subject, to, c);
 		
 		Personalization personalization = new Personalization();
 	    personalization.addTo(to);
 	    personalization.addDynamicTemplateData("code", token);
-		
-	    Mail mail = new Mail();
-	    mail.setFrom(from);
-	    mail.setSubject(subject);
 	    mail.addPersonalization(personalization);
-		mail.setTemplateId("d-ba583170bac644a5b0d2795dfe4bc34b ");
+		mail.setTemplateId("d-ba583170bac644a5b0d2795dfe4bc34b");
 	    
 		Request req = new Request();
 		try {
@@ -98,6 +98,7 @@ public class MailServiceImpl implements IMailService {
 			req.setBody(mail.build());
 			Response res = this.sendGrid.api(req);
 			System.out.println(res.getStatusCode());
+			System.out.println(res.getBody());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

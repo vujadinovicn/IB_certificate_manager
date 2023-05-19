@@ -91,6 +91,7 @@ export class VerificationService {
       responseType: 'json',
       rejectUnauthorized: false,
     };
+    console.log(resetPasswordDTO);
     return this.http.put<any>(environment.apiHost + "/user/resetPassword", resetPasswordDTO, options);
   }
 

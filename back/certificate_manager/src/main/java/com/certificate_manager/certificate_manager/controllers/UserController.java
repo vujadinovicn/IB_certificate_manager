@@ -133,11 +133,11 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
 	
-	
-	@PutMapping(value = "resetPassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "resetPassword")
 	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
-		this.userService.resetPassword(dto);
+		this.userService.resetPassword(dto);	
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully changed!"), HttpStatus.NO_CONTENT);
 	}
+	
 
 }
