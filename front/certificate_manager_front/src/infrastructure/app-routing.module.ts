@@ -16,7 +16,7 @@ const routes: Routes = [
   {path: "all-certificates", component: HomepageComponent},
   {path: "request-review", component: RequestReviewComponent},
   {path: "my-certificates", component: HomepageComponent},
-  {path: "password-rotation", component: PasswordRotationComponent},
+  {path: "password-rotation/:email", component: PasswordRotationComponent},
   {path: "forgot-password", component: ForgotPasswordComponent},
   {path: "reset-password", component: ResetPasswordComponent},
   {path: "verification", component: VerificationChoiceComponent},

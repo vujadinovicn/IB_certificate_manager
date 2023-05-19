@@ -57,6 +57,13 @@ export class LoginComponent implements OnInit{
           console.log(error);
           console.log("tu")
           console.log(error.error)
+          if (error.error == "You should renew your password!"){
+            this.snackBar.open("Your password expired. You should renew your password!", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
+           this.router.navigate(['password-rotation', this.loginForm.value.email]);
+           return;
+          }
           this.snackBar.open("Bad credentials. Please try again!", "", {
             duration: 2700, panelClass: ['snack-bar-server-error']
          });
