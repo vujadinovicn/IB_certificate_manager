@@ -14,3 +14,10 @@ export class UserService {
     return this.http.get<any>(environment.apiHost + "/user/" + id);
   }
 }
+export interface UserDTO {
+  name: string;
+  lastname: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+}

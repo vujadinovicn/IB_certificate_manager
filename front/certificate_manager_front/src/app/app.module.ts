@@ -20,6 +20,12 @@ import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.compo
 import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
+import { VerificationCodeComponent } from './verification-code/verification-code.component';
+import { NgxOtpInputModule } from 'ngx-otp-input';
+import { PasswordRotationComponent } from './password-rotation/password-rotation.component';
 
 
 @NgModule({
@@ -29,10 +35,16 @@ import { MatNativeDateModule } from '@angular/material/core';
     LoginComponent,
     SideNavbarComponent,
     HomepageComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
+    VerificationChoiceComponent,
+    VerificationCodeComponent,
     CertificateValidityComponent,
     RequestReviewComponent,
     WithdrawDialogComponent,
-    GenerateRequestDialogComponent
+    GenerateRequestDialogComponent,
+    PasswordRotationComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -43,7 +55,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     ReactiveFormsModule,
     HttpClientModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    NgxOtpInputModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},
