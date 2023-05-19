@@ -6,6 +6,7 @@ import { VerificationService } from '../services/verification.service';
 import { UserDTO } from '../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CertificateService } from '../services/certificate.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-verification-code',
@@ -27,7 +28,8 @@ export class VerificationCodeComponent implements OnInit{
   otpValue: any;
 
   constructor(private snackBar: MatSnackBar, private verificationService: VerificationService, 
-    private router: Router, private route: ActivatedRoute, private certificateService: CertificateService){
+    private router: Router, private route: ActivatedRoute, private certificateService: CertificateService,
+    private authService: AuthService){
 
   }
   ngOnInit(): void {
@@ -73,6 +75,7 @@ export class VerificationCodeComponent implements OnInit{
 
         this.verificationService.verifyTwoFactor(this.otpValue).subscribe({
           next: (res:any) => {
+              this.authService.setLoggedIn(true);
               this.certificateService.getAllCertificates().subscribe({
               next: (value) => {
                 this.certificateService.setCertificatesToDisplay(value);
