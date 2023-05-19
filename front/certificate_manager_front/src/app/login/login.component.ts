@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { VerificationService } from '../services/verification.service';
 
 @Component({
   selector: 'app-login',
@@ -18,8 +19,11 @@ export class LoginComponent implements OnInit{
     password: new FormControl('', [Validators.required])
   });
 
-  constructor(private authService: AuthService, public snackBar: MatSnackBar, private router: Router, private certificateService: CertificateService){
-    
+  constructor(private authService: AuthService,
+      public snackBar: MatSnackBar,
+      private router: Router,
+      private certificateService: CertificateService,
+      private verificationService: VerificationService) {
   }
   
   ngOnInit(): void {
@@ -38,20 +42,23 @@ export class LoginComponent implements OnInit{
           localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
-          this.certificateService.getAllCertificates().subscribe({
-            next: (value) => {
-              this.certificateService.setCertificatesToDisplay(value);
+          // this.certificateService.getAllCertificates().subscribe({
+          //   next: (value) => {
+          //     this.certificateService.setCertificatesToDisplay(value);
               
-            },
-            error: (err) => {
-              this.snackBar.open("Error wile trying to fetch all certificates.", "", {
-                duration: 2700, panelClass: ['snack-bar-server-error']
-             });
-              console.log("Error wile trying to fetch all certificates.")
-            },
-          });
-          this.router.navigate(['all-certificates']);
+          //   },
+          //   error: (err) => {
+          //     this.snackBar.open("Error wile trying to fetch all certificates.", "", {
+          //       duration: 2700, panelClass: ['snack-bar-server-error']
+          //    });
+          //     console.log("Error wile trying to fetch all certificates.")
+          //   },
+          // });
+          // this.router.navigate(['all-certificates']);
           console.log(this.authService.getUser());
+          this.verificationService.sendEmail(this.loginForm.value.email!);
+          this.verificationService.sendCause('twofactor');
+          this.router.navigate(['/verification-choice']);
         },
         error: (error) => {
           console.log(error);

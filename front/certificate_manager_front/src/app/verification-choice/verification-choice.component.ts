@@ -14,6 +14,8 @@ export class VerificationChoiceComponent implements OnInit{
 
   userDTO: UserDTO = {} as UserDTO;
   emailForReset: string = '';
+  cause: string = 'registration';
+  email: string = '';
 
   constructor(private router: Router, private route: ActivatedRoute, public snackBar: MatSnackBar, private verificationService: VerificationService){
     
@@ -23,6 +25,12 @@ export class VerificationChoiceComponent implements OnInit{
     this.emailForReset = this.route.snapshot.paramMap.get('email')!;
     this.verificationService.recieveUserDTO().subscribe((res: any) => {
       this.userDTO = res;
+    })
+    this.verificationService.recieveCause().subscribe((res: any) => {
+      this.cause = res;
+    })
+    this.verificationService.recieveEmail().subscribe((res:any) => {
+      this.email = res;
     })
   }
 
@@ -40,10 +48,25 @@ export class VerificationChoiceComponent implements OnInit{
   }
 
   open() {
-    if (this.emailForReset == null || this.emailForReset == undefined)
+    if (this.cause == 'registration')
       this.openRegisterVerification();
-    else 
+    else if (this.cause == 'reset')
       this.openResetPassword();
+    else
+      this.openTwoFactor();
+  }
+
+  openTwoFactor() {
+      if (this.clickedEmail) {
+        this.verificationService.sendTwoFactorEmail(this.email).subscribe({
+          next: (res: any) => {
+            this.snackBar.open(res.message, "", {
+              duration: 2700, panelClass: ['snack-bar-success']
+          });
+            this.router.navigate(['verification-code']);
+          }
+        })
+      }
   }
 
   openRegisterVerification(){

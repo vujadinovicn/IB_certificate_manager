@@ -55,6 +55,7 @@ export class RegisterComponent {
         });
           resetForm(this.regForm, formDirective);
           this.verificationService.sendUserDTO(user);
+          this.verificationService.sendCause('registration');
           this.router.navigate(['verification-choice']);
         },
         error: (err: HttpErrorResponse) => {
