@@ -71,4 +71,9 @@ export class LoginComponent implements OnInit{
       });
     }
   }
+
+  redirectToReset() {
+    this.verificationService.sendCause('reset');
+    this.router.navigate(['/verification-choice']);
+  }
 }

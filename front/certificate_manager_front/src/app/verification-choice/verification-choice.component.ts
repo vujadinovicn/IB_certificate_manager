@@ -106,40 +106,55 @@ export class VerificationChoiceComponent implements OnInit{
     }
   }
 
+
   openResetPassword(){
-    if (this.clickedEmail) {
-      this.verificationService.sendResetPasswordEmail(this.emailForReset).subscribe({
-        next: (res: any) => {
-          this.snackBar.open(res.message, "", {
-            duration: 2700, panelClass: ['snack-bar-success']
-        });
-          this.router.navigate(['reset-password']);
-        },
-        error: (err: any) => {
-          this.snackBar.open(err.error, "", {
-            duration: 2700, panelClass: ['snack-bar-server-error']
-         });
-        }
-      })
-    } 
-    else if (this.clickedSms) {
-      this.verificationService.sendResetPasswordSms(this.emailForReset).subscribe({
-        next: (res: any) => {
-          this.snackBar.open(res.message, "", {
-            duration: 2700, panelClass: ['snack-bar-success']
-        });
-          this.router.navigate(['reset-password']);
-        },
-        error: (err: any) => {
-          this.snackBar.open(err.error, "", {
-            duration: 2700, panelClass: ['snack-bar-server-error']
-         });
-        }
-      })
-    } else {
+    console.log("eee")
+    if (this.clickedEmail){
+      this.router.navigate(['forgot-password', {email: this.clickedEmail}])
+    } else if (this.clickedSms)  {
+      this.router.navigate(['forgot-password', {email: this.clickedEmail}])
+    } else{
       this.snackBar.open("Please select one of the options.", "", {
         duration: 2700,  panelClass: ['snack-bar-front-error'] 
      });
+    
     }
   }
+
+  // openResetPassword(){
+  //   if (this.clickedEmail) {
+  //     this.verificationService.sendResetPasswordEmail(this.emailForReset).subscribe({
+  //       next: (res: any) => {
+  //         this.snackBar.open(res.message, "", {
+  //           duration: 2700, panelClass: ['snack-bar-success']
+  //       });
+  //         this.router.navigate(['reset-password']);
+  //       },
+  //       error: (err: any) => {
+  //         this.snackBar.open(err.error, "", {
+  //           duration: 2700, panelClass: ['snack-bar-server-error']
+  //        });
+  //       }
+  //     })
+  //   } 
+  //   else if (this.clickedSms) {
+  //     this.verificationService.sendResetPasswordSms(this.emailForReset).subscribe({
+  //       next: (res: any) => {
+  //         this.snackBar.open(res.message, "", {
+  //           duration: 2700, panelClass: ['snack-bar-success']
+  //       });
+  //         this.router.navigate(['reset-password']);
+  //       },
+  //       error: (err: any) => {
+  //         this.snackBar.open(err.error, "", {
+  //           duration: 2700, panelClass: ['snack-bar-server-error']
+  //        });
+  //       }
+  //     })
+  //   } else {
+  //     this.snackBar.open("Please select one of the options.", "", {
+  //       duration: 2700,  panelClass: ['snack-bar-front-error'] 
+  //    });
+  //   }
+  // }
 }

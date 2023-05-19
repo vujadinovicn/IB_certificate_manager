@@ -25,6 +25,8 @@ import { NgxOtpInputModule } from 'ngx-otp-input';
 import { CommonModule } from '@angular/common';
 import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
 import { VerificationCodeComponent } from './verification-code/verification-code.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 
 
@@ -41,7 +43,9 @@ import { VerificationCodeComponent } from './verification-code/verification-code
     GenerateRequestDialogComponent,
     RegisterComponent,
     VerificationChoiceComponent,
-    VerificationCodeComponent
+    VerificationCodeComponent,
+    ResetPasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,
