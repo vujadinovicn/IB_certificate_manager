@@ -72,6 +72,7 @@ public class WebSecurityConfig {
     	http.authorizeRequests()
 			.requestMatchers("/api/user/login").permitAll()
 			.requestMatchers("api/certificate/validate-upload").permitAll()
+			.requestMatchers("/api/user/rotatePassword").permitAll()
 			.anyRequest().authenticated().and()
 			.cors().and()
 			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils,  userDetailsService()), BasicAuthenticationFilter.class);

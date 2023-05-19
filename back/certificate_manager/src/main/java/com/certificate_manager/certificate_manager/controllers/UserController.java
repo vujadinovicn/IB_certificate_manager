@@ -1,13 +1,9 @@
 package com.certificate_manager.certificate_manager.controllers;
 
-import java.security.Security;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,19 +15,19 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
-import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
-import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
@@ -94,5 +90,10 @@ public class UserController {
 		return new ResponseEntity<TokenDTO>(new TokenDTO(jwt, jwt), HttpStatus.OK);
 		
 	}
-
+	
+	@PutMapping(value = "rotatePassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> rotatePassword(@Valid @RequestBody RotatePasswordDTO dto) {
+		this.userService.rotatePassword(dto);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully rotated!"), HttpStatus.NO_CONTENT);
+	}
 }

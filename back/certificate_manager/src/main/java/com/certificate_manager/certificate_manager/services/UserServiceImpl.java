@@ -13,10 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.UserRole;
+import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchingException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
@@ -92,6 +94,20 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		if (user.getTimeOfLastSetPassword().isBefore(LocalDateTime.now().minusMinutes(timeForRenawal))) 
 			return true;
 		return false;
+	}
+
+	@Override
+	public void rotatePassword(RotatePasswordDTO dto) {
+		User user = this.getUserByEmail(dto.getEmail());
+		System.out.println(user.getPassword());
+		System.out.println(passwordEncoder.encode(dto.getOldPassword()));
+		if (user.getPassword() != passwordEncoder.encode(dto.getOldPassword()))
+			throw new PasswordsNotMatchingException();
+		
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		user.setTimeOfLastSetPassword(LocalDateTime.now());
+		allUsers.save(user);
+		allUsers.flush();
 	}
 
 }
