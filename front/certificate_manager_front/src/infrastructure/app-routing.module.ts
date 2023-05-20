@@ -11,6 +11,7 @@ import { ForgotPasswordComponent } from 'src/app/forgot-password/forgot-password
 import { ResetPasswordComponent } from 'src/app/reset-password/reset-password.component';
 
 const routes: Routes = [
+  {path: "", component: LoginComponent},
   {path: "validate", component: CertificateValidityComponent},
   {path: "login", component: LoginComponent},
   {path: "all-certificates", component: HomepageComponent},

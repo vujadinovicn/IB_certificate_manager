@@ -27,6 +27,7 @@ import { VerificationChoiceComponent } from './verification-choice/verification-
 import { VerificationCodeComponent } from './verification-code/verification-code.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -58,7 +59,8 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
     HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NgxOtpInputModule
+    NgxOtpInputModule,
+    RouterModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},

@@ -32,7 +32,7 @@ justify-content: center; height: 100%;">
                     <mat-icon id="eye-icon" matSuffix (click)="isFirstVisible = !isFirstVisible">{{isFirstVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
                     <input matInput type="password" name="password" formControlName="password" />
                     <mat-error *ngIf="regForm.get('password')?.errors?.['required']">entering password is required</mat-error>
-                    <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !regForm.get('password')?.errors?.['required']">incorrect input/min 6 char</mat-error>
+                    <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !regForm.get('password')?.errors?.['required']">one lcase, upcase, digit</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Confirm password</mat-label>
