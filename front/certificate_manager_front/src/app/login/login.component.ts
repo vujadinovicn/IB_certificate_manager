@@ -12,10 +12,14 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit{
   isVisible : boolean = false;
+  submited: boolean = false;
+  captchaOk: boolean = false;
+  captchaString = '';
 
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
+    recaptcha: new FormControl('', [Validators.required])
   });
 
   constructor(private authService: AuthService, public snackBar: MatSnackBar, private router: Router, private certificateService: CertificateService){
@@ -26,14 +30,21 @@ export class LoginComponent implements OnInit{
 
   }
 
+  resolved(captchaResponse: string) {
+    this.captchaOk = captchaResponse === null ? false: true;
+    this.captchaString = captchaResponse;
+  }
+
   login(){
+    this.submited = true;
+
     const credentials = {
       email: this.loginForm.value.email,
       password: this.loginForm.value.password
     };
 
-    if (this.loginForm.valid) {
-      this.authService.login(credentials).subscribe({
+    if (this.loginForm.valid && this.captchaOk) {
+      this.authService.login(credentials, this.captchaString).subscribe({
         next: (result) => {
           localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));

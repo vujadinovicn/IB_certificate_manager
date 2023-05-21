@@ -14,10 +14,10 @@ public class ScheduledController {
 	@Autowired 
 	private IScheduledService scheduledService; 
 
-	@Transactional
-	@Scheduled(initialDelayString = "${initialdelay}", fixedDelayString = "${fixeddelay}")
-	public void test() {
-		System.err.println("ajde");
-		this.scheduledService.invalidateCertificatesWhichExpired();
-	} 
+//	@Transactional
+//	@Scheduled(initialDelayString = "${initialdelay}", fixedDelayString = "${fixeddelay}")
+//	public void test() {
+//		System.err.println("ajde");
+//		this.scheduledService.invalidateCertificatesWhichExpired();
+//	} 
 } 

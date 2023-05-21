@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,7 @@ import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
+import com.certificate_manager.certificate_manager.security.recaptcha.ValidateCaptcha;
 import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
@@ -46,6 +48,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private ValidateCaptcha captchaValidator;
 	
 	@Autowired
 	private ICertificateGenerator certificateGenerator;
@@ -69,8 +74,11 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials) {
+	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials, @RequestHeader String captcha) {
 		System.out.println(credentials);
+		
+		this.captchaValidator.validateCaptcha(captcha);
+		
 		Authentication authentication;
 		try {
 			authentication = authenticationManager.authenticate(

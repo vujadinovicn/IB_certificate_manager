@@ -20,6 +20,8 @@ import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.compo
 import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+import { environment } from 'src/environments/environment';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     ReactiveFormsModule,
     HttpClientModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    RecaptchaModule,
+    RecaptchaFormsModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},
@@ -51,6 +55,12 @@ import { MatNativeDateModule } from '@angular/material/core';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
+    },
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptcha.siteKey,
+      } as RecaptchaSettings,
     }
   ],
   bootstrap: [AppComponent]
