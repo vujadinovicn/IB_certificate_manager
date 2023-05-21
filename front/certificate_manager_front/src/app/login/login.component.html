@@ -27,7 +27,7 @@ justify-content: center; height: 100%;">
                 
 
                 <button type="submit" class="conf-button back-yellow" mat-raised-button>Login</button>
-                <a id="forgotten-password-ref" [routerLink]="['/forgot-password']">forgot your password?</a>
+                <a id="forgotten-password-ref" (click)="redirectToReset()">forgot your password?</a>
             </form>
         </div>
     </div>

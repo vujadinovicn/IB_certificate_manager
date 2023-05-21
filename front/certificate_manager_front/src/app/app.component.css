@@ -13,7 +13,7 @@
 
 .not-logged {
     grid-template-columns: 1fr;
-    grid-template-rows: 50px auto;
+    grid-template-rows: 60px auto;
 }
 
 #main-content {

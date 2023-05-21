@@ -1,6 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { AuthService } from './../services/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -8,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit{
+
+  @ViewChild('nav') nav: ElementRef | undefined;
 
   role: string = "";
 

@@ -22,6 +22,15 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
 import { environment } from 'src/environments/environment';
+import { RegisterComponent } from './register/register.component';
+import { NgxOtpInputModule } from 'ngx-otp-input';
+import { CommonModule } from '@angular/common';
+import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
+import { VerificationCodeComponent } from './verification-code/verification-code.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { RouterModule } from '@angular/router';
+
 
 
 @NgModule({
@@ -34,12 +43,18 @@ import { environment } from 'src/environments/environment';
     CertificateValidityComponent,
     RequestReviewComponent,
     WithdrawDialogComponent,
-    GenerateRequestDialogComponent
+    GenerateRequestDialogComponent,
+    RegisterComponent,
+    VerificationChoiceComponent,
+    VerificationCodeComponent,
+    ResetPasswordComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    CommonModule,
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
@@ -47,7 +62,9 @@ import { environment } from 'src/environments/environment';
     MatDatepickerModule,
     MatNativeDateModule,
     RecaptchaModule,
-    RecaptchaFormsModule
+    RecaptchaFormsModule,
+    NgxOtpInputModule,
+    RouterModule
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},
