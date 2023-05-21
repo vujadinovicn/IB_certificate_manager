@@ -22,6 +22,8 @@ import com.certificate_manager.certificate_manager.exceptions.CertificateNotVali
 import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
+import com.certificate_manager.certificate_manager.exceptions.PasswordAlreadyUsedException;
+import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchingException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 
@@ -100,6 +102,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(RootCertificateNotForWithdrawalException.class)
     protected ResponseEntity<Object> handleRootCertificateNotForWithdrawalException(RootCertificateNotForWithdrawalException e){
     	return new ResponseEntity<>("Root certificate is not for withdrawal!", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(PasswordAlreadyUsedException.class)
+    protected ResponseEntity<Object> handlePasswordAlreadyUsedException(PasswordAlreadyUsedException e){
+    	return new ResponseEntity<>("Password has already been used!", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(PasswordsNotMatchingException.class)
+    protected ResponseEntity<Object> handlePasswordsNotMatchingException(PasswordsNotMatchingException e){
+    	return new ResponseEntity<>("Current password is not correct!", HttpStatus.BAD_REQUEST);
     }
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})

@@ -35,4 +35,8 @@ public class UsedPassword {
 		this.createdAt = LocalDate.now();
 		this.owner = owner;
 	}
+	
+	public String getPassword() {
+		return this.password;
+	}
 }

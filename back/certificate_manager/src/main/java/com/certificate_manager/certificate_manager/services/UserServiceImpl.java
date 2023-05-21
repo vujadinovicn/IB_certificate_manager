@@ -22,6 +22,7 @@ import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchi
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
+import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -32,6 +33,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private IUsedPasswordService usedPasswordService;
 	
 	@Value("${password-time-for-renawal}")
 	private long timeForRenawal;
@@ -58,6 +62,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 			throw new UserAlreadyExistsException();
 		
 		User user = new User(userDTO);
+		//this.usedPasswordService.checkForUsedPasswords(user, userDTO.getPassword());
 		user.setPassword(userDTO.getPassword());
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		user.setTimeOfLastSetPassword(LocalDateTime.now());
@@ -99,12 +104,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Override
 	public void rotatePassword(RotatePasswordDTO dto) {
 		User user = this.getUserByEmail(dto.getEmail());
-		System.out.println(user.getPassword());
-		System.out.println(passwordEncoder.encode(dto.getOldPassword()));
 		if (user.getPassword() != passwordEncoder.encode(dto.getOldPassword()))
 			throw new PasswordsNotMatchingException();
 		
+		this.usedPasswordService.checkForUsedPasswordsOfOwner(user.getId(), dto.getNewPassword());
 		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		this.usedPasswordService.addNewPassword(user);
 		user.setTimeOfLastSetPassword(LocalDateTime.now());
 		allUsers.save(user);
 		allUsers.flush();
