@@ -37,3 +37,4 @@ src/main/resources/application.properties
 *.crt
 *.key
 *application.properties
+back/certificate_manager/src/main/resources/application.properties
