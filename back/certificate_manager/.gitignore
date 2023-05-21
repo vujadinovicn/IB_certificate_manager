@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Sensitive Data ###
+src/main/resources/application.properties
+*.crt
+*.key
+*application.properties
