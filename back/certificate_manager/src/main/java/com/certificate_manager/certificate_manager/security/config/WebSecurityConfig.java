@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.certificate_manager.certificate_manager.security.auth.RestAuthenticationEntryPoint;
 import com.certificate_manager.certificate_manager.security.auth.TokenAuthenticationFilter;
+import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.UserServiceImpl;
 
@@ -27,6 +28,9 @@ import com.certificate_manager.certificate_manager.services.UserServiceImpl;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
+	
+	@Autowired
+	private IJWTTokenService tokenService;
 
 	@Bean
     public UserDetailsService userDetailsService() {
@@ -71,10 +75,14 @@ public class WebSecurityConfig {
 
     	http.authorizeRequests()
 			.requestMatchers("/api/user/login").permitAll()
+			.requestMatchers("/api/user/send/verification/email/{email}").permitAll()
+			.requestMatchers("/api/user/activate/{activationId}").permitAll()
+			.requestMatchers("/api/user/reset/password/email/{email}").permitAll()
+			.requestMatchers("/api/user/resetPassword").permitAll()
 			.requestMatchers("api/certificate/validate-upload").permitAll()
 			.anyRequest().authenticated().and()
 			.cors().and()
-			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils,  userDetailsService()), BasicAuthenticationFilter.class);
+			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils,  userDetailsService(), tokenService), BasicAuthenticationFilter.class);
 		
 		http.csrf().disable(); 
 

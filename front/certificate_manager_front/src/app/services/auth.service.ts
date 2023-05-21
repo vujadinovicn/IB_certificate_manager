@@ -15,6 +15,7 @@ export class AuthService {
   });
 
   private user$ = new BehaviorSubject<User|null>(null);
+  private loggedIn$ = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) { }
 
@@ -31,6 +32,14 @@ export class AuthService {
     this.user$.next(this.getUserFromStorage());
   }
 
+  setLoggedIn(is: boolean) : void {
+    this.loggedIn$.next(is);
+  }
+
+  recieveLoggedIn(): Observable<boolean> {
+    return this.loggedIn$.asObservable();
+  }
+
   login(auth: any): Observable<TokenDTO> {
     return this.http.post<TokenDTO>(environment.apiHost + '/user/login', auth, {
       headers: this.headers
@@ -41,6 +50,7 @@ export class AuthService {
     localStorage.removeItem('user');
     localStorage.removeItem('refreshToken');
     this.setUser();
+    this.setLoggedIn(false);
   }
 
   refresh(): Observable<TokenDTO> {

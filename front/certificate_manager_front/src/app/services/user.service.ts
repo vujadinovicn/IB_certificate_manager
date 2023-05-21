@@ -13,4 +13,29 @@ export class UserService {
   findById(id: number): Observable<any> {
     return this.http.get<any>(environment.apiHost + "/user/" + id);
   }
+
+  registerUser(user: UserDTO): Observable<any> {
+    console.log(environment.apiHost);
+    const options: any = {
+      responseType: 'json',
+    };
+    return this.http.post<any>(environment.apiHost + "/user", user, options);
+  }
+
+  verify(code: String): Observable<any> {
+    return this.http.get<any>(environment.apiHost + '/user/activate/' + code);
+  }
+}  
+
+export interface UserDTO {
+  name: string;
+  lastname: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+}
+
+export interface ResponseMessageDTO {
+  message: string
+
 }

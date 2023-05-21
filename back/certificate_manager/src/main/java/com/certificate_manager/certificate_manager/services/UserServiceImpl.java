@@ -3,6 +3,7 @@ package com.certificate_manager.certificate_manager.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,14 +11,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.enums.SecureTokenType;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
+import com.certificate_manager.certificate_manager.mail.IMailService;
+import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
+import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
+import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -28,6 +36,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private ISecureTokenService tokenService;
+	
+	@Autowired
+	private IJWTTokenService jwtService;
+	
+	@Autowired
+	private IMailService mailService;
 	
 	@Override
 	public User getUserByEmail(String email) {
@@ -49,13 +66,92 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	public void register(UserDTO userDTO) {
 		if (this.doesUserExist(userDTO.getEmail()))
 			throw new UserAlreadyExistsException();
-		
+		System.out.println(passwordEncoder);
 		User user = new User(userDTO);
 		user.setPassword(userDTO.getPassword());
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		user.setRole(UserRole.USER);
 		allUsers.save(user);
 		allUsers.flush();
+	}
+	
+	@Override
+	public void sendEmailVerification(String email) {
+		User user = getUserByEmail(email);
+		if (user.getVerified()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This account has been already verified.");
+		}
+		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
+		this.mailService.sendVerificationMail(user, token.getToken());
+	}
+	
+	@Override
+	public void sendTwoFactorEmail(String email) {
+		User user = getUserByEmail(email);
+		SecureToken token = tokenService.createToken(user, SecureTokenType.TWO_FACTOR_AUTH);
+		this.mailService.sendVerificationMail(user, token.getToken());
+	}
+	
+	@Override
+	public void verifyTwoFactor(String verificationCode, String jwt) {
+		SecureToken token = this.tokenService.findByToken(verificationCode);
+		
+		if (token == null) {
+			jwtService.invalidateToken(jwt);
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Two-factor authentication with entered id does not exist!");
+		}
+
+		if (!this.tokenService.isValid(token) || token.isExpired()) {
+			jwtService.invalidateToken(jwt);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
+		}
+		
+		jwtService.verifyToken(jwt);
+		tokenService.markAsUsed(token);
+	}
+	
+	@Override
+	public void verifyRegistration(String verificationCode) {
+		SecureToken token = this.tokenService.findByToken(verificationCode);
+		
+		if (token == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Activation with entered id does not exist!");
+		}
+
+		if (!this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.REGISTRATION) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
+		}
+
+		this.activateUser(token.getUser());
+		this.tokenService.markAsUsed(token);
+	}
+	
+	@Override
+	public void resetPassword(ResetPasswordDTO dto) {
+		SecureToken token = this.tokenService.findByToken(dto.getCode());
+		if (token == null || !this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.FORGOT_PASSWORD) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code is expired or not correct!");
+		}
+		
+		User user = token.getUser();
+		
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		allUsers.save(user);
+		allUsers.flush();
+
+		tokenService.markAsUsed(token);
+		System.err.println(dto.getNewPassword());  
+	}
+	
+	@Override
+	public void sendResetPasswordMail(String email) {
+		User user = this.allUsers.findByEmail(email).orElse(null);
+		if (user == null){
+			throw new UserNotFoundException();
+		}
+		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
+
+		mailService.sendForgotPasswordMail(user, token.getToken());
 	}
 	
 	@Override
@@ -79,6 +175,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Override
 	public UserRetDTO findById(int id) {
 		return new UserRetDTO(allUsers.findById((long) id).orElseThrow(() -> new UserNotFoundException()));
+	}
+	
+	
+	private void activateUser(User user) {
+		user.setVerified(true);
+		this.allUsers.save(user);
+		this.allUsers.flush();
 	}
 
 }
