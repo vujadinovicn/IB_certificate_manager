@@ -22,7 +22,10 @@ export class RegisterComponent {
 
   isFirstVisible: boolean = false;
   isSecondVisible: boolean = false;
-  
+  captchaOk: boolean = false;
+  captchaString = '';
+  submited: boolean = false;
+
   regForm = new FormGroup({
     name: new FormControl('', [Validators.required, nameRegexValidator]),
     surname: new FormControl('', [Validators.required, surnameRegexValidator]),
@@ -30,7 +33,9 @@ export class RegisterComponent {
     password: new FormControl('', [Validators.required, passwordRegexValidator]),
     confpass: new FormControl('', [Validators.required, passwordRegexValidator]),
     phonenum: new FormControl('', [Validators.required,]),
+    recaptcha: new FormControl('', [Validators.required])
   }, [passwordMatcher("password", "confpass")]);
+  
 
   constructor(private snackBar: MatSnackBar, 
     private userService: UserService, 
@@ -40,8 +45,14 @@ export class RegisterComponent {
     // markFormControlsTouched(this.registerForm);
   }
 
+  resolved(captchaResponse: string) {
+    this.captchaOk = captchaResponse === null ? false: true;
+    this.captchaString = captchaResponse;
+  }
+
   register(formDirective: FormGroupDirective) {
-    if (this.regForm.valid) {
+    this.submited = true;
+    if (this.regForm.valid && this.captchaOk) {
       let user: UserDTO = {
         name: this.regForm.value.name!,
         lastname: this.regForm.value.surname!,
@@ -50,7 +61,7 @@ export class RegisterComponent {
         phoneNumber: this.regForm.value.phonenum!,
       }
 
-      this.userService.registerUser(user).subscribe({
+      this.userService.registerUser(user, this.captchaString).subscribe({
         next: (res: ResponseMessageDTO) => {
           this.snackBar.open(res.message, "", {
             duration: 2700, panelClass: ['snack-bar-success']

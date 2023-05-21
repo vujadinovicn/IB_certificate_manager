@@ -1,7 +1,7 @@
-<app-navbar></app-navbar>
+
 <div style="display: flex;
 align-items: center;
-justify-content: center; height: 100%;">
+justify-content: center;">
     <div class="border back-white" id="reg-container">
         <div id="left-container">
             <img class="login-img" src="../../assets/signUp-img.svg" alt="">
@@ -47,6 +47,10 @@ justify-content: center; height: 100%;">
                     <mat-error *ngIf="regForm.get('phonenum')?.errors?.['required']">entering phone number is required</mat-error>
                     <!-- <mat-error *ngIf="regForm.get('phonenum')?.errors?.['phonenumRegexError'] && !registerForm.get('phonenum')?.errors?.['required']">invalid phone number format</mat-error> -->
                   </mat-form-field>
+                  <div class="captcha-div">
+                    <re-captcha id="recaptcha" name="recaptcha" (resolved)="resolved($event)" formControlName="recaptcha"></re-captcha>
+                    <mat-error *ngIf="submited && regForm.get('recaptcha')?.errors?.['required']">filling recaptcha is required</mat-error>
+                  </div>
                   <button type="submit" class="conf-button back-yellow" mat-raised-button>Register</button>
             </form>
         </div>

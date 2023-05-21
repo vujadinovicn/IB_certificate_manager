@@ -20,6 +20,8 @@ import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.compo
 import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+import { environment } from 'src/environments/environment';
 import { RegisterComponent } from './register/register.component';
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { CommonModule } from '@angular/common';
@@ -59,6 +61,8 @@ import { RouterModule } from '@angular/router';
     HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
     NgxOtpInputModule,
     RouterModule
   ],
@@ -68,6 +72,12 @@ import { RouterModule } from '@angular/router';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
+    },
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptcha.siteKey,
+      } as RecaptchaSettings,
     }
   ],
   bootstrap: [AppComponent]

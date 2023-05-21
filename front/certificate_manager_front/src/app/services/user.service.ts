@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -14,12 +14,14 @@ export class UserService {
     return this.http.get<any>(environment.apiHost + "/user/" + id);
   }
 
-  registerUser(user: UserDTO): Observable<any> {
+  registerUser(user: UserDTO, captcha: string): Observable<any> {
     console.log(environment.apiHost);
-    const options: any = {
-      responseType: 'json',
-    };
-    return this.http.post<any>(environment.apiHost + "/user", user, options);
+    return this.http.post<any>(environment.apiHost + "/user", user, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'captcha': captcha
+      })
+    });
   }
 
   verify(code: String): Observable<any> {

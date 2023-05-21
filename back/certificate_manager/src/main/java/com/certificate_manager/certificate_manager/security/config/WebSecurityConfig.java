@@ -1,6 +1,7 @@
 package com.certificate_manager.certificate_manager.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.certificate_manager.certificate_manager.security.auth.RestAuthenticationEntryPoint;
@@ -53,8 +55,7 @@ public class WebSecurityConfig {
  	    return authProvider;
  	}
  	
- 	
- 	
+
  	@Autowired
  	private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
  
@@ -75,6 +76,7 @@ public class WebSecurityConfig {
 
     	http.authorizeRequests()
 			.requestMatchers("/api/user/login").permitAll()
+			.requestMatchers("/api/user").permitAll()
 			.requestMatchers("/api/user/send/verification/email/{email}").permitAll()
 			.requestMatchers("/api/user/activate/{activationId}").permitAll()
 			.requestMatchers("/api/user/reset/password/email/{email}").permitAll()

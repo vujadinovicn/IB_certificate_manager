@@ -40,9 +40,12 @@ export class AuthService {
     return this.loggedIn$.asObservable();
   }
 
-  login(auth: any): Observable<TokenDTO> {
+  login(auth: any, captcha: string): Observable<TokenDTO> {
     return this.http.post<TokenDTO>(environment.apiHost + '/user/login', auth, {
-      headers: this.headers
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'captcha': captcha
+      })
     });
   }
 

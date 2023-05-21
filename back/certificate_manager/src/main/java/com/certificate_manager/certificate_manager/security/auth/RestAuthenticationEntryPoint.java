@@ -14,12 +14,15 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.certificate_manager.certificate_manager.exceptions.BadCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
 import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
+import com.certificate_manager.certificate_manager.exceptions.NoCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
@@ -50,6 +53,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, NotFoundException notFoundException) throws IOException {
         // 404
         setResponseError(response, HttpServletResponse.SC_NOT_FOUND, String.format("Not found: %s", notFoundException.getMessage()));
+    }
+    
+    @ExceptionHandler(NoCaptchaException.class)
+    protected ResponseEntity<Object> handleNoCaptchaException(NoCaptchaException e){
+    	return new ResponseEntity<>("No captcha was passed!", HttpStatus.BAD_REQUEST);
+    }
+      
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    protected ResponseEntity<Object> handleMissingRequestHeaderException(MissingRequestHeaderException e){
+    	return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler (value = {HttpMessageNotReadableException.class})
@@ -101,6 +114,13 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     protected ResponseEntity<Object> handleRootCertificateNotForWithdrawalException(RootCertificateNotForWithdrawalException e){
     	return new ResponseEntity<>("Root certificate is not for withdrawal!", HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(BadCaptchaException.class)
+    protected ResponseEntity<Object> handleBadCaptchaException(BadCaptchaException e){
+    	return new ResponseEntity<>("Captcha invalid! Are you a robot?", HttpStatus.BAD_REQUEST);
+    }
+    
+
 	
 	@ExceptionHandler (value = {MethodArgumentNotValidException.class})
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
