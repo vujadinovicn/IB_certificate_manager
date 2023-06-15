@@ -43,7 +43,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://localhost:4200")
 @Validated
 public class UserController {
 	

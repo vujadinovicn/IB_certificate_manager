@@ -3,11 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    production: false,
-    apiHost: 'http://localhost:4388/api',
-    recaptcha: {
-      siteKey: '6Lf9SxgmAAAAAP9sRlEr3Jsdb59jxfpZQoMc1Oej'
-    }
+    
   };
   
   /*
