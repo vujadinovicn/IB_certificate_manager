@@ -68,7 +68,6 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     if (localStorage.getItem('user') != null) {
-      this.setLoggedIn(true);
       return true;
     }
     return false;

@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit{
             console.log(value);
             localStorage.setItem('user', JSON.stringify(value.accessToken));
             this.authService.setUser();
+            this.authService.setLoggedIn(true);
             this.router.navigate(['/all-certificates']);
           },
           error: (err) => {
@@ -112,10 +113,14 @@ export class LoginComponent implements OnInit{
           // });
           // this.router.navigate(['all-certificates']);
           console.log(this.authService.getUser());
-          this.router.navigate(['all-certificates']);
-          // this.verificationService.sendEmail(this.loginForm.value.email!);
-          // this.verificationService.sendCause('twofactor');
-          // this.router.navigate(['/verification-choice']);
+
+          // ZA TESTIRANJE:
+          // this.router.navigate(['all-certificates']);
+
+          // OVO ZAPRAVO TREBA:
+          this.verificationService.sendEmail(this.loginForm.value.email!);
+          this.verificationService.sendCause('twofactor');
+          this.router.navigate(['/verification-choice']);
   }
 
   loginWithGoogle() {
