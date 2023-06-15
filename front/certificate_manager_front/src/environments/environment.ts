@@ -7,6 +7,9 @@ export const environment = {
     apiHost: 'http://localhost:4388/api',
     recaptcha: {
       siteKey: '6Lf9SxgmAAAAAP9sRlEr3Jsdb59jxfpZQoMc1Oej'
+    },
+    oAuth: {
+      googleClientId: '390215664588-epukb0euf3502ne062h358r0r5ipahje.apps.googleusercontent.com'
     }
   };
   

@@ -58,6 +58,20 @@ public class TokenUtils {
 				.signWith(SIGNATURE_ALGORITHM, SECRET.getBytes()).compact();
 	}
 	
+	public String generateToken(User user) {
+		return Jwts.builder()
+				.setIssuer(APP_NAME)
+				.setSubject(user.getEmail())
+				.claim("role", "ROLE_USER")
+				.claim("id", user.getId())
+				.claim("name", user.getName())
+				.claim("lastname", user.getLastname())
+				.setAudience(generateAudience())
+				.setIssuedAt(new Date())
+				.setExpiration(generateExpirationDate())
+				.signWith(SIGNATURE_ALGORITHM, SECRET.getBytes()).compact();
+	}
+	
 	public String renewToken(String token) {
 		return Jwts.builder()
 				.setIssuer(APP_NAME)

@@ -170,7 +170,7 @@ body {
 }
 
 p {
-    cursor: context-menu;
+    /* cursor: context-menu; */
 }
 
 /* CONTAINERS */

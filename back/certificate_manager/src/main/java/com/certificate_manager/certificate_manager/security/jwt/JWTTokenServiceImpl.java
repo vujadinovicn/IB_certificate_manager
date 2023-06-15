@@ -17,6 +17,13 @@ public class JWTTokenServiceImpl implements IJWTTokenService {
 	}
 	
 	@Override
+	public void createNoMFAToken(String token) {
+		JWTToken jwt = new JWTToken(token, true, true);
+		this.tokenRepo.save(jwt);
+		this.tokenRepo.flush();
+	}
+	
+	@Override
 	public JWTToken findByToken(String token) {
 		return this.tokenRepo.findByToken(token).orElse(null);
 	}
@@ -36,7 +43,9 @@ public class JWTTokenServiceImpl implements IJWTTokenService {
 	@Override
 	public boolean isValid(String token) {
 		JWTToken jwt = this.tokenRepo.findByToken(token).orElse(null);
-		
+		System.out.println("TOKEN NADJEN" + jwt);
+		System.out.println("TOKEN VALID" + jwt.isValid());
+		System.out.println("TOKEN VERIFIED" + jwt.isVerified());
 		if (jwt != null && jwt.isValid() && jwt.isVerified()) {
 			return true;
 		}

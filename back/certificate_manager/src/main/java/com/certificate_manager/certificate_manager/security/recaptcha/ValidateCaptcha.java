@@ -45,12 +45,16 @@ public class ValidateCaptcha {
     	ResponseEntity<RecaptchaResponse> response = template.postForEntity(recaptchaUrl, params, RecaptchaResponse.class);
     	
     	if (response.getStatusCode() != HttpStatusCode.valueOf(200)) {
+    		System.out.println("NIJE 200 " + response);
     		return false;
     	}
     	
     	RecaptchaResponse responseBody = response.getBody();
     	
     	if (responseBody == null || !responseBody.isSuccess()) {
+    		System.out.println("NIJE BODY " + responseBody.toString());
+    		System.out.println("NIJE BODY " + responseBody.errorCodes);
+    		System.out.println("NIJE success " + responseBody.isSuccess());
     		return false;
     	}
     	

@@ -11,6 +11,10 @@
     /* min-width: 400px; */
 }
 
+p {
+    margin: 0 !important;
+}
+
 h1 {
     font-weight: 700 !important;
     margin-bottom: 0px !important;
@@ -53,10 +57,12 @@ button {
 }
 
 #forgotten-password-ref{
-    color: #455A64;
+    color: #53666f;
     text-decoration: none;
     font-weight: 600;
     display: block;
+    cursor: pointer;
+    font-size: 0.85em;
 }
 
 #forgotten-password-ref:hover{
@@ -74,6 +80,24 @@ button {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+.social-login-btn {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #c0c0c0;
+    border-radius: 15px;
+    color: #A6A6A6;
+    padding: 8px 18px;
+    margin-top: 15px;
+}
+
+.social-login-btn img {
+    height: 20px;
+    margin-right: 8px;
 }
 
 @media only screen and (max-width: 900px) {

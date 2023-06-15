@@ -127,6 +127,9 @@ public class UserController {
 			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("This account have not been activated yet!"), HttpStatus.UNAUTHORIZED);
 		}
 		
+		if (userFromDb.getSocialId() != null)
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Accounts registered via Goolge can only login with Google"), HttpStatus.UNAUTHORIZED);
+		
 		String jwt = tokenUtils.generateToken(user, userFromDb);
 		this.tokenService.createToken(jwt);
 		

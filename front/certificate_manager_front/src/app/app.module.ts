@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -21,7 +22,6 @@ import { GenerateRequestDialogComponent } from './generate-request-dialog/genera
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
-import { environment } from 'src/environments/environment';
 import { RegisterComponent } from './register/register.component';
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { CommonModule } from '@angular/common';
@@ -30,6 +30,8 @@ import { VerificationCodeComponent } from './verification-code/verification-code
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { RouterModule } from '@angular/router';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { OauthCallbackComponent } from './oauth-callback/oauth-callback.component';
 
 
 
@@ -48,7 +50,8 @@ import { RouterModule } from '@angular/router';
     VerificationChoiceComponent,
     VerificationCodeComponent,
     ResetPasswordComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    OauthCallbackComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +67,8 @@ import { RouterModule } from '@angular/router';
     RecaptchaModule,
     RecaptchaFormsModule,
     NgxOtpInputModule,
-    RouterModule
+    RouterModule,
+    OAuthModule.forRoot()
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},
