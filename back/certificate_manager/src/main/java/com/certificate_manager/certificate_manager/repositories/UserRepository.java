@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	public Optional<User> findByEmail(String email);
 	
+	public Optional<User> findBySocialId(String socialId);
+	
 	@Query("select u from User u where u.role = 0")
 	public Optional<User> findAdmin();
 }

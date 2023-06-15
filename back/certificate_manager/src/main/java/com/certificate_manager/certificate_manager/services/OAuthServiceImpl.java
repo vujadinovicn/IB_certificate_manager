@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -58,6 +59,9 @@ public class OAuthServiceImpl implements IOAuthService {
 	
 	@Autowired
 	private IJWTTokenService tokenJWTService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Value("${oauth.google.client-id}")
 	String clientId;
@@ -92,8 +96,11 @@ public class OAuthServiceImpl implements IOAuthService {
 	private String signInGoogleUser(OAuthUserDataDTO returnedUser) {
 		User dbUser = allUsers.findByEmail(returnedUser.getEmail()).orElse(null);
 		
-		if (dbUser == null)
-			dbUser = registerOauthUser(returnedUser);
+		if (dbUser == null) {
+			dbUser = allUsers.findBySocialId(passwordEncoder.encode(returnedUser.getSub())).orElse(null);
+			if (dbUser == null)
+				dbUser = registerOauthUser(returnedUser);
+		}	
 	
 		String jwt = tokenUtils.generateToken(dbUser);
 		this.tokenJWTService.createNoMFAToken(jwt);
@@ -102,7 +109,7 @@ public class OAuthServiceImpl implements IOAuthService {
 	}
 
 	private User registerOauthUser(OAuthUserDataDTO returnedUser) {
-		User newUser = new User(returnedUser.getName(), returnedUser.getLastname(), returnedUser.getEmail(), returnedUser.getEmailVerified(), returnedUser.getSub(), generateRandomString());
+		User newUser = new User(returnedUser.getName(), returnedUser.getLastname(), returnedUser.getEmail(), returnedUser.getEmailVerified(), passwordEncoder.encode(returnedUser.getSub()), generateRandomString());
 		newUser = allUsers.save(newUser);
 		allUsers.flush();
 		
