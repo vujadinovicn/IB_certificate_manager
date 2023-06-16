@@ -32,7 +32,7 @@ export class OAuth2Service {
     const responseType = authConfig.responseType;
     const scope = authConfig.scope!;
     const pkce = authConfig.disablePKCE;
-
+    console.log(redirectUri);
     const url = `${authorizationUrl}?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&scope=${encodeURIComponent(scope)}&disable_pkce=${pkce}`;
 
     window.location.href = url;
