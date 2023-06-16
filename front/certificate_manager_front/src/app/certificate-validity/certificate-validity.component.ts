@@ -87,6 +87,12 @@ export class CertificateValidityComponent {
   }
 
   validateByUpload(){
+    if (this.file.name.split('.').pop()!.toLowerCase() != "crt"){
+      this.snackBar.open("Uploaded file is not .crt extension!", "", {
+        duration: 2700,panelClass: ['snack-bar-server-error']
+     });
+     return;
+    }
     this.certificateService.validateByUpload(this.filePath).subscribe({
       next: (result) => {
         if (result.message == 'This certificate is valid!')

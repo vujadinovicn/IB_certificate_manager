@@ -22,6 +22,7 @@ import com.certificate_manager.certificate_manager.exceptions.BadCaptchaExceptio
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
 import com.certificate_manager.certificate_manager.exceptions.GoogleIdTokenException;
+import com.certificate_manager.certificate_manager.exceptions.InvalidFileExtensionException;
 import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NoCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
@@ -136,6 +137,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(BadCaptchaException.class)
     protected ResponseEntity<Object> handleBadCaptchaException(BadCaptchaException e){
     	return new ResponseEntity<>("Captcha invalid! Are you a robot?", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(InvalidFileExtensionException.class)
+    protected ResponseEntity<Object> handleInvalidFileExtensionException(InvalidFileExtensionException e){
+    	return new ResponseEntity<>("Invalid file extension!", HttpStatus.BAD_REQUEST);
     }
     
 

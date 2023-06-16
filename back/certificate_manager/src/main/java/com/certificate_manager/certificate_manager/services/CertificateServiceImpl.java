@@ -24,6 +24,7 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.CertificateType;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
+import com.certificate_manager.certificate_manager.exceptions.InvalidFileExtensionException;
 import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
@@ -92,11 +93,34 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Override
 	public boolean validateByUpload(String encodedFile){
 		try {
-			byte encodedCert[] = Base64.getDecoder().decode(encodedFile.split(",")[1]);
-			ByteArrayInputStream inputStream  =  new ByteArrayInputStream(encodedCert);
-			CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-			X509Certificate cert = (X509Certificate)certFactory.generateCertificate(inputStream);
-			return this.validateBySerialNumber(cert.getSerialNumber().toString());
+			boolean isCrtFile = false;
+			try {
+				String[] parts = encodedFile.split(",");
+				if (parts.length > 0) {
+				    String mimeType = parts[0];
+				    if (mimeType.contains("application/x-x509-ca-cert")) {
+				        String decodedData = parts[1];
+				        byte[] decodedBytes = Base64.getDecoder().decode(decodedData);
+				        
+				        String decodedString = new String(decodedBytes);
+				        if (decodedString.startsWith("-----BEGIN CERTIFICATE-----")) {
+				            isCrtFile = true;
+				        }
+				    }
+				}
+			} catch (Exception ex){
+				throw new InvalidFileExtensionException();
+			}
+			if (isCrtFile) {
+				byte encodedCert[] = Base64.getDecoder().decode(encodedFile.split(",")[1]);
+				ByteArrayInputStream inputStream  =  new ByteArrayInputStream(encodedCert);
+				CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+				X509Certificate cert = (X509Certificate)certFactory.generateCertificate(inputStream);
+				return this.validateBySerialNumber(cert.getSerialNumber().toString());
+			} else {
+			    throw new InvalidFileExtensionException();
+			}
+			
 		} catch (CertificateException e) {
 			return false;
 		}
