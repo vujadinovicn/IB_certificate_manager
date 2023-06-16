@@ -1,30 +1,28 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%yellow(%d{HH:mm:ss.SSS}) %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    
-    <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>src/main/resources/logs/application.log</file>
-        <append>true</append>
-        <immediateFlush>true</immediateFlush>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%yellow(%d{HH:mm:ss.SSS}) | %-5level | %logger{36} | %blue(%X{user}) | %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="com.sematext.blog">
-        <appender-ref ref="console"/>
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>src/main/resources/logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} | [%thread] | %-5level | %logger{36} | %X{user} | %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.certificate_manager.certificate_manager.controllers" level="info">
         <appender-ref ref="file" />
-        
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="com.certificate_manager.certificate_manager.services" level="info">
+        <appender-ref ref="file" />
+        <appender-ref ref="STDOUT" />
     </logger>
 
-    <root level="info">
-        <appender-ref ref="file" />
-    </root>
-
-    <root level="info">
-        <appender-ref ref="STDOUT" />
-    </root>
 </configuration>
