@@ -16,7 +16,7 @@ import com.certificate_manager.certificate_manager.services.interfaces.IOAuthSer
 
 @RestController
 @RequestMapping("/api/oauth")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://localhost:4200")
 @Validated
 public class OAuthController {
 	

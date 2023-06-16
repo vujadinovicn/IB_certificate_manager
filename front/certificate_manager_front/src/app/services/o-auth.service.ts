@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 
 const authConfig: AuthConfig = {
   issuer: 'https://accounts.google.com',
-  redirectUri: window.location.origin + '/login',
+  redirectUri: "https://localhost:4200" + '/login',
   clientId: environment.oAuth.googleClientId,
   scope: 'openid profile email',
   strictDiscoveryDocumentValidation: false,
@@ -21,8 +21,9 @@ const authConfig: AuthConfig = {
 export class OAuth2Service {
 
   constructor(private oauthService: OAuthService, private http: HttpClient) {
-    this.oauthService.configure(authConfig);
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
+    // this.oauthService.configure(authConfig);
+    // this.oauthService.loadDiscoveryDocumentAndTryLogin();
+    console.log(authConfig.redirectUri!);
   }
 
   loginWithGoogle() {
