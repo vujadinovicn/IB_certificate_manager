@@ -27,7 +27,6 @@ public class ValidateCaptcha {
     }
     
     public void validateCaptcha(String captchaToken) {
-    	
 		if (captchaToken == null || captchaToken.isBlank()) {
 			throw new NotTheIssuerException();
 		}

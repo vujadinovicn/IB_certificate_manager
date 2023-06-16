@@ -1,9 +1,12 @@
 package com.certificate_manager.certificate_manager.mail;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -18,6 +21,10 @@ public class MailServiceImpl implements IMailService {
 	
 	@Autowired
 	SendGrid sendGrid;
+	
+	@Autowired
+	private ILoggingService loggingService;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
 	public void sendTest(String token) {
@@ -69,6 +76,8 @@ public class MailServiceImpl implements IMailService {
 			req.setEndpoint("mail/send");
 			req.setBody(mail.build());
 			Response res = this.sendGrid.api(req);
+			
+			loggingService.logUserInfo(String.format("EMAIL VERIFICATION; Sender = certificate.manager.tsn@gmail.com, Reciever = %s; Status code = %s", user.getEmail(), res.getStatusCode()), logger);
 			System.out.println(res.getStatusCode());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,6 +106,8 @@ public class MailServiceImpl implements IMailService {
 			req.setEndpoint("mail/send");
 			req.setBody(mail.build());
 			Response res = this.sendGrid.api(req);
+			
+			loggingService.logUserInfo(String.format("EMAIL RESET PASS; Sender = certificate.manager.tsn@gmail.com, Reciever = %s; Status code = %s", user.getEmail(), res.getStatusCode()), logger);
 			System.out.println(res.getStatusCode());
 			System.out.println(res.getBody());
 		} catch (Exception e) {
