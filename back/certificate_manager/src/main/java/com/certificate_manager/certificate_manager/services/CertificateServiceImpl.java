@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -29,6 +31,7 @@ import com.certificate_manager.certificate_manager.exceptions.UserNotFoundExcept
 import com.certificate_manager.certificate_manager.repositories.CertificateFileRepository;
 import com.certificate_manager.certificate_manager.repositories.CertificateRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
+import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -43,6 +46,10 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Autowired
 	private IUserService userService;
 	
+	@Autowired
+	private ILoggingService loggingService;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Override
 	public List<CertificateDTO> getAll() {
 		List<Certificate> certs = allCertificates.findAll();
@@ -53,6 +60,7 @@ public class CertificateServiceImpl implements ICertificateService {
 		for (Certificate cert : certs) {
 			ret.add(new CertificateDTO(cert));
 		}
+		loggingService.logServerInfo("Successfully got all certificates.", logger);
 		return ret;
 	}
 
@@ -61,17 +69,21 @@ public class CertificateServiceImpl implements ICertificateService {
 		Certificate certificate = allCertificates.findBySerialNumber(serialNumber).orElseThrow(
 				() -> new CertificateNotFoundException());
 		try {
-			if (!certificate.isValid())
+			if (!certificate.isValid()) {
+				loggingService.logServerError("Certificate is not valid, serial number=" + serialNumber, logger);
 				return false;
+			}
 			if (this.hasCertificateExpired(certificate)) {
+				loggingService.logServerError("Certificate expired, serial number=" + serialNumber, logger);
 				this.invalidateCurrentAndBelow(certificate, "Certificate with SN." + certificate.getSerialNumber() + "has expired.");
 				return false;
 			}
-			
+		
 			this.verify(certificate);
 			
 			return true;
 		} catch (Exception e) {
+			loggingService.logServerError("Certificate failed X509 verification, serial number=" + serialNumber, logger);
 			this.invalidateCurrentAndBelow(certificate, e.getMessage());
 			return false;
 		} 
@@ -114,10 +126,16 @@ public class CertificateServiceImpl implements ICertificateService {
 	public void withdraw(String serialNumber, WithdrawalReasonDTO withdrawReasonDTO) {
 		User user = this.userService.getCurrentUser();
 		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElseThrow(() -> new CertificateNotFoundException());
-		if (cert.getType() == CertificateType.ROOT && user.getRole() == UserRole.USER)
+		if (cert.getType() == CertificateType.ROOT && user.getRole() == UserRole.USER) {
+			loggingService.logServerError("Certificate can't be withdrawn, USER " + user.getEmail() +  " role can't withdraw ROOT certificate, serialNumber=" + serialNumber, logger);
 			throw new RootCertificateNotForWithdrawalException();
+		}
 		if (user != cert.getIssuedTo() && user.getRole() == UserRole.USER)
+		{
+			loggingService.logServerError("Certificate can't be withdrawn, user " + user.getEmail() +  " is not the issuer, serialNumber=" + serialNumber, logger);
 			throw new NotTheIssuerException();
+		}
+
 		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
 	}
 	
@@ -125,7 +143,7 @@ public class CertificateServiceImpl implements ICertificateService {
 	public void invalidateCurrentAndBelow(Certificate cert, String reason) {
 		cert.setValid(false);
 		cert.setWithdrawalReason(reason);
-		
+		loggingService.logServerInfo("Successfully withdrew certificate, serial number=" + cert.getSerialNumber(), logger);
 		allCertificates.save(cert);
 		allCertificates.flush();
 		
@@ -171,7 +189,11 @@ public class CertificateServiceImpl implements ICertificateService {
 
 	@Override
 	public DownloadCertDTO download(String serialNumber) {
-		 return this.allFileCertificates.readCertificateAsResource(serialNumber);
+		Certificate wantedCertificate = this.allCertificates.findBySerialNumber(serialNumber).orElse(null);
+		if (wantedCertificate == null) {
+			throw new CertificateNotFoundException();
+		}
+		return this.allFileCertificates.readCertificateAsResource(serialNumber);
 	}
 
 	@Override
@@ -184,6 +206,7 @@ public class CertificateServiceImpl implements ICertificateService {
 		}
 		
 		if (loggedUser.getRole() != UserRole.ADMIN && wantedCertificate.getIssuedTo().getId() != loggedUser.getId()) {
+			loggingService.logServerError("Certificate key can't be downloaded, user " + loggedUser.getEmail() +  " is not the issuer nor the ADMIN, serialNumber=" + serialNumber, logger);
 			throw new NoAuthorizationForKeyException();
 		}
 		

@@ -96,3 +96,7 @@ src/main/resources/application.properties
 back/certificate_manager/src/main/resources/application.properties
 back/certificate_manager/src/main/resources/application.properties
 *.properties
+
+*.p12
+
+
