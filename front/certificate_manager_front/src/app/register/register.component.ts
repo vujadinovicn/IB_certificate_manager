@@ -9,6 +9,7 @@ import { VerificationService } from '../services/verification.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { nameRegexValidator, passwordRegexValidator, surnameRegexValidator } from '../validators/userValidator';
 import { passwordMatcher } from '../validators/passwordMatch';
+import { markFormControlsTouched } from '../validators/formGroupValidator';
 
 
 @Component({
@@ -42,7 +43,7 @@ export class RegisterComponent {
     private verificationService: VerificationService, private router: Router) { }
 
   ngOnInit(): void {
-    // markFormControlsTouched(this.registerForm);
+    markFormControlsTouched(this.regForm);
   }
 
   resolved(captchaResponse: string) {

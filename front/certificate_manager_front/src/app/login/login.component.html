@@ -24,11 +24,13 @@ justify-content: center; height: 100%;">
                     <re-captcha id="recaptcha" name="recaptcha" (resolved)="resolved($event)" formControlName="recaptcha"></re-captcha>
                     <mat-error *ngIf="submited && loginForm.get('recaptcha')?.errors?.['required']">filling recaptcha is required</mat-error>
                 </div>
-                
-
                 <button type="submit" class="conf-button back-yellow" mat-raised-button>Login</button>
                 <a id="forgotten-password-ref" (click)="redirectToReset()">forgot your password?</a>
             </form>
+            <div class="social-login-btn" (click)="loginWithGoogle()">
+                <img src="../../assets/google-icon.png" alt="">
+                <p>Continue with Google</p>
+            </div>
         </div>
     </div>
 </div>

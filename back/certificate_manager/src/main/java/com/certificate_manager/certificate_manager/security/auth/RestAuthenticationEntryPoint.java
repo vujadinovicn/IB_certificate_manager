@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.certificate_manager.certificate_manager.exceptions.BadCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.GoogleIdTokenException;
 import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NoCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
 import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerException;
+import com.certificate_manager.certificate_manager.exceptions.PasswordAlreadyUsedException;
+import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchingException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 
@@ -59,6 +62,12 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     protected ResponseEntity<Object> handleNoCaptchaException(NoCaptchaException e){
     	return new ResponseEntity<>("No captcha was passed!", HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(GoogleIdTokenException.class)
+    protected ResponseEntity<Object> handleFetchingAccessTokenException(GoogleIdTokenException e){
+    	return new ResponseEntity<>("Error occured while trying to proccess your Google sign in. Try again.", HttpStatus.BAD_REQUEST);
+    }
+    
       
     @ExceptionHandler(MissingRequestHeaderException.class)
     protected ResponseEntity<Object> handleMissingRequestHeaderException(MissingRequestHeaderException e){
@@ -115,6 +124,15 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     	return new ResponseEntity<>("Root certificate is not for withdrawal!", HttpStatus.BAD_REQUEST);
     }
     
+    @ExceptionHandler(PasswordAlreadyUsedException.class)
+    protected ResponseEntity<Object> handlePasswordAlreadyUsedException(PasswordAlreadyUsedException e){
+    	return new ResponseEntity<>("Password has already been used!", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(PasswordsNotMatchingException.class)
+    protected ResponseEntity<Object> handlePasswordsNotMatchingException(PasswordsNotMatchingException e){
+    	return new ResponseEntity<>("Current password is not correct!", HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(BadCaptchaException.class)
     protected ResponseEntity<Object> handleBadCaptchaException(BadCaptchaException e){
     	return new ResponseEntity<>("Captcha invalid! Are you a robot?", HttpStatus.BAD_REQUEST);

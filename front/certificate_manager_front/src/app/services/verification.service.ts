@@ -9,6 +9,12 @@ export interface ResetPasswordDTO{
   code: string
 }
 
+export interface RotatePasswordDTO{
+  email: string,
+  oldPassword: string,
+  newPassword: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -95,12 +101,28 @@ export class VerificationService {
     return this.http.put<any>(environment.apiHost + "/user/resetPassword", resetPasswordDTO, options);
   }
 
+  rotatePassword(rotatePasswordDTO: RotatePasswordDTO): Observable<any>{
+    const options: any = {
+      responseType: 'json',
+      rejectUnauthorized: false,
+    };
+    return this.http.put<any>(environment.apiHost + "/user/rotatePassword", rotatePasswordDTO, options);
+  }
+  
   sendTwoFactorEmail(email: string): Observable<any> {
     const options: any = {
       responseType: 'json',
       rejectUnauthorized: false,
     };
     return this.http.post<any>(environment.apiHost + "/user/send/twofactor/email/" + email, options);
+  }
+
+  sendTwoFactorSMS(phoneNumber: string): Observable<any> {
+    const options: any = {
+      responseType: 'json',
+      rejectUnauthorized: false,
+    };
+    return this.http.post<any>(environment.apiHost + "/user/send/twofactor/sms/" + phoneNumber, options);
   }
 
   verifyTwoFactor(verificationCode: number): Observable<any> {

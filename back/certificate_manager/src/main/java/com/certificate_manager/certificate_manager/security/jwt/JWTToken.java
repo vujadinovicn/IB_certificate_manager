@@ -36,6 +36,12 @@ public class JWTToken {
 		this.valid = false;
 		this.verified = false;
 	}
+	
+	public JWTToken(String token, Boolean valid, Boolean verified) {
+		this.token = token;
+		this.valid = valid;
+		this.verified = verified;
+	}
 
 	public int getId() {
 		return id;

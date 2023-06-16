@@ -41,3 +41,10 @@ export interface ResponseMessageDTO {
   message: string
 
 }
+export interface UserDTO {
+  name: string;
+  lastname: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+}

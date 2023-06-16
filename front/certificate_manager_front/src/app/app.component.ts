@@ -14,6 +14,9 @@ export class AppComponent {
     this.authService.recieveLoggedIn().subscribe({
       next: (value) => {
         this.loggedIn = value;
+        if (!this.loggedIn) {
+          this.loggedIn = this.authService.getUserFromStorage() == null? false: true;
+        }
       },
       error: (err) => {
         console.log("Error getting current logged in information.")

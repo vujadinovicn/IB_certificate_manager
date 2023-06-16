@@ -38,5 +38,10 @@ src/main/resources/application.properties
 *.crt
 *.key
 *application.properties
+<<<<<<< HEAD
 src/main/resources/*
 src/main/resources/
+=======
+/src/main/resources
+/src/main/resources/*
+>>>>>>> dev

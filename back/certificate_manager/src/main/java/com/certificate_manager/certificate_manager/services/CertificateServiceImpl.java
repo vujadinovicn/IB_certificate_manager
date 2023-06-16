@@ -36,7 +36,7 @@ import com.certificate_manager.certificate_manager.services.interfaces.IUserServ
 
 @Service
 public class CertificateServiceImpl implements ICertificateService {
-	
+	 
 	@Autowired
 	private CertificateRepository allCertificates;
 	
@@ -125,7 +125,6 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Override
 	public void withdraw(String serialNumber, WithdrawalReasonDTO withdrawReasonDTO) {
 		User user = this.userService.getCurrentUser();
-		System.err.println(serialNumber);
 		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElseThrow(() -> new CertificateNotFoundException());
 		if (cert.getType() == CertificateType.ROOT && user.getRole() == UserRole.USER) {
 			loggingService.logServerError("Certificate can't be withdrawn, USER " + user.getEmail() +  " role can't withdraw ROOT certificate, serialNumber=" + serialNumber, logger);
@@ -136,7 +135,7 @@ public class CertificateServiceImpl implements ICertificateService {
 			loggingService.logServerError("Certificate can't be withdrawn, user " + user.getEmail() +  " is not the issuer, serialNumber=" + serialNumber, logger);
 			throw new NotTheIssuerException();
 		}
-		
+
 		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
 	}
 	
@@ -154,6 +153,8 @@ public class CertificateServiceImpl implements ICertificateService {
 		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getId());
 		System.out.println(allCertificatesWithCurrentCertificateAsIssuer);
 		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) {
+			System.err.println(c.getId());
+			System.err.println(cert.getId());
 			if (c.getId() != cert.getId())
 				this.invalidateCurrentAndBelow(c, reason);
 		}

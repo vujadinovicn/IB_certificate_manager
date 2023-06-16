@@ -37,7 +37,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Controller
 @RequestMapping("api/certificate")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://localhost:4200")
 @Validated
 public class CertificateController {
 	

@@ -1,10 +1,12 @@
 package com.certificate_manager.certificate_manager.services;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,11 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.SecureTokenType;
 import com.certificate_manager.certificate_manager.enums.UserRole;
+import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchingException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.mail.IMailService;
@@ -29,6 +33,7 @@ import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
+import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -41,7 +46,14 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
+	private IUsedPasswordService usedPasswordService;
+	
+	@Value("${password-time-for-renawal}")
+	private long timeForRenawal;
+
+	@Autowired
 	private ISecureTokenService tokenService;
+
 	
 	@Autowired
 	private IJWTTokenService jwtService;
@@ -52,6 +64,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Autowired
 	private ILoggingService loggingService;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Override
+	public User getUserByPhoneNumber(String phoneNumber) {
+		return allUsers.findByPhoneNumber(phoneNumber).orElseThrow(() -> new UserNotFoundException());
+	}
 	
 	@Override
 	public User getUserByEmail(String email) {
@@ -77,8 +94,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		}
 		System.out.println(passwordEncoder);
 		User user = new User(userDTO);
+		//this.usedPasswordService.checkForUsedPasswords(user, userDTO.getPassword());
 		user.setPassword(userDTO.getPassword());
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		user.setTimeOfLastSetPassword(LocalDateTime.now());
 		user.setRole(UserRole.USER);
 		allUsers.save(user);
 		allUsers.flush();
@@ -202,5 +221,47 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		this.allUsers.save(user);
 		this.allUsers.flush();
 	}
+
+	@Override
+	public boolean isPasswordForRenewal(User user) {
+		if (user.getSocialId()==null)
+			return false;
+		if (user.getTimeOfLastSetPassword().isBefore(LocalDateTime.now().minusMinutes(timeForRenawal))) 
+			return true;
+		return false;
+	}
+
+	@Override
+	public void rotatePassword(RotatePasswordDTO dto) {
+		User user = this.getUserByEmail(dto.getEmail());
+		if (user.getPassword() != passwordEncoder.encode(dto.getOldPassword()))
+			throw new PasswordsNotMatchingException();
+		
+		this.usedPasswordService.checkForUsedPasswordsOfOwner(user.getId(), dto.getNewPassword());
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		this.usedPasswordService.addNewPassword(user);
+		user.setTimeOfLastSetPassword(LocalDateTime.now());
+		allUsers.save(user);
+		allUsers.flush();
+	}
+//	@Override
+//	public String login(CredentialsDTO credentials) {
+//		Authentication authentication;
+//		authentication = authenticationManager.authenticate(
+//				new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//		UserDetails user = (UserDetails) authentication.getPrincipal();
+//		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
+//		
+//		if (!userFromDb.getVerified()) {
+//			throw new UserNotVerifiedException();
+//		}
+//		
+//		String jwt = tokenUtils.generateToken(user, userFromDb);
+//		this.tokenJWTService.createToken(jwt);
+//		
+//		return jwt;
+//	}
 
 }

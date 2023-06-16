@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CertificateService } from '../services/certificate.service';
 import { dateBeforeTodayValidator } from '../validators/userValidator';
 import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
+import { markFormControlsTouched } from '../validators/formGroupValidator';
 
 @Component({
   selector: 'app-generate-request-dialog',
@@ -31,6 +32,7 @@ export class GenerateRequestDialogComponent {
 
   ngOnInit(): void {
     this.issuedTo = this.data.issuerNumber;
+    markFormControlsTouched(this.requestForm);
   }
 
   generateRequest(): void {

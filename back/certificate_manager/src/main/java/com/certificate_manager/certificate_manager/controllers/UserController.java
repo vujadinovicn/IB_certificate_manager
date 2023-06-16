@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
@@ -35,7 +36,9 @@ import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.security.recaptcha.ValidateCaptcha;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
+import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
+import com.certificate_manager.certificate_manager.sms.ISmsService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -50,6 +53,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IUsedPasswordService usedPasswordService;
 	
 	@Autowired
 	private ValidateCaptcha captchaValidator;
@@ -70,6 +76,8 @@ public class UserController {
 	private ILoggingService loggingService;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Autowired
+	private ISmsService smsService;
 	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getById(@PathVariable @Min(value = 0, message = "Field id must be greater than 0.") int id) {
@@ -95,12 +103,25 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "send/verification/sms/{email}")
+    public ResponseEntity<?> sendVerificationSMS(@PathVariable @NotEmpty(message = "Email is required") String email) {
+		smsService.sendVerificationSMS(email);
+    	return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Code sent successfully!"), HttpStatus.OK);
+    } 
+	
 	@PostMapping(value = "send/twofactor/email/{email}")
 	public ResponseEntity<?> sendTwoFactorMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		loggingService.logServerInfo("Arrived request POST /api/user/send/twofactor/email/{email}", logger);
 		this.userService.sendTwoFactorEmail(email); 
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "send/twofactor/sms/{phoneNumber}") 
+	public ResponseEntity<?> sendTwoFactorSMS(@PathVariable @NotEmpty(message = "Phone number is required") String phoneNumber) {
+		this.smsService.sendTwoFactorSms(phoneNumber); 
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
+	}
+	
 	
 	@GetMapping(value = "verify/twofactor/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyTwoFactor(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode, HttpServletRequest request) {
@@ -118,7 +139,7 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully activated your account!"), HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE) 
 	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials, @RequestHeader String captcha) {
 		System.out.println(credentials);
 		loggingService.logServerInfo("Arrived request POST /api/user/login; email="+credentials.getEmail(), logger);
@@ -142,10 +163,15 @@ public class UserController {
 		UserDetails user = (UserDetails) authentication.getPrincipal();
 		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
 		
+		if (this.userService.isPasswordForRenewal(userFromDb))
+			return new ResponseEntity<String>("You should renew your password!", HttpStatus.UNAUTHORIZED);
 		if (!userFromDb.getVerified()) {
 			loggingService.logServerInfo("Account with credentials=" + credentials + " have not been activated yet!", logger);
 			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("This account have not been activated yet!"), HttpStatus.UNAUTHORIZED);
 		}
+		
+		if (userFromDb.getSocialId() != null)
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Accounts registered via Goolge can only login with Google"), HttpStatus.UNAUTHORIZED);
 		
 		String jwt = tokenUtils.generateToken(user, userFromDb);
 		this.tokenService.createToken(jwt);
@@ -155,6 +181,11 @@ public class UserController {
 		
 	}
 	
+	@PutMapping(value = "rotatePassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> rotatePassword(@Valid @RequestBody RotatePasswordDTO dto) {
+		this.userService.rotatePassword(dto);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully rotated!"), HttpStatus.NO_CONTENT);
+	}
 	
 	@GetMapping(value = "reset/password/email/{email}")
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
@@ -164,12 +195,16 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
 	
+	@GetMapping(value = "reset/password/sms/{phoneNumber}")
+	public ResponseEntity<?> sendResetPasswordSms(@PathVariable @NotEmpty(message = "Phone number is required") String phoneNumber) {
+		this.smsService.sendResetSMS(phoneNumber);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("If this number exists, reset code has been sent to it!"), HttpStatus.NO_CONTENT);
+	}
+	
 	@PutMapping(value = "resetPassword")
 	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
 		loggingService.logServerInfo("Arrived request PUT /api/user/resetPassword", logger);
 		this.userService.resetPassword(dto);	
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully changed!"), HttpStatus.NO_CONTENT);
 	}
-	
-
 }
