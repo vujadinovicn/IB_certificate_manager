@@ -3,6 +3,8 @@ package com.certificate_manager.certificate_manager.services;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenServi
 import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
+import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
@@ -58,6 +61,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Autowired
 	private IMailService mailService;
 	
+	@Autowired
+	private ILoggingService loggingService;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Override
 	public User getUserByPhoneNumber(String phoneNumber) {
 		return allUsers.findByPhoneNumber(phoneNumber).orElseThrow(() -> new UserNotFoundException());
@@ -81,8 +88,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Override
 	public void register(UserDTO userDTO) {
-		if (this.doesUserExist(userDTO.getEmail()))
+		if (this.doesUserExist(userDTO.getEmail())) {
+			loggingService.logServerInfo("User with given email already exists. Email=" + userDTO.getEmail(), logger);
 			throw new UserAlreadyExistsException();
+		}
 		System.out.println(passwordEncoder);
 		User user = new User(userDTO);
 		//this.usedPasswordService.checkForUsedPasswords(user, userDTO.getPassword());
@@ -92,12 +101,14 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		user.setRole(UserRole.USER);
 		allUsers.save(user);
 		allUsers.flush();
+		loggingService.logServerInfo("Successfully registered user with email=" + user.getEmail(), logger);
 	}
 	
 	@Override
 	public void sendEmailVerification(String email) {
 		User user = getUserByEmail(email);
 		if (user.getVerified()) {
+			loggingService.logServerInfo("Account has been already verified. Email="+email, logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This account has been already verified.");
 		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
@@ -117,11 +128,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		
 		if (token == null) {
 			jwtService.invalidateToken(jwt);
+			loggingService.logServerInfo("Two-factor authentication with entered id does not exist. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Two-factor authentication with entered id does not exist!");
 		}
 
 		if (!this.tokenService.isValid(token) || token.isExpired()) {
 			jwtService.invalidateToken(jwt);
+			loggingService.logServerInfo("Two-factor token invalid. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
 		
@@ -134,21 +147,25 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		SecureToken token = this.tokenService.findByToken(verificationCode);
 		
 		if (token == null) {
+			loggingService.logServerInfo("Registration verification with entered id does not exist. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Activation with entered id does not exist!");
 		}
 
 		if (!this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.REGISTRATION) {
+			loggingService.logServerInfo("Registration verification token invalid. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
 
 		this.activateUser(token.getUser());
 		this.tokenService.markAsUsed(token);
+		loggingService.logServerInfo("Verified registration. Email=" + token.getUser().getEmail(), logger);
 	}
 	
 	@Override
 	public void resetPassword(ResetPasswordDTO dto) {
 		SecureToken token = this.tokenService.findByToken(dto.getCode());
 		if (token == null || !this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.FORGOT_PASSWORD) {
+			loggingService.logServerInfo("Reset password verification token invalid. ID=" + dto.getCode(), logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code is expired or not correct!");
 		}
 		
@@ -159,13 +176,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		allUsers.flush();
 
 		tokenService.markAsUsed(token);
-		System.err.println(dto.getNewPassword());  
+		System.err.println(dto.getNewPassword()); 
+		loggingService.logServerInfo("Changed password. Email=" + token.getUser().getEmail(), logger);
 	}
 	
 	@Override
 	public void sendResetPasswordMail(String email) {
 		User user = this.allUsers.findByEmail(email).orElse(null);
 		if (user == null){
+			loggingService.logServerInfo("User with given email does not exist. Email=" + email, logger);
 			throw new UserNotFoundException();
 		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);

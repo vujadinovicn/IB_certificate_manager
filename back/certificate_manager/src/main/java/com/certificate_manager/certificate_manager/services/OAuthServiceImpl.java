@@ -8,6 +8,8 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -30,6 +32,7 @@ import com.certificate_manager.certificate_manager.exceptions.GoogleIdTokenExcep
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
+import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
 import com.certificate_manager.certificate_manager.services.interfaces.IOAuthService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -62,7 +65,11 @@ public class OAuthServiceImpl implements IOAuthService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
+	
+	@Autowired
+	private ILoggingService loggingService;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Value("${oauth.google.client-id}")
 	String clientId;
 
@@ -85,7 +92,6 @@ public class OAuthServiceImpl implements IOAuthService {
 		if (returnedUser != null) {
 			jwt = signInGoogleUser(returnedUser);
 		} else {
-			System.out.println("NULL OVDE");
 			throw new GoogleAuthException();
 		}
 		System.out.println(returnedUser);
@@ -98,17 +104,22 @@ public class OAuthServiceImpl implements IOAuthService {
 		
 		if (dbUser == null) {
 			dbUser = allUsers.findBySocialId(passwordEncoder.encode(returnedUser.getSub())).orElse(null);
-			if (dbUser == null)
+			if (dbUser == null) 
 				dbUser = registerOauthUser(returnedUser);
-		}	
-	
+			else
+				loggingService.logServerInfo("User who initiated oAuth sign in already exists in db, generating jwt based on db info for email=" + dbUser.getEmail(), logger);
+		} else
+			loggingService.logServerInfo("User who initiated oAuth sign in already exists in db, generating jwt based on db info for email=" + dbUser.getEmail(), logger);
+		
 		String jwt = tokenUtils.generateToken(dbUser);
+		loggingService.logServerInfo("JWT token generated successfully, for email=" + dbUser.getEmail(), logger);
 		this.tokenJWTService.createNoMFAToken(jwt);
 		
 		return jwt;
 	}
 
 	private User registerOauthUser(OAuthUserDataDTO returnedUser) {
+		loggingService.logServerInfo("User who initiated oAuth sign in doesn't exist in db, registrating new social account for email=" + returnedUser.getEmail(), logger);
 		User newUser = new User(returnedUser.getName(), returnedUser.getLastname(), returnedUser.getEmail(), returnedUser.getEmailVerified(), passwordEncoder.encode(returnedUser.getSub()), generateRandomString());
 		newUser = allUsers.save(newUser);
 		allUsers.flush();
@@ -136,9 +147,11 @@ public class OAuthServiceImpl implements IOAuthService {
 			ResponseEntity<AccessTokenResponseDTO> responseEntity = restTemplate.exchange(requestEntity, AccessTokenResponseDTO.class);
 			res = responseEntity.getBody();
 		} catch (URISyntaxException e) {
+			loggingService.logServerError("Exchanging autorization code for access token failed, error in communication with Google.", logger);
 			throw new GoogleIdTokenException();
 		}
 
+		loggingService.logServerInfo("Successfuly exchanged autorization code for access and id token", logger);
 		return res;
 	}
 
@@ -153,9 +166,11 @@ public class OAuthServiceImpl implements IOAuthService {
 			try {
 				idToken = verifier.verify(idTokenString);
 			} catch (GeneralSecurityException | IOException e) {
+				loggingService.logServerError("Error happened while trying to verify id token with Google.", logger);
 				throw new GoogleIdTokenException();
 			}
 			if (idToken != null) {
+			  loggingService.logServerInfo("Id token verified with Google.", logger);
 			  Payload payload = idToken.getPayload();
 			  
 			  String userId = payload.getSubject();
@@ -170,9 +185,11 @@ public class OAuthServiceImpl implements IOAuthService {
 			  //TODO: Use or store profile information
 
 			  System.out.println(payload.toString());
+			  loggingService.logServerInfo("Successfully extracted user data from id token, for email=" + email, logger);
 			  return new OAuthUserDataDTO(userId, givenName, familyName, email, emailVerified);
 
 			} else {
+				loggingService.logServerError("Error happened while trying to extract user data from id token.", logger);
 				throw new GoogleIdTokenException();
 			}
 			
