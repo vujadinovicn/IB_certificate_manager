@@ -83,6 +83,8 @@ public class WebSecurityConfig {
 			.requestMatchers("/api/user/reset/password/email/{email}").permitAll()
 			.requestMatchers("/api/user/resetPassword").permitAll()
 			.requestMatchers("api/certificate/validate-upload").permitAll()
+			.requestMatchers("/api/user/rotatePassword").permitAll()
+			.requestMatchers("/api/user/**").permitAll()
 			.anyRequest().authenticated().and()
 			.cors().and()
 			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils,  userDetailsService(), tokenService), BasicAuthenticationFilter.class);

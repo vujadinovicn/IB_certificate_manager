@@ -1,7 +1,6 @@
 import { environment } from './../environments/environment';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from '../infrastructure/app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,14 +20,15 @@ import { WithdrawDialogComponent } from './withdraw-dialog/withdraw-dialog.compo
 import { GenerateRequestDialogComponent } from './generate-request-dialog/generate-request-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
-import { RegisterComponent } from './register/register.component';
-import { NgxOtpInputModule } from 'ngx-otp-input';
-import { CommonModule } from '@angular/common';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { VerificationChoiceComponent } from './verification-choice/verification-choice.component';
 import { VerificationCodeComponent } from './verification-code/verification-code.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { NgxOtpInputModule } from 'ngx-otp-input';
+import { PasswordRotationComponent } from './password-rotation/password-rotation.component';
+import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+import { RegisterComponent } from './register/register.component';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { OauthCallbackComponent } from './oauth-callback/oauth-callback.component';
@@ -42,10 +42,15 @@ import { OauthCallbackComponent } from './oauth-callback/oauth-callback.componen
     LoginComponent,
     SideNavbarComponent,
     HomepageComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
+    VerificationChoiceComponent,
+    VerificationCodeComponent,
     CertificateValidityComponent,
     RequestReviewComponent,
     WithdrawDialogComponent,
     GenerateRequestDialogComponent,
+    PasswordRotationComponent,
     RegisterComponent,
     VerificationChoiceComponent,
     VerificationCodeComponent,
@@ -64,6 +69,7 @@ import { OauthCallbackComponent } from './oauth-callback/oauth-callback.componen
     HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    NgxOtpInputModule,
     RecaptchaModule,
     RecaptchaFormsModule,
     NgxOtpInputModule,

@@ -55,7 +55,9 @@ export class LoginComponent implements OnInit{
             this.router.navigate(['/all-certificates']);
           },
           error: (err) => {
-            console.log(err);
+            this.snackBar.open("Google sign in error! Try again", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
           },
         });
   
@@ -83,10 +85,17 @@ export class LoginComponent implements OnInit{
         next: (result) => {
           this.processLogin(result);
         },
-        error: (error) => {
+         error: (error) => {
           console.log(error);
           console.log("tu")
           console.log(error.error)
+          if (error.error == "You should renew your password!"){
+            this.snackBar.open("Your password expired. You should renew your password!", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
+           this.router.navigate(['password-rotation', this.loginForm.value.email]);
+           return;
+          }
           this.snackBar.open("Bad credentials. Please try again!", "", {
             duration: 2700, panelClass: ['snack-bar-server-error']
          });
@@ -94,6 +103,9 @@ export class LoginComponent implements OnInit{
       });
     }
   }
+
+  
+
 
   processLogin(result: any) {
     localStorage.setItem('user', JSON.stringify(result.accessToken));
@@ -115,7 +127,7 @@ export class LoginComponent implements OnInit{
           console.log(this.authService.getUser());
 
           // ZA TESTIRANJE:
-          // this.router.navigate(['all-certificates']);
+          //this.router.navigate(['all-certificates']);
 
           // OVO ZAPRAVO TREBA:
           this.verificationService.sendEmail(this.loginForm.value.email!);

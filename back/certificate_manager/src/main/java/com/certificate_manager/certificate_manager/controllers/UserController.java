@@ -2,7 +2,6 @@ package com.certificate_manager.certificate_manager.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.ResponseMessageDTO;
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.TokenDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
@@ -32,8 +32,8 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
 import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.security.recaptcha.ValidateCaptcha;
-import com.certificate_manager.certificate_manager.services.CertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
+import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +49,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IUsedPasswordService usedPasswordService;
 	
 	@Autowired
 	private ValidateCaptcha captchaValidator;
@@ -123,6 +126,8 @@ public class UserController {
 		UserDetails user = (UserDetails) authentication.getPrincipal();
 		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
 		
+		if (this.userService.isPasswordForRenewal(userFromDb))
+			return new ResponseEntity<String>("You should renew your password!", HttpStatus.UNAUTHORIZED);
 		if (!userFromDb.getVerified()) {
 			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("This account have not been activated yet!"), HttpStatus.UNAUTHORIZED);
 		}
@@ -138,10 +143,14 @@ public class UserController {
 		
 	}
 	
+	@PutMapping(value = "rotatePassword", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> rotatePassword(@Valid @RequestBody RotatePasswordDTO dto) {
+		this.userService.rotatePassword(dto);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully rotated!"), HttpStatus.NO_CONTENT);
+	}
 	
 	@GetMapping(value = "reset/password/email/{email}")
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		System.err.println("usao");
 		this.userService.sendResetPasswordMail(email);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
@@ -151,6 +160,4 @@ public class UserController {
 		this.userService.resetPassword(dto);	
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully changed!"), HttpStatus.NO_CONTENT);
 	}
-	
-
 }
