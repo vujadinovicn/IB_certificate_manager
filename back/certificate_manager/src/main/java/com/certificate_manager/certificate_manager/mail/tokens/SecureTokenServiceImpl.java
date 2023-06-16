@@ -29,7 +29,17 @@ public class SecureTokenServiceImpl implements ISecureTokenService {
 	public SecureToken createToken(User user, SecureTokenType type) {
 		SecureToken token = new SecureToken();
 		SecureRandom random = new SecureRandom();
-		token.setToken(new BigInteger(30, random).toString(32).toUpperCase());
+		String generatedToken = new BigInteger(30, random).toString(32).toUpperCase();
+
+		if (generatedToken.length() > 6) {
+		    generatedToken = generatedToken.substring(0, 6);
+		} else if (generatedToken.length() < 6) {
+		    while (generatedToken.length() < 6) {
+		        generatedToken = "0" + generatedToken;
+		    }
+		}
+		
+		token.setToken(generatedToken);
 		token.setUsed(false);
 		token.setUser(user);
 		token.setExpirationDate(Date.from(Instant.now().plus(2, ChronoUnit.MINUTES)).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());

@@ -58,7 +58,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	@Autowired
 	private IMailService mailService;
 	
-	
+	@Override
+	public User getUserByPhoneNumber(String phoneNumber) {
+		return allUsers.findByPhoneNumber(phoneNumber).orElseThrow(() -> new UserNotFoundException());
+	}
 	
 	@Override
 	public User getUserByEmail(String email) {

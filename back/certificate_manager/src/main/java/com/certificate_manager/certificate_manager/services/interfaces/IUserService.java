@@ -36,4 +36,6 @@ public interface IUserService {
 	public void sendTwoFactorEmail(String email);
 
 	public void verifyTwoFactor(String verificationCode, String jwt);
+	
+	public User getUserByPhoneNumber(String phoneNumber); 
 }
