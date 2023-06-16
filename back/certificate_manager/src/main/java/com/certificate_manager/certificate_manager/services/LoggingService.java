@@ -4,9 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.certificate_manager.certificate_manager.entities.User;
+import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
@@ -14,13 +17,13 @@ import com.certificate_manager.certificate_manager.services.interfaces.IUserServ
 public class LoggingService implements ILoggingService {
 	
 	@Autowired
-	IUserService userService;
+	UserRepository allUsers;
 	
 //	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Override
 	public void logUserInfo(String action, Logger logger) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = this.getCurrentUser();
 
         MDC.put("user", currentUser.getEmail());
         logger.info(action);
@@ -36,7 +39,7 @@ public class LoggingService implements ILoggingService {
 	
 	@Override
 	public void logUserError(String action, Logger logger) {
-        User currentUser = userService.getCurrentUser();
+        User currentUser = this.getCurrentUser();
 
         MDC.put("user", currentUser.getEmail());
         logger.error(action);
@@ -48,5 +51,10 @@ public class LoggingService implements ILoggingService {
 	 	MDC.put("user", "SERVER");
 	    logger.error(action);
 	    MDC.remove("user");
+	}
+	
+	private User getCurrentUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return allUsers.findByEmail(auth.getName()).orElse(null);
 	}
 }
