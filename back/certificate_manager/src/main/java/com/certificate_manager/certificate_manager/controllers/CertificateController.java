@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoun
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateService;
+import com.certificate_manager.certificate_manager.services.interfaces.ILoggingService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,20 +47,25 @@ public class CertificateController {
 	@Autowired
 	private ICertificateGenerator certificateGenerator;
 	
+	@Autowired
+	private ILoggingService loggingService;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@GetMapping(value = "")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> getAll() {
-		System.out.println("tu");
+		loggingService.logUserInfo("Arrived request GET /api/certificate", logger);
 		return new ResponseEntity<List<CertificateDTO>>(certificateService.getAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/mine")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> getAllForUser() {
+		loggingService.logUserInfo("Arrived request GET /api/certificate/mine", logger);
 		try {
 			return new ResponseEntity<List<CertificateDTO>>(certificateService.getAllForUser(), HttpStatus.OK);
 		} catch(UserNotFoundException e) {
+			loggingService.logServerInfo(e.getMessage(), logger);
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		
@@ -65,7 +73,8 @@ public class CertificateController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(value = "/root")
-	public ResponseEntity<?> generateRoot() { 
+	public ResponseEntity<?> generateRoot() {
+		loggingService.logUserInfo("Arrived request POST /api/certificate/root", logger);
 		certificateGenerator.generateSelfSignedCertificate();
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Sucessefully created root certificate."), HttpStatus.OK);
 	}
@@ -73,53 +82,65 @@ public class CertificateController {
 	@GetMapping(value = "/validate/{serialNumber}")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> validateBySerialNumber(@PathVariable @NotEmpty String serialNumber){
+		loggingService.logUserInfo("Arrived request GET /api/certificate/validate/{serialNumber}=" + serialNumber, logger);
 		String validationMessage = "This certificate is valid!";
 		if (!certificateService.validateBySerialNumber(serialNumber)) {
 			validationMessage = "This certificate is not valid!";
 		};
+		loggingService.logServerInfo(validationMessage, logger);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO(validationMessage), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/validate-upload")
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> validateByUpload(@Valid @RequestBody @NotEmpty String encodedFile){
+		loggingService.logUserInfo("Arrived request POST /api/certificate/validate-upload", logger);
 		String validationMessage = "This certificate is valid!";
 		System.out.println("neca");
 		if (!certificateService.validateByUpload(encodedFile)) {
 			validationMessage = "This certificate is not valid!";
 		};
+		loggingService.logServerInfo(validationMessage, logger);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO(validationMessage), HttpStatus.OK);
 	}
 	
 	@PutMapping(value = "/withdraw/{serialNumber}")
 //	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<?> withdraw(@PathVariable @NotEmpty String serialNumber, @Valid @RequestBody WithdrawalReasonDTO withdrawReasonDTO){
+		loggingService.logUserInfo("Arrived request PUT /api/certificate/withdraw/{serialNumber}=" + serialNumber + " , reason=" + withdrawReasonDTO.getReason(), logger);
 		this.certificateService.withdraw(serialNumber, withdrawReasonDTO);
+		loggingService.logServerInfo("Successfully withdraw of certificate " + serialNumber, logger);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Successfully withdraw of certificate"), HttpStatus.OK);
 	}
 	
 	@GetMapping(value="/download/{serialNumber}")
 	public ResponseEntity<?> download(@PathVariable @NotEmpty String serialNumber) {
+		loggingService.logUserInfo("Arrived request GET /api/certificate/download/{serialNumber}=" + serialNumber, logger);
 		DownloadCertDTO ret = this.certificateService.download(serialNumber);
 		try {
+			loggingService.logUserInfo("Sertificate successfully downloaded " + serialNumber, logger);
 			return ResponseEntity.ok()
 			          .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(ret.getPath()))
 			          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + serialNumber + ".crt" + "\"")
 			          .body(ret.getFile());
 		} catch (IOException e) {
+			loggingService.logServerError("Certificate not found " + serialNumber, logger);
 			throw new CertificateNotFoundException();
 		}
 	}
 	
 	@GetMapping(value="/download-key/{serialNumber}")
 	public ResponseEntity<?> downloadKey(@PathVariable @NotEmpty String serialNumber) {
+		loggingService.logUserInfo("Arrived request GET /api/certificate/download-key/{serialNumber}=" + serialNumber, logger);
 		DownloadCertDTO ret = this.certificateService.downloadKey(serialNumber);
 		try {
+			loggingService.logUserInfo("Sertificate key successfully downloaded " + serialNumber, logger);
 			return ResponseEntity.ok()
 			          .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(ret.getPath()))
 			          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + serialNumber + ".key" + "\"")
 			          .body(ret.getFile());
 		} catch (IOException e) {
+			loggingService.logServerError("Certificate not found " + serialNumber, logger);
 			throw new CertificateNotFoundException();
 		}
 	}

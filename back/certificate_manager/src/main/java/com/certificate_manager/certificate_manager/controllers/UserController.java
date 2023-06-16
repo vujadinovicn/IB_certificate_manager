@@ -44,7 +44,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://localhost:4200")
 @Validated
 public class UserController {
 	
@@ -79,7 +79,7 @@ public class UserController {
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, @RequestHeader String captcha) {
-		loggingService.logUserInfo("Arrived request POST /api/user/", logger);
+		loggingService.logServerInfo("Arrived request POST /api/user/", logger);
 		
 		this.captchaValidator.validateCaptcha(captcha);
 		loggingService.logServerInfo("Captcha validated successfully", logger);
@@ -90,38 +90,38 @@ public class UserController {
 	
 	@PostMapping(value = "send/verification/email/{email}")
 	public ResponseEntity<?> sendVerificationMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		loggingService.logUserInfo("Arrived request POST /api/user/send/verification/email/{email}", logger);
+		loggingService.logServerInfo("Arrived request POST /api/user/send/verification/email/{email}", logger);
 		this.userService.sendEmailVerification(email); 
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "send/twofactor/email/{email}")
 	public ResponseEntity<?> sendTwoFactorMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
-		loggingService.logUserInfo("Arrived request POST /api/user/send/twofactor/email/{email}", logger);
+		loggingService.logServerInfo("Arrived request POST /api/user/send/twofactor/email/{email}", logger);
 		this.userService.sendTwoFactorEmail(email); 
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "verify/twofactor/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyTwoFactor(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode, HttpServletRequest request) {
-		loggingService.logUserInfo("Arrived request GET /api/user/verify/twofactor/{activationId}", logger);
+		loggingService.logServerInfo("Arrived request GET /api/user/verify/twofactor/{activationId}", logger);
 		this.userService.verifyTwoFactor(verificationCode, tokenUtils.getToken(request));
-		loggingService.logUserInfo("User signed in. Email=" + userService.getCurrentUser().getEmail(), logger);
+		loggingService.logServerInfo("User signed in. Email=" + userService.getCurrentUser().getEmail(), logger);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully signed in!"), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "activate/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyRegistration(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode) {
-		loggingService.logUserInfo("Arrived request GET /api/user/activate/{activationId}", logger);
+		loggingService.logServerInfo("Arrived request GET /api/user/activate/{activationId}", logger);
 		this.userService.verifyRegistration(verificationCode);
-		loggingService.logUserInfo("Verified registration.", logger);
+		loggingService.logServerInfo("Verified registration.", logger);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully activated your account!"), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials, @RequestHeader String captcha) {
 		System.out.println(credentials);
-		loggingService.logUserInfo("Arrived request POST /api/user/login; Credentials="+credentials, logger);
+		loggingService.logServerInfo("Arrived request POST /api/user/login; email="+credentials.getEmail(), logger);
 		
 		this.captchaValidator.validateCaptcha(captcha);
 		loggingService.logServerInfo("Captcha validated successfully", logger);
@@ -159,14 +159,14 @@ public class UserController {
 	@GetMapping(value = "reset/password/email/{email}")
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		System.err.println("usao");
-		loggingService.logUserInfo("Arrived request GET /api/user/reset/password/email/{email}; Email="+email, logger);
+		loggingService.logServerInfo("Arrived request GET /api/user/reset/password/email/{email}; Email="+email, logger);
 		this.userService.sendResetPasswordMail(email);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
 	}
 	
 	@PutMapping(value = "resetPassword")
 	public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
-		loggingService.logUserInfo("Arrived request PUT /api/user/resetPassword", logger);
+		loggingService.logServerInfo("Arrived request PUT /api/user/resetPassword", logger);
 		this.userService.resetPassword(dto);	
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Password successfully changed!"), HttpStatus.NO_CONTENT);
 	}

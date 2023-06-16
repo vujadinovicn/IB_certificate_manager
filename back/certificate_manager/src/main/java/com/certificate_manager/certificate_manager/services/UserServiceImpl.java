@@ -89,7 +89,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	public void sendEmailVerification(String email) {
 		User user = getUserByEmail(email);
 		if (user.getVerified()) {
-			loggingService.logUserInfo("Account has been already verified. Email="+email, logger);
+			loggingService.logServerInfo("Account has been already verified. Email="+email, logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This account has been already verified.");
 		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.REGISTRATION);
@@ -109,13 +109,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		
 		if (token == null) {
 			jwtService.invalidateToken(jwt);
-			loggingService.logUserInfo("Two-factor authentication with entered id does not exist. ID=" + verificationCode, logger);
+			loggingService.logServerInfo("Two-factor authentication with entered id does not exist. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Two-factor authentication with entered id does not exist!");
 		}
 
 		if (!this.tokenService.isValid(token) || token.isExpired()) {
 			jwtService.invalidateToken(jwt);
-			loggingService.logUserInfo("Two-factor token invalid. ID=" + verificationCode, logger);
+			loggingService.logServerInfo("Two-factor token invalid. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
 		
@@ -128,25 +128,25 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		SecureToken token = this.tokenService.findByToken(verificationCode);
 		
 		if (token == null) {
-			loggingService.logUserInfo("Registration verification with entered id does not exist. ID=" + verificationCode, logger);
+			loggingService.logServerInfo("Registration verification with entered id does not exist. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Activation with entered id does not exist!");
 		}
 
 		if (!this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.REGISTRATION) {
-			loggingService.logUserInfo("Registration verification token invalid. ID=" + verificationCode, logger);
+			loggingService.logServerInfo("Registration verification token invalid. ID=" + verificationCode, logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token!");
 		}
 
 		this.activateUser(token.getUser());
 		this.tokenService.markAsUsed(token);
-		loggingService.logUserInfo("Verified registration. Email=" + token.getUser().getEmail(), logger);
+		loggingService.logServerInfo("Verified registration. Email=" + token.getUser().getEmail(), logger);
 	}
 	
 	@Override
 	public void resetPassword(ResetPasswordDTO dto) {
 		SecureToken token = this.tokenService.findByToken(dto.getCode());
 		if (token == null || !this.tokenService.isValid(token) || token.isExpired() || token.getType() != SecureTokenType.FORGOT_PASSWORD) {
-			loggingService.logUserInfo("Reset password verification token invalid. ID=" + dto.getCode(), logger);
+			loggingService.logServerInfo("Reset password verification token invalid. ID=" + dto.getCode(), logger);
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Code is expired or not correct!");
 		}
 		
@@ -158,14 +158,14 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 
 		tokenService.markAsUsed(token);
 		System.err.println(dto.getNewPassword()); 
-		loggingService.logUserInfo("Changed password. Email=" + token.getUser().getEmail(), logger);
+		loggingService.logServerInfo("Changed password. Email=" + token.getUser().getEmail(), logger);
 	}
 	
 	@Override
 	public void sendResetPasswordMail(String email) {
 		User user = this.allUsers.findByEmail(email).orElse(null);
 		if (user == null){
-			loggingService.logUserInfo("User with given email does not exist. Email=" + email, logger);
+			loggingService.logServerInfo("User with given email does not exist. Email=" + email, logger);
 			throw new UserNotFoundException();
 		}
 		SecureToken token = tokenService.createToken(user, SecureTokenType.FORGOT_PASSWORD);
