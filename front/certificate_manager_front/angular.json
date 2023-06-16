@@ -67,7 +67,12 @@
               "browserTarget": "certificate_manager_front:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "ssl": true,
+            "sslKey": "cert/local-https.key",
+            "sslCert": "cert/local-https.crt"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

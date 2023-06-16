@@ -33,7 +33,7 @@ import com.certificate_manager.certificate_manager.services.interfaces.IUserServ
 
 @Service
 public class CertificateServiceImpl implements ICertificateService {
-	
+	 
 	@Autowired
 	private CertificateRepository allCertificates;
 	
@@ -113,13 +113,11 @@ public class CertificateServiceImpl implements ICertificateService {
 	@Override
 	public void withdraw(String serialNumber, WithdrawalReasonDTO withdrawReasonDTO) {
 		User user = this.userService.getCurrentUser();
-		System.err.println(serialNumber);
 		Certificate cert = allCertificates.findBySerialNumber(serialNumber).orElseThrow(() -> new CertificateNotFoundException());
 		if (cert.getType() == CertificateType.ROOT && user.getRole() == UserRole.USER)
 			throw new RootCertificateNotForWithdrawalException();
 		if (user != cert.getIssuedTo() && user.getRole() == UserRole.USER)
 			throw new NotTheIssuerException();
-		System.err.println("eerr");
 		this.invalidateCurrentAndBelow(cert, withdrawReasonDTO.getReason());
 	}
 	
@@ -137,6 +135,8 @@ public class CertificateServiceImpl implements ICertificateService {
 		List<Certificate> allCertificatesWithCurrentCertificateAsIssuer = allCertificates.getAllCertificatesWithCurrentCertificateAsIssuer(cert.getId());
 		System.out.println(allCertificatesWithCurrentCertificateAsIssuer);
 		for (Certificate c: allCertificatesWithCurrentCertificateAsIssuer) {
+			System.err.println(c.getId());
+			System.err.println(cert.getId());
 			if (c.getId() != cert.getId())
 				this.invalidateCurrentAndBelow(c, reason);
 		}

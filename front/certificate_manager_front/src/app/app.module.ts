@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from '../infrastructure/app-routing.module';
@@ -26,10 +27,11 @@ import { VerificationCodeComponent } from './verification-code/verification-code
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { PasswordRotationComponent } from './password-rotation/password-rotation.component';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
-import { environment } from 'src/environments/environment';
 import { RegisterComponent } from './register/register.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { OauthCallbackComponent } from './oauth-callback/oauth-callback.component';
 
 
 
@@ -53,7 +55,8 @@ import { RouterModule } from '@angular/router';
     VerificationChoiceComponent,
     VerificationCodeComponent,
     ResetPasswordComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    OauthCallbackComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +73,8 @@ import { RouterModule } from '@angular/router';
     RecaptchaModule,
     RecaptchaFormsModule,
     NgxOtpInputModule,
-    RouterModule
+    RouterModule,
+    OAuthModule.forRoot()
   ],
   providers: [
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline', hideRequiredMarker: 'true' }},

@@ -15,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
@@ -29,8 +29,8 @@ import com.certificate_manager.certificate_manager.mail.IMailService;
 import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
 import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
-import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
+import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -50,12 +50,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 
 	@Autowired
 	private ISecureTokenService tokenService;
+
 	
 	@Autowired
 	private IJWTTokenService jwtService;
 	
 	@Autowired
 	private IMailService mailService;
+	
+	
 	
 	@Override
 	public User getUserByEmail(String email) {
@@ -199,6 +202,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 
 	@Override
 	public boolean isPasswordForRenewal(User user) {
+		if (user.getSocialId()==null)
+			return false;
 		if (user.getTimeOfLastSetPassword().isBefore(LocalDateTime.now().minusMinutes(timeForRenawal))) 
 			return true;
 		return false;
@@ -217,5 +222,24 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		allUsers.save(user);
 		allUsers.flush();
 	}
+//	@Override
+//	public String login(CredentialsDTO credentials) {
+//		Authentication authentication;
+//		authentication = authenticationManager.authenticate(
+//				new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//		UserDetails user = (UserDetails) authentication.getPrincipal();
+//		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
+//		
+//		if (!userFromDb.getVerified()) {
+//			throw new UserNotVerifiedException();
+//		}
+//		
+//		String jwt = tokenUtils.generateToken(user, userFromDb);
+//		this.tokenJWTService.createToken(jwt);
+//		
+//		return jwt;
+//	}
 
 }

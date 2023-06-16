@@ -1,7 +1,7 @@
 package com.certificate_manager.certificate_manager.services.interfaces;
 
-import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
+import com.certificate_manager.certificate_manager.dtos.RotatePasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
 import com.certificate_manager.certificate_manager.entities.User;
@@ -10,6 +10,8 @@ import com.certificate_manager.certificate_manager.entities.User;
 public interface IUserService {
 	
 	public void register(UserDTO userDTO);
+	
+//	public String login(CredentialsDTO credDTO);
 	
 	public User getUserByEmail(String email);
 	

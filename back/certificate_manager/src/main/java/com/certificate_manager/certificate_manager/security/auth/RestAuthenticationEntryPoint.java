@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.certificate_manager.certificate_manager.exceptions.BadCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotFoundException;
 import com.certificate_manager.certificate_manager.exceptions.CertificateNotValidException;
+import com.certificate_manager.certificate_manager.exceptions.GoogleIdTokenException;
 import com.certificate_manager.certificate_manager.exceptions.NoAuthorizationForKeyException;
 import com.certificate_manager.certificate_manager.exceptions.NoCaptchaException;
 import com.certificate_manager.certificate_manager.exceptions.NotPendingRequestException;
@@ -61,6 +62,12 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     protected ResponseEntity<Object> handleNoCaptchaException(NoCaptchaException e){
     	return new ResponseEntity<>("No captcha was passed!", HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(GoogleIdTokenException.class)
+    protected ResponseEntity<Object> handleFetchingAccessTokenException(GoogleIdTokenException e){
+    	return new ResponseEntity<>("Error occured while trying to proccess your Google sign in. Try again.", HttpStatus.BAD_REQUEST);
+    }
+    
       
     @ExceptionHandler(MissingRequestHeaderException.class)
     protected ResponseEntity<Object> handleMissingRequestHeaderException(MissingRequestHeaderException e){
