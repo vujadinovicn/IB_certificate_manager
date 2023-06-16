@@ -90,8 +90,10 @@ public class CertificateFileRepository implements ICertificateFileRepository {
 	@Override
 	public DownloadCertDTO readCertificateAsResource(String serialNumber) {
 		Resource resource;
+		
 		resource = new FileSystemResource(CERTS_DIR + serialNumber + ".crt");
 		Path file = Paths.get(CERTS_DIR).resolve(serialNumber + ".crt");
+		file.normalize();
 
         if (resource.exists() || resource.isReadable()) {
             return new DownloadCertDTO(resource, file);

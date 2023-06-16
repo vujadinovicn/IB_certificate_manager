@@ -93,7 +93,10 @@ public class WebSecurityConfig {
 
 		http.headers().frameOptions().disable();
         http.authenticationProvider(authenticationProvider());
-            
+        http.headers()
+        .xssProtection()
+        .and()
+        .contentSecurityPolicy("script-src 'self'");
         return http.build();
     }
            

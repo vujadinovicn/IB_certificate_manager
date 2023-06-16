@@ -189,7 +189,11 @@ public class CertificateServiceImpl implements ICertificateService {
 
 	@Override
 	public DownloadCertDTO download(String serialNumber) {
-		 return this.allFileCertificates.readCertificateAsResource(serialNumber);
+		Certificate wantedCertificate = this.allCertificates.findBySerialNumber(serialNumber).orElse(null);
+		if (wantedCertificate == null) {
+			throw new CertificateNotFoundException();
+		}
+		return this.allFileCertificates.readCertificateAsResource(serialNumber);
 	}
 
 	@Override
