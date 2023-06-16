@@ -117,6 +117,14 @@ export class VerificationService {
     return this.http.post<any>(environment.apiHost + "/user/send/twofactor/email/" + email, options);
   }
 
+  sendTwoFactorSMS(phoneNumber: string): Observable<any> {
+    const options: any = {
+      responseType: 'json',
+      rejectUnauthorized: false,
+    };
+    return this.http.post<any>(environment.apiHost + "/user/send/twofactor/sms/" + phoneNumber, options);
+  }
+
   verifyTwoFactor(verificationCode: number): Observable<any> {
     const options: any = {
       responseType: 'json',

@@ -6,6 +6,8 @@ import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { VerificationService } from '../services/verification.service';
 import { passwordRegexValidator } from '../validators/userValidator';
+import { markFormControlsTouched } from '../validators/formGroupValidator';
+import { ConfirmValidParentMatcher, passwordMatcher } from '../validators/passwordMatch';
 
 @Component({
   selector: 'app-password-rotation',
@@ -13,6 +15,8 @@ import { passwordRegexValidator } from '../validators/userValidator';
   styleUrls: ['./password-rotation.component.css']
 })
 export class PasswordRotationComponent {
+
+  confirmValidParentMatcher = new ConfirmValidParentMatcher();
   
   @ViewChild('child') childComponent: NavbarComponent | undefined;
   
@@ -25,7 +29,7 @@ export class PasswordRotationComponent {
     old_password: new FormControl('', [Validators.required]),
     new_password: new FormControl('', [Validators.required, passwordRegexValidator]),
     confpass: new FormControl('', [Validators.required])
-  }, [])
+  }, [passwordMatcher("new_password", "confpass")])
 
   constructor(private route: ActivatedRoute,
     private verificationService: VerificationService, 
@@ -39,7 +43,7 @@ export class PasswordRotationComponent {
   }
 
   ngOnInit(): void {
-    
+    markFormControlsTouched(this.passwordRotationForm);
   }
 
   rotatePassword() {

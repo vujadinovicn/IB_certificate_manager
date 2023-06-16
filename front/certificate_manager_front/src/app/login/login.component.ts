@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { VerificationService } from '../services/verification.service';
+import { markFormControlsTouched } from '../validators/formGroupValidator';
 
 @Component({
   selector: 'app-login',
@@ -35,7 +36,7 @@ export class LoginComponent implements OnInit{
   }
   
   ngOnInit(): void {
-    
+    markFormControlsTouched(this.loginForm);
   }
 
   hadnleGoogleLogin() {

@@ -8,6 +8,7 @@ import { UserService } from '../services/user.service';
 import { VerificationService } from '../services/verification.service';
 import { ConfirmValidParentMatcher, passwordMatcher } from '../validators/passwordMatch';
 import { passwordRegexValidator } from '../validators/userValidator';
+import { markFormControlsTouched } from '../validators/formGroupValidator';
 
 @Component({
   selector: 'app-reset-password',
@@ -39,7 +40,7 @@ export class ResetPasswordComponent {
   }
 
   ngOnInit(): void {
-    
+    markFormControlsTouched(this.resetPasswordForm);
   }
 
   public otpConfig: NgxOtpInputConfig = {
