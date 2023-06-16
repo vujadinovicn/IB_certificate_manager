@@ -1,9 +1,10 @@
+import { OAuth2Service } from './../services/o-auth.service';
 import { CertificateService } from './../services/certificate.service';
 import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { VerificationService } from '../services/verification.service';
 
 @Component({
@@ -27,11 +28,41 @@ export class LoginComponent implements OnInit{
       public snackBar: MatSnackBar,
       private router: Router,
       private certificateService: CertificateService,
-      private verificationService: VerificationService) {
+      private verificationService: VerificationService,
+      private oauth2Service: OAuth2Service,
+      private route: ActivatedRoute) {
+    this.hadnleGoogleLogin();
   }
   
   ngOnInit(): void {
+    
+  }
 
+  hadnleGoogleLogin() {
+    this.route.queryParams.subscribe(params => {
+      const code = params['code']; 
+      const state = params['state'];
+      
+      console.log(code);
+
+      if (code != undefined) {
+        this.oauth2Service.signInToBack(code, state).subscribe({
+          next: (value) => {
+            console.log(value);
+            localStorage.setItem('user', JSON.stringify(value.accessToken));
+            this.authService.setUser();
+            this.authService.setLoggedIn(true);
+            this.router.navigate(['/all-certificates']);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+  
+        console.log(code + "\n" + state);
+      }
+      
+    });
   }
 
   resolved(captchaResponse: string) {
@@ -50,7 +81,22 @@ export class LoginComponent implements OnInit{
     if (this.loginForm.valid && this.captchaOk) {
       this.authService.login(credentials, this.captchaString).subscribe({
         next: (result) => {
-          localStorage.setItem('user', JSON.stringify(result.accessToken));
+          this.processLogin(result);
+        },
+        error: (error) => {
+          console.log(error);
+          console.log("tu")
+          console.log(error.error)
+          this.snackBar.open("Bad credentials. Please try again!", "", {
+            duration: 2700, panelClass: ['snack-bar-server-error']
+         });
+        },
+      });
+    }
+  }
+
+  processLogin(result: any) {
+    localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
           // this.certificateService.getAllCertificates().subscribe({
@@ -67,20 +113,19 @@ export class LoginComponent implements OnInit{
           // });
           // this.router.navigate(['all-certificates']);
           console.log(this.authService.getUser());
+
+          // ZA TESTIRANJE:
+          // this.router.navigate(['all-certificates']);
+
+          // OVO ZAPRAVO TREBA:
           this.verificationService.sendEmail(this.loginForm.value.email!);
           this.verificationService.sendCause('twofactor');
           this.router.navigate(['/verification-choice']);
-        },
-        error: (error) => {
-          console.log(error);
-          console.log("tu")
-          console.log(error.error)
-          this.snackBar.open("Bad credentials. Please try again!", "", {
-            duration: 2700, panelClass: ['snack-bar-server-error']
-         });
-        },
-      });
-    }
+  }
+
+  loginWithGoogle() {
+    console.log("tu");
+    this.oauth2Service.loginWithGoogle();
   }
 
   redirectToReset() {

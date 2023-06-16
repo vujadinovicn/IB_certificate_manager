@@ -43,7 +43,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://localhost:4200")
 @Validated
 public class UserController {
 	
@@ -126,6 +126,9 @@ public class UserController {
 		if (!userFromDb.getVerified()) {
 			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("This account have not been activated yet!"), HttpStatus.UNAUTHORIZED);
 		}
+		
+		if (userFromDb.getSocialId() != null)
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Accounts registered via Goolge can only login with Google"), HttpStatus.UNAUTHORIZED);
 		
 		String jwt = tokenUtils.generateToken(user, userFromDb);
 		this.tokenService.createToken(jwt);

@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.certificate_manager.certificate_manager.dtos.CredentialsDTO;
 import com.certificate_manager.certificate_manager.dtos.ResetPasswordDTO;
 import com.certificate_manager.certificate_manager.dtos.UserDTO;
 import com.certificate_manager.certificate_manager.dtos.UserRetDTO;
@@ -21,11 +24,13 @@ import com.certificate_manager.certificate_manager.enums.SecureTokenType;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
+import com.certificate_manager.certificate_manager.exceptions.UserNotVerifiedException;
 import com.certificate_manager.certificate_manager.mail.IMailService;
 import com.certificate_manager.certificate_manager.mail.tokens.ISecureTokenService;
 import com.certificate_manager.certificate_manager.mail.tokens.SecureToken;
 import com.certificate_manager.certificate_manager.repositories.UserRepository;
 import com.certificate_manager.certificate_manager.security.jwt.IJWTTokenService;
+import com.certificate_manager.certificate_manager.security.jwt.TokenUtils;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
 
 @Service
@@ -39,12 +44,15 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 	
 	@Autowired
 	private ISecureTokenService tokenService;
+
 	
 	@Autowired
 	private IJWTTokenService jwtService;
 	
 	@Autowired
 	private IMailService mailService;
+	
+	
 	
 	@Override
 	public User getUserByEmail(String email) {
@@ -183,5 +191,25 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		this.allUsers.save(user);
 		this.allUsers.flush();
 	}
+
+//	@Override
+//	public String login(CredentialsDTO credentials) {
+//		Authentication authentication;
+//		authentication = authenticationManager.authenticate(
+//				new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//		UserDetails user = (UserDetails) authentication.getPrincipal();
+//		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
+//		
+//		if (!userFromDb.getVerified()) {
+//			throw new UserNotVerifiedException();
+//		}
+//		
+//		String jwt = tokenUtils.generateToken(user, userFromDb);
+//		this.tokenJWTService.createToken(jwt);
+//		
+//		return jwt;
+//	}
 
 }
