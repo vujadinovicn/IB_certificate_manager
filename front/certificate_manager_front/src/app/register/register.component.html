@@ -30,14 +30,14 @@ justify-content: center;">
                   <mat-form-field>
                     <mat-label>Password</mat-label>
                     <mat-icon id="eye-icon" matSuffix (click)="isFirstVisible = !isFirstVisible">{{isFirstVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
-                    <input matInput type="password" name="password" formControlName="password" />
+                    <input matInput [type]="isFirstVisible? 'text' : 'password'" name="password"  name="password" formControlName="password" />
                     <mat-error *ngIf="regForm.get('password')?.errors?.['required']">entering password is required</mat-error>
                     <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !regForm.get('password')?.errors?.['required']">one lcase, upcase, digit</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Confirm password</mat-label>
                     <mat-icon id="eye-icon" matSuffix (click)="isSecondVisible = !isSecondVisible">{{isSecondVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
-                    <input matInput type="password" name="conf-password" formControlName="confpass"/>
+                    <input matInput [type]="isSecondVisible? 'text' : 'password'" name="conf-password" formControlName="confpass"/>
                     <mat-error *ngIf="regForm.get('confpass')?.errors?.['required']">confirming password is required</mat-error>
                     <mat-error *ngIf="regForm.errors?.['passwordMismatchError']">passwords don't match</mat-error>
                   </mat-form-field>

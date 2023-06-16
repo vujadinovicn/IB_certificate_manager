@@ -66,6 +66,15 @@ export class VerificationChoiceComponent implements OnInit{
             this.router.navigate(['verification-code']);
           }
         })
+      } else {
+        this.verificationService.sendTwoFactorSMS(this.userDTO.phoneNumber).subscribe({
+          next: (res: any) => {
+            this.snackBar.open(res.message, "", {
+              duration: 2700, panelClass: ['snack-bar-success']
+          });
+            this.router.navigate(['verification-code']);
+          }
+        })
       }
   }
 

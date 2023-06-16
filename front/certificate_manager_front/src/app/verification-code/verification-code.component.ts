@@ -89,6 +89,9 @@ export class VerificationCodeComponent implements OnInit{
               },
             });
             this.router.navigate(['all-certificates']);
+            this.snackBar.open(res.message, "", {
+              duration: 2700, panelClass: ['snack-bar-success']
+          });
           },
           error: (err) => {
             this.snackBar.open("Error wile trying to log in.", "", {

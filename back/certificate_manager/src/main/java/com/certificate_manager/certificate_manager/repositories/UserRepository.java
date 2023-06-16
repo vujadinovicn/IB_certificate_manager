@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("select u from User u where u.role = 0")
 	public Optional<User> findAdmin();
+	
+	public Optional<User> findByPhoneNumber(String phoneNumber);
 }

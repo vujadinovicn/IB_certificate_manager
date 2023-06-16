@@ -35,6 +35,7 @@ import com.certificate_manager.certificate_manager.security.recaptcha.ValidateCa
 import com.certificate_manager.certificate_manager.services.interfaces.ICertificateGenerator;
 import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 import com.certificate_manager.certificate_manager.services.interfaces.IUserService;
+import com.certificate_manager.certificate_manager.sms.ISmsService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -68,6 +69,9 @@ public class UserController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private ISmsService smsService;
+	
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 //	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> getById(@PathVariable @Min(value = 0, message = "Field id must be greater than 0.") int id) {
@@ -87,11 +91,24 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
 	
+	@PostMapping(value = "send/verification/sms/{email}")
+    public ResponseEntity<?> sendVerificationSMS(@PathVariable @NotEmpty(message = "Email is required") String email) {
+		smsService.sendVerificationSMS(email);
+    	return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Code sent successfully!"), HttpStatus.OK);
+    } 
+	
 	@PostMapping(value = "send/twofactor/email/{email}")
 	public ResponseEntity<?> sendTwoFactorMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		this.userService.sendTwoFactorEmail(email); 
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "send/twofactor/sms/{phoneNumber}") 
+	public ResponseEntity<?> sendTwoFactorSMS(@PathVariable @NotEmpty(message = "Phone number is required") String phoneNumber) {
+		this.smsService.sendTwoFactorSms(phoneNumber); 
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("We sent you a verification code!"), HttpStatus.OK);
+	}
+	
 	
 	@GetMapping(value = "verify/twofactor/{activationId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> verifyTwoFactor(@PathVariable("activationId") @NotEmpty(message = "Activation code is required") String verificationCode, HttpServletRequest request) {
@@ -105,7 +122,7 @@ public class UserController {
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You have successfully activated your account!"), HttpStatus.OK);
 	}
 	
-	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE) 
 	public ResponseEntity<?> login(@Valid @RequestBody CredentialsDTO credentials, @RequestHeader String captcha) {
 		System.out.println(credentials);
 		
@@ -153,6 +170,12 @@ public class UserController {
 	public ResponseEntity<?> sendResetPasswordMail(@PathVariable @NotEmpty(message = "Email is required") String email) {
 		this.userService.sendResetPasswordMail(email);
 		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("Email with reset code has been sent!"), HttpStatus.NO_CONTENT);
+	}
+	
+	@GetMapping(value = "reset/password/sms/{phoneNumber}")
+	public ResponseEntity<?> sendResetPasswordSms(@PathVariable @NotEmpty(message = "Phone number is required") String phoneNumber) {
+		this.smsService.sendResetSMS(phoneNumber);
+		return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("If this number exists, reset code has been sent to it!"), HttpStatus.NO_CONTENT);
 	}
 	
 	@PutMapping(value = "resetPassword")
