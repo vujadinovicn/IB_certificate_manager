@@ -12,6 +12,8 @@
                     <mat-label>serial number</mat-label>
                     <input matInput type="text" name="serialNumber" formControlName="serialNumber" />
                     <mat-error *ngIf="serialNumberForm.get('serialNumber')?.errors?.['required']">entering ser. num. is required</mat-error>
+                    <mat-error *ngIf="serialNumberForm.get('serialNumber')?.errors?.['serialNumberRegexError'] && !serialNumberForm.get('serialNumber')?.errors?.['required']" >invalid format, only letters and digits</mat-error>
+                
                 </mat-form-field>
             </form>
             <button mat-button class="back-yellow conf-button" (click)="validateBySerialNumber()">validate</button>

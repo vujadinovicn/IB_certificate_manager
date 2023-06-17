@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { VerificationService } from '../services/verification.service';
 import { markFormControlsTouched } from '../validators/formGroupValidator';
+import { UserDTO } from '../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -97,9 +98,25 @@ export class LoginComponent implements OnInit{
            this.router.navigate(['password-rotation', this.loginForm.value.email]);
            return;
           }
-          this.snackBar.open("Bad credentials. Please try again!", "", {
-            duration: 2700, panelClass: ['snack-bar-server-error']
-         });
+          else if (error.error == "Captcha invalid! Are you a robot?"){
+            this.snackBar.open("Your password expired. You should renew your password!", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
+           this.router.navigate(['password-rotation', this.loginForm.value.email]);
+           return;
+          }
+
+          else if (error.error == "This account have not been activated yet!"){
+            this.snackBar.open("This account have not been activated yet!", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+           });
+           return;
+          }
+
+          else 
+            this.snackBar.open("Bad credentials. Please try again!", "", {
+              duration: 2700, panelClass: ['snack-bar-server-error']
+          });
         },
       });
     }
@@ -112,6 +129,7 @@ export class LoginComponent implements OnInit{
     localStorage.setItem('user', JSON.stringify(result.accessToken));
           // localStorage.setItem('refreshToken', JSON.stringify(result.refreshToken));
           this.authService.setUser();
+          let user = this.authService.getUser();
           // this.certificateService.getAllCertificates().subscribe({
           //   next: (value) => {
           //     this.certificateService.setCertificatesToDisplay(value);
@@ -132,6 +150,7 @@ export class LoginComponent implements OnInit{
 
           // OVO ZAPRAVO TREBA:
           this.verificationService.sendEmail(this.loginForm.value.email!);
+          this.verificationService.sendPhoneNumber(this.authService.getUser()?.phoneNumber!);
           this.verificationService.sendCause('twofactor');
           this.router.navigate(['/verification-choice']);
   }

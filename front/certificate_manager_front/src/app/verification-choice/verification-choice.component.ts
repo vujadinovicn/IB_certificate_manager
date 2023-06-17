@@ -16,6 +16,7 @@ export class VerificationChoiceComponent implements OnInit{
   emailForReset: string = '';
   cause: string = '';
   email: string = '';
+  phoneNumber: string = '';
 
   constructor(private router: Router, private route: ActivatedRoute, public snackBar: MatSnackBar, private verificationService: VerificationService){
     
@@ -23,6 +24,9 @@ export class VerificationChoiceComponent implements OnInit{
   
   ngOnInit(): void {
     this.emailForReset = this.route.snapshot.paramMap.get('email')!;
+    this.verificationService.recieevePhoneNumber().subscribe((res: any) => {
+      this.phoneNumber = res;
+    })
     this.verificationService.recieveUserDTO().subscribe((res: any) => {
       this.userDTO = res;
     })
@@ -67,7 +71,7 @@ export class VerificationChoiceComponent implements OnInit{
           }
         })
       } else {
-        this.verificationService.sendTwoFactorSMS(this.userDTO.phoneNumber).subscribe({
+        this.verificationService.sendTwoFactorSMS(this.phoneNumber).subscribe({
           next: (res: any) => {
             this.snackBar.open(res.message, "", {
               duration: 2700, panelClass: ['snack-bar-success']

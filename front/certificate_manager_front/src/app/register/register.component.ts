@@ -7,7 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 import { VerificationCodeComponent } from '../verification-code/verification-code.component';
 import { VerificationService } from '../services/verification.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { nameRegexValidator, passwordRegexValidator, surnameRegexValidator } from '../validators/userValidator';
+import { nameRegexValidator, passwordRegexValidator, phoneNumberValidatior, surnameRegexValidator } from '../validators/userValidator';
 import { passwordMatcher } from '../validators/passwordMatch';
 import { markFormControlsTouched } from '../validators/formGroupValidator';
 
@@ -33,7 +33,7 @@ export class RegisterComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, passwordRegexValidator]),
     confpass: new FormControl('', [Validators.required, passwordRegexValidator]),
-    phonenum: new FormControl('', [Validators.required,]),
+    phonenum: new FormControl('', [Validators.required, phoneNumberValidatior]),
     recaptcha: new FormControl('', [Validators.required])
   }, [passwordMatcher("password", "confpass")]);
   

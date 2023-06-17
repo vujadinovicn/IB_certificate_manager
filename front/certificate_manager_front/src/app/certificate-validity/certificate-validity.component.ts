@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CertificateService } from '../services/certificate.service';
+import { serialNumberValidator } from '../validators/userValidator';
+import { markFormControlsTouched } from '../validators/formGroupValidator';
 
 @Component({
   selector: 'app-certificate-validity',
@@ -20,7 +22,7 @@ export class CertificateValidityComponent {
   }
 
   serialNumberForm = new FormGroup({
-    serialNumber: new FormControl('', [Validators.required])
+    serialNumber: new FormControl('', [Validators.required, serialNumberValidator])
   })
 
   certNameForm = new FormGroup({
@@ -35,6 +37,7 @@ export class CertificateValidityComponent {
 
   ngOnInit(): void {
     this.disableForm();
+    markFormControlsTouched(this.serialNumberForm);
   }
 
   clickedFirst(){
@@ -87,7 +90,7 @@ export class CertificateValidityComponent {
   }
 
   validateByUpload(){
-    if (this.file.name.split('.').pop()!.toLowerCase() != "crt"){
+    if (this.file.name.split('.').pop()!.toLowerCase() != "cer"){
       this.snackBar.open("Uploaded file is not .crt extension!", "", {
         duration: 2700,panelClass: ['snack-bar-server-error']
      });

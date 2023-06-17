@@ -30,6 +30,7 @@ export class WithdrawDialogComponent implements OnInit{
   withdrawCertificate(): void {
     console.log(this.serialNumber, this.reason);
     if (this.reason != ''){
+      console.log(this.serialNumber)
     
     this.certificateService.withdraw(this.serialNumber, this.reason).subscribe({
       next: (res: any) => {
@@ -50,7 +51,7 @@ export class WithdrawDialogComponent implements OnInit{
   }
 
   decide(){
-    if (this.serialNumber != '')
+    if (this.selectedRequestId == undefined)
       this.withdrawCertificate();
     else 
       this.declineRequest();

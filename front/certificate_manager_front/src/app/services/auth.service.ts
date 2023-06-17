@@ -117,17 +117,20 @@ export class AuthService {
       const accessToken: any = localStorage.getItem('user');
       const helper = new JwtHelperService();
       const decodedToken = helper.decodeToken(accessToken);
+      console.log(decodedToken);
       const role = decodedToken.role[0].authority;
       const email = decodedToken.sub;
       const id = decodedToken.id;
       const name = decodedToken.name;
       const lastname = decodedToken.lastname;
+      const phoneNumber = decodedToken.phonenum;
       return {
         id: id,
         role: role,
         email: email,
         name: name,
-        lastName: lastname
+        lastName: lastname,
+        phoneNumber: phoneNumber
       }
     }
     return null;
@@ -150,7 +153,8 @@ export interface User {
   email: string,
   role?: string,
   name: string,
-  lastName: string
+  lastName: string,
+  phoneNumber: string
 }
 
 export interface TokenDTO {

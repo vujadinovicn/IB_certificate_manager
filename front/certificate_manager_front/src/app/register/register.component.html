@@ -32,7 +32,7 @@ justify-content: center;">
                     <mat-icon id="eye-icon" matSuffix (click)="isFirstVisible = !isFirstVisible">{{isFirstVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
                     <input matInput [type]="isFirstVisible? 'text' : 'password'" name="password"  name="password" formControlName="password" />
                     <mat-error *ngIf="regForm.get('password')?.errors?.['required']">entering password is required</mat-error>
-                    <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !regForm.get('password')?.errors?.['required']">one lcase, upcase, digit</mat-error>
+                    <mat-error *ngIf="regForm.get('password')?.errors?.['passwordRegexError']  && !regForm.get('password')?.errors?.['required']">one upper, lower and digit</mat-error>
                   </mat-form-field>
                   <mat-form-field>
                     <mat-label>Confirm password</mat-label>
@@ -45,7 +45,7 @@ justify-content: center;">
                     <mat-label>Phone number</mat-label>
                     <input matInput type="tel" name="phonenum" formControlName="phonenum" />
                     <mat-error *ngIf="regForm.get('phonenum')?.errors?.['required']">entering phone number is required</mat-error>
-                    <!-- <mat-error *ngIf="regForm.get('phonenum')?.errors?.['phonenumRegexError'] && !registerForm.get('phonenum')?.errors?.['required']">invalid phone number format</mat-error> -->
+                    <mat-error *ngIf="regForm.get('phonenum')?.errors?.['phonenumRegexError'] && !regForm.get('phonenum')?.errors?.['required']">invalid phone number format</mat-error>
                   </mat-form-field>
                   <div class="captcha-div">
                     <re-captcha id="recaptcha" name="recaptcha" (resolved)="resolved($event)" formControlName="recaptcha"></re-captcha>

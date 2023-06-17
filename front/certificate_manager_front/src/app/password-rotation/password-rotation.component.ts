@@ -54,7 +54,7 @@ export class PasswordRotationComponent {
         newPassword: this.passwordRotationForm.value.new_password!
       }).subscribe({
         next: (res: any) => {
-          this.snackBar.open(res.message, "", {
+          this.snackBar.open("You've successfully rotated passwords!", "", {
             duration: 2700, panelClass: ['snack-bar-success']
         });
           this.router.navigate(['login']);

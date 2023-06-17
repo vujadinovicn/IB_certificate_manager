@@ -23,6 +23,7 @@ export class VerificationService {
   private subject = new BehaviorSubject<any>({});
   private cause = new BehaviorSubject<any>({});
   private email = new BehaviorSubject<any>({});
+  private phoneNumber = new BehaviorSubject<any>({});
 
   sendUserDTO(message: UserDTO): void {
     this.subject.next(message);
@@ -47,6 +48,15 @@ export class VerificationService {
   recieveEmail(): Observable<string> {
     return this.email.asObservable();
   }
+
+  sendPhoneNumber(email: string) : void {
+    this.phoneNumber.next(email);
+  }
+
+  recieevePhoneNumber(): Observable<string> {
+    return this.phoneNumber.asObservable();
+  }
+
 
   constructor(private http: HttpClient) { }
 
