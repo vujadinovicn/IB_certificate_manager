@@ -1,6 +1,7 @@
 package com.certificate_manager.certificate_manager.dtos;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 public class RotatePasswordDTO {
 	
@@ -8,9 +9,11 @@ public class RotatePasswordDTO {
 	private String email;
 	
 	@NotEmpty(message = "is required")
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$")
 	private String newPassword;
 	
 	@NotEmpty(message = "is required")
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$")
 	private String oldPassword;
 	
 	public RotatePasswordDTO() {

@@ -96,7 +96,6 @@ public class CertificateController {
 	public ResponseEntity<?> validateByUpload(@Valid @RequestBody @NotEmpty String encodedFile){
 		loggingService.logUserInfo("Arrived request POST /api/certificate/validate-upload", logger);
 		String validationMessage = "This certificate is valid!";
-		System.out.println("neca");
 		if (!certificateService.validateByUpload(encodedFile)) {
 			validationMessage = "This certificate is not valid!";
 		};

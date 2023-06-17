@@ -28,7 +28,7 @@ public class MailServiceImpl implements IMailService {
 	
 	@Override
 	public void sendTest(String token) {
-		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
+		Email from = new Email("vujadinovic01@gmail.com", "Certificate Manager");
 		String subject = "Hello";
 		Email to = new Email("srdjan.stjepanovic01@gmail.com");
 		Content c = new Content("text/plain", "message");
@@ -55,9 +55,7 @@ public class MailServiceImpl implements IMailService {
 	
 	@Override
 	public void sendVerificationMail(User user, String token) {
-		System.out.println(user.getName());
-		System.out.println(token);
-		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
+		Email from = new Email("vujadinovic01@gmail.com", "Certificate Manager");
 		String subject = "SignUp Verification";
 		Email to = new Email(user.getEmail());
 		Content c = new Content("text/plain", "message");
@@ -68,7 +66,8 @@ public class MailServiceImpl implements IMailService {
 	    personalization.addDynamicTemplateData("firstName", user.getName());
 	    personalization.addDynamicTemplateData("code", token);
 	    mail.addPersonalization(personalization);
-		mail.setTemplateId("d-4890f22ba6684bd49e7b6b3a24c80e4c");
+		mail.setTemplateId("d-14c69797d9cc411d9d9143c01ee30ab8");
+		System.err.println(token);
 		
 		Request req = new Request();
 		try {
@@ -77,8 +76,9 @@ public class MailServiceImpl implements IMailService {
 			req.setBody(mail.build());
 			Response res = this.sendGrid.api(req);
 			
-			loggingService.logUserInfo(String.format("EMAIL VERIFICATION; Sender = certificate.manager.tsn@gmail.com, Reciever = %s; Status code = %s", user.getEmail(), res.getStatusCode()), logger);
+			loggingService.logServerInfo(String.format("EMAIL VERIFICATION; Sender = certificate.manager.tsn@gmail.com, Reciever = %s; Status code = %s", user.getEmail(), res.getStatusCode()), logger);
 			System.out.println(res.getStatusCode());
+			System.out.println(res.getBody());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -88,7 +88,7 @@ public class MailServiceImpl implements IMailService {
 	public void sendForgotPasswordMail(User user, String token) {
 		System.out.println(user.getName());
 		System.out.println(token);
-		Email from = new Email("certificate.manager.tsn@gmail.com", "Certificate Manager");
+		Email from = new Email("vujadinovic01@gmail.com", "Certificate Manager");
 		String subject = "Password reset";
 		Email to = new Email(user.getEmail());
 		Content c = new Content("text/plain", "message");
@@ -98,7 +98,8 @@ public class MailServiceImpl implements IMailService {
 	    personalization.addTo(to);
 	    personalization.addDynamicTemplateData("code", token);
 	    mail.addPersonalization(personalization);
-		mail.setTemplateId("d-ba583170bac644a5b0d2795dfe4bc34b");
+		mail.setTemplateId("d-89e584b9d4aa4409b294dc9d3262077b");
+		System.err.println(token);
 	    
 		Request req = new Request();
 		try {

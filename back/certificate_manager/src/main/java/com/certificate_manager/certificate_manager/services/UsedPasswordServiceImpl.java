@@ -14,42 +14,42 @@ import com.certificate_manager.certificate_manager.repositories.UsedPasswordRepo
 import com.certificate_manager.certificate_manager.services.interfaces.IUsedPasswordService;
 
 @Service
-public class UsedPasswordServiceImpl implements IUsedPasswordService{
-	
+public class UsedPasswordServiceImpl implements IUsedPasswordService {
+
 	@Autowired
 	private UsedPasswordRepository allUsedPasswords;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Value("${password-limit}")
 	private int limit;
-	
+
 	@Override
 	public void checkForUsedPasswordsOfOwner(int ownerId, String newPassword) {
 		List<UsedPassword> usedPasswords = this.getUsedPasswordsByOwner(ownerId);
 		String encodedNewPassword = passwordEncoder.encode(newPassword);
-		for (UsedPassword usedPassword: usedPasswords) {
-			if (usedPassword.getPassword().equals(encodedNewPassword))
+		for (UsedPassword usedPassword : usedPasswords) {
+			if (passwordEncoder.matches(newPassword, usedPassword.getPassword()))
 				throw new PasswordAlreadyUsedException();
 		}
 	}
-	
+
 	@Override
-	public void addNewPassword(User owner) {
-		UsedPassword newUsedPassword = new UsedPassword(owner);
-		this.deletePasswordsNotForChecking(owner.getId());
+	public void addNewPassword(User user) {
+		UsedPassword newUsedPassword = new UsedPassword(user);
 		allUsedPasswords.save(newUsedPassword);
 		allUsedPasswords.flush();
+		this.deletePasswordsNotForChecking(user.getId());
 	}
-	
+
 	private List<UsedPassword> getUsedPasswordsByOwner(int ownerId) {
 		return allUsedPasswords.findByOwnerId(ownerId);
 	}
-	
+
 	private void deletePasswordsNotForChecking(int ownerId) {
 		List<UsedPassword> usedPasswords = this.getUsedPasswordsByOwner(ownerId);
-		for (int i = 0; i < this.limit; i++) {
+		for (int i = 0; i < usedPasswords.size() - this.limit; i++) {
 			allUsedPasswords.delete(usedPasswords.get(i));
 			allUsedPasswords.flush();
 		}

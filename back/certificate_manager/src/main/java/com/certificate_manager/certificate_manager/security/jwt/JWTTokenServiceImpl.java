@@ -44,7 +44,7 @@ public class JWTTokenServiceImpl implements IJWTTokenService {
 	public boolean isValid(String token) {
 		JWTToken jwt = this.tokenRepo.findByToken(token).orElse(null);
 		System.out.println("TOKEN NADJEN" + jwt);
-		System.out.println("TOKEN VALID" + jwt.isValid());
+		System.out.println("TOKEN VALID" + jwt.isValid()); 
 		System.out.println("TOKEN VERIFIED" + jwt.isVerified());
 		if (jwt != null && jwt.isValid() && jwt.isVerified()) {
 			return true;

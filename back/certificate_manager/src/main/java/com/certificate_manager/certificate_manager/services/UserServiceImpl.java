@@ -1,5 +1,6 @@
 package com.certificate_manager.certificate_manager.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import com.certificate_manager.certificate_manager.entities.User;
 import com.certificate_manager.certificate_manager.enums.SecureTokenType;
 import com.certificate_manager.certificate_manager.enums.UserRole;
 import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchingException;
+import com.certificate_manager.certificate_manager.exceptions.RotatePasswordException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 import com.certificate_manager.certificate_manager.exceptions.UserNotFoundException;
 import com.certificate_manager.certificate_manager.mail.IMailService;
@@ -99,6 +101,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		user.setTimeOfLastSetPassword(LocalDateTime.now());
 		user.setRole(UserRole.USER);
+		this.usedPasswordService.addNewPassword(user);
 		allUsers.save(user);
 		allUsers.flush();
 		loggingService.logServerInfo("Successfully registered user with email=" + user.getEmail(), logger);
@@ -224,17 +227,22 @@ public class UserServiceImpl implements IUserService, UserDetailsService{
 
 	@Override
 	public boolean isPasswordForRenewal(User user) {
-		if (user.getSocialId()==null)
+		if (user.getSocialId()!=null)
 			return false;
-		if (user.getTimeOfLastSetPassword().isBefore(LocalDateTime.now().minusMinutes(timeForRenawal))) 
-			return true;
+		LocalDateTime d = user.getTimeOfLastSetPassword(); 
+		if (user.getRole() == UserRole.ADMIN)
+			return false;
+		if (user.getTimeOfLastSetPassword().isBefore(LocalDateTime.now().minusMinutes(timeForRenawal))) {
+			throw new RotatePasswordException();
+		}
+		
 		return false;
 	}
 
 	@Override
 	public void rotatePassword(RotatePasswordDTO dto) {
 		User user = this.getUserByEmail(dto.getEmail());
-		if (user.getPassword() != passwordEncoder.encode(dto.getOldPassword()))
+		if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword()))
 			throw new PasswordsNotMatchingException();
 		
 		this.usedPasswordService.checkForUsedPasswordsOfOwner(user.getId(), dto.getNewPassword());

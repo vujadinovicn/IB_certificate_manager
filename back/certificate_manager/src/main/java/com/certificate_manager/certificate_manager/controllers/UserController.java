@@ -162,12 +162,15 @@ public class UserController {
 
 		UserDetails user = (UserDetails) authentication.getPrincipal();
 		User userFromDb = this.userService.getUserByEmail(credentials.getEmail());
-		
-		if (this.userService.isPasswordForRenewal(userFromDb))
-			return new ResponseEntity<String>("You should renew your password!", HttpStatus.UNAUTHORIZED);
+		 
 		if (!userFromDb.getVerified()) {
 			loggingService.logServerInfo("Account with credentials=" + credentials + " have not been activated yet!", logger);
-			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("This account have not been activated yet!"), HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("This account have not been activated yet!"), HttpStatus.BAD_REQUEST);
+		}
+		
+		if (this.userService.isPasswordForRenewal(userFromDb)) {
+			loggingService.logServerInfo("Account with credentials=" + credentials + " has to renew password!", logger);
+			return new ResponseEntity<ResponseMessageDTO>(new ResponseMessageDTO("You should renew your password!"), HttpStatus.BAD_REQUEST);	
 		}
 		
 		if (userFromDb.getSocialId() != null)

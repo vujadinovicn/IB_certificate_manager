@@ -12,6 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "certificates")
@@ -21,14 +24,20 @@ public class Certificate {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@NotEmpty(message = "is required")
+	@Pattern(regexp = "^[0-9A-Za-z]+$")
 	private String serialNumber;
 
+	@NotNull(message = "is required")
 	private LocalDateTime validFrom;
 
+	@NotNull(message = "is required")
 	private LocalDateTime validTo;
 
-	private boolean valid;
+	@NotNull(message = "is required")
+	private Boolean valid;
 
+	@NotNull(message = "is required")
 	private CertificateType type;
 	
 	private String withdrawalReason;

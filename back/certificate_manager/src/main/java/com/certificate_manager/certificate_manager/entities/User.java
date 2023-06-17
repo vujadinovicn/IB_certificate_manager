@@ -23,25 +23,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@NotEmpty
+	@NotEmpty(message = "is required")
 	@Pattern(regexp = "^([a-zA-Zčćđžš ]*)$")
 	private String name;
 
-	@NotEmpty
+	@NotEmpty(message = "is required")
 	@Pattern(regexp = "^([a-zA-Zčćđžš ]*)$")
 	private String lastname;
 
-	@NotEmpty
+	@NotEmpty(message = "is required")
 	@Email
 	private String email;
 
-//	@NotEmpty
 	@Pattern(regexp = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*")
 	private String phoneNumber;
 
-//	@NotEmpty
+	@NotEmpty(message = "is required")
 	private String password;
 
+	@NotNull
 	private Boolean verified;
 	
 	private String socialId;
@@ -172,7 +172,7 @@ public class User {
 		this.role = role;
 	}
 
-	public LocalDateTime getTimeOfLastSetPassword() {
+	public LocalDateTime getTimeOfLastSetPassword() { 
 		return timeOfLastSetPassword;
 	}
 
@@ -180,7 +180,7 @@ public class User {
 		this.timeOfLastSetPassword = timeOfLastSetPassword;
 	}
 	
-	
+	 
 	public String getSocialId() {
 		return socialId;
 	}

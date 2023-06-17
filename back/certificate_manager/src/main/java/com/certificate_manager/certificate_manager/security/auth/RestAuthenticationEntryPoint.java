@@ -30,6 +30,7 @@ import com.certificate_manager.certificate_manager.exceptions.NotTheIssuerExcept
 import com.certificate_manager.certificate_manager.exceptions.PasswordAlreadyUsedException;
 import com.certificate_manager.certificate_manager.exceptions.PasswordsNotMatchingException;
 import com.certificate_manager.certificate_manager.exceptions.RootCertificateNotForWithdrawalException;
+import com.certificate_manager.certificate_manager.exceptions.RotatePasswordException;
 import com.certificate_manager.certificate_manager.exceptions.UserAlreadyExistsException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -137,6 +138,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @ExceptionHandler(BadCaptchaException.class)
     protected ResponseEntity<Object> handleBadCaptchaException(BadCaptchaException e){
     	return new ResponseEntity<>("Captcha invalid! Are you a robot?", HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(RotatePasswordException.class)
+    protected ResponseEntity<Object> handleRotatePasswordException(RotatePasswordException e){
+    	return new ResponseEntity<>("You should renew your password!", HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(InvalidFileExtensionException.class)
