@@ -12,26 +12,38 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
-@Table(name="certificates")
+@Table(name = "certificates")
 public class Certificate {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@NotEmpty(message = "is required")
+	@Pattern(regexp = "^[0-9A-Za-z]+$")
 	private String serialNumber;
 
+	@NotNull(message = "is required")
 	private LocalDateTime validFrom;
 
+	@NotNull(message = "is required")
 	private LocalDateTime validTo;
 
-	private String issuerSerialNumber;
+	@NotNull(message = "is required")
+	private Boolean valid;
 
-	private boolean valid;
-
+	@NotNull(message = "is required")
 	private CertificateType type;
+	
+	private String withdrawalReason;
+
+	@ManyToOne
+	private Certificate issuer;
 
 	@ManyToOne
 	private User issuedTo;
@@ -40,28 +52,28 @@ public class Certificate {
 
 	}
 
-	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo,
-			String issuerSerialNumber, boolean valid, CertificateType type, User issuedTo) {
-		super();
+	public Certificate(String serialNumber, LocalDateTime validFrom, LocalDateTime validTo, boolean valid,
+			CertificateType type, Certificate issuer, User issuedTo) {
+		super();    
 		this.serialNumber = serialNumber;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
-		this.issuerSerialNumber = issuerSerialNumber;
 		this.valid = valid;
 		this.type = type;
+		this.issuer = issuer;
 		this.issuedTo = issuedTo;
-	}
+	} 
 
-	public Certificate(CertificateRequest request, X509Certificate cert509) {
+	public Certificate(CertificateRequest request, X509Certificate cert509, Certificate issuer) {
 		this.serialNumber = cert509.getSerialNumber().toString();
 		this.issuedTo = request.getRequester();
 		this.validFrom = DateUtils.toLocalDate(cert509.getNotBefore());
 		this.validTo = DateUtils.toLocalDate(cert509.getNotAfter());
-		this.issuerSerialNumber = request.getIssuerSerialNumber();
+		this.issuer = issuer;
 		this.valid = true;
 		this.type = request.getType();
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -94,12 +106,12 @@ public class Certificate {
 		this.validTo = validTo;
 	}
 
-	public String getIssuerSerialNumber() {
-		return issuerSerialNumber;
+	public Certificate getIssuer() {
+		return issuer;
 	}
 
-	public void setIssuerSerialNumber(String issuerSerialNumber) {
-		this.issuerSerialNumber = issuerSerialNumber;
+	public void setIssuer(Certificate issuer) {
+		this.issuer = issuer;
 	}
 
 	public boolean isValid() {
@@ -125,5 +137,15 @@ public class Certificate {
 	public void setIssuedTo(User issuedTo) {
 		this.issuedTo = issuedTo;
 	}
+
+	public String getWithdrawalReason() {
+		return withdrawalReason;
+	}
+
+	public void setWithdrawalReason(String withdrawalReason) {
+		this.withdrawalReason = withdrawalReason;
+	}
+	
+	
 
 }

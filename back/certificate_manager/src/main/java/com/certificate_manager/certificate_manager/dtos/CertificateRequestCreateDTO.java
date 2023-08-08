@@ -7,6 +7,7 @@ import com.certificate_manager.certificate_manager.enums.CertificateType;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class CertificateRequestCreateDTO {
 	
@@ -16,6 +17,7 @@ public class CertificateRequestCreateDTO {
 	
 	@Valid
 	@NotNull(message="is required")
+	@Pattern(regexp = "^[0-9A-Za-z]+$")
 	private String issuerSerialNumber;
 	
 	@Valid

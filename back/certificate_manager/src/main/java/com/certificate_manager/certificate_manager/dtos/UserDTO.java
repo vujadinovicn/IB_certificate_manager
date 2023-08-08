@@ -23,6 +23,7 @@ public class UserDTO {
 	private String phoneNumber;
 	
 	@NotEmpty(message="is required")
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$")
 	private String password;
 	
 	public UserDTO() {
